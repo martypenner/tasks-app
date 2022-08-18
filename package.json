@@ -22,7 +22,15 @@
 		"typecheck": "tsc -b && tsc -b cypress",
 		"validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
 	},
-	"prettier": {},
+	"prettier": {
+		"singleQuote": true,
+		"useTabs": true,
+		"tabWidth": 2,
+		"printWidth": 120,
+		"trailingComma": "es5",
+		"arrowParens": "always",
+		"jsxBracketSameLine": true
+	},
 	"eslintIgnore": [
 		"/node_modules",
 		"/build",
