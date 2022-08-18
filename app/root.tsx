@@ -2,8 +2,8 @@ import type { LinksFunction, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 
-import tailwindStylesheetUrl from './styles/tailwind.css';
 import { getUser } from './session.server';
+import tailwindStylesheetUrl from './styles/tailwind.css';
 
 export const links: LinksFunction = () => {
 	return [{ rel: 'stylesheet', href: tailwindStylesheetUrl }];
@@ -11,7 +11,7 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction = () => ({
 	charset: 'utf-8',
-	title: 'Remix Notes',
+	title: 'To-dos',
 	viewport: 'width=device-width,initial-scale=1',
 });
 
@@ -23,7 +23,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
 	return (
-		<html lang="en" className="h-full">
+		<html lang="en" className="h-full bg-gray-100">
 			<head>
 				<Meta />
 				<Links />

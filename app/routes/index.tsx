@@ -1,135 +1,247 @@
+import { Dialog, Menu, Transition } from '@headlessui/react';
+import {
+	BellIcon,
+	CalendarIcon,
+	ChartBarIcon,
+	FolderIcon,
+	HomeIcon,
+	InboxIcon,
+	MenuAlt2Icon,
+	UsersIcon,
+	XIcon,
+} from '@heroicons/react/outline';
+import { SearchIcon } from '@heroicons/react/solid';
 import { Link } from '@remix-run/react';
+import { Fragment, useState } from 'react';
+import { classNames } from '~/utils';
 
-import { useOptionalUser } from '~/utils';
+const navigation = [
+	{ name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
+	{ name: 'Team', href: '#', icon: UsersIcon, current: false },
+	{ name: 'Projects', href: '#', icon: FolderIcon, current: false },
+	{ name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
+	{ name: 'Documents', href: '#', icon: InboxIcon, current: false },
+	{ name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
+];
+const userNavigation = [
+	{ name: 'Your Profile', href: '#' },
+	{ name: 'Settings', href: '#' },
+	{ name: 'Sign out', href: '#' },
+];
 
-export default function Index() {
-	const user = useOptionalUser();
+export default function Example() {
+	const [sidebarOpen, setSidebarOpen] = useState(false);
+
 	return (
-		<main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
-			<div className="relative sm:pb-16 sm:pt-8">
-				<div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-					<div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
-						<div className="absolute inset-0">
-							<img
-								className="h-full w-full object-cover"
-								src="https://user-images.githubusercontent.com/1500684/157774694-99820c51-8165-4908-a031-34fc371ac0d6.jpg"
-								alt="Sonic Youth On Stage"
-							/>
-							<div className="absolute inset-0 bg-[color:rgba(254,204,27,0.5)] mix-blend-multiply" />
-						</div>
-						<div className="relative px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pb-20 lg:pt-32">
-							<h1 className="text-center text-6xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
-								<span className="block uppercase text-yellow-500 drop-shadow-md">Indie Stack</span>
-							</h1>
-							<p className="mx-auto mt-6 max-w-lg text-center text-xl text-white sm:max-w-3xl">
-								Check the README.md file for instructions on how to get this project deployed.
-							</p>
-							<div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
-								{user ? (
-									<Link
-										to="/notes"
-										className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-									>
-										View Notes for {user.email}
-									</Link>
-								) : (
-									<div className="space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0">
-										<Link
-											to="/join"
-											className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-										>
-											Sign up
-										</Link>
-										<Link
-											to="/login"
-											className="flex items-center justify-center rounded-md bg-yellow-500 px-4 py-3 font-medium text-white hover:bg-yellow-600  "
-										>
-											Log In
-										</Link>
+		<>
+			<div>
+				<Transition.Root show={sidebarOpen} as={Fragment}>
+					<Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
+						<Transition.Child
+							as={Fragment}
+							enter="transition-opacity ease-linear duration-300"
+							enterFrom="opacity-0"
+							enterTo="opacity-100"
+							leave="transition-opacity ease-linear duration-300"
+							leaveFrom="opacity-100"
+							leaveTo="opacity-0">
+							<div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
+						</Transition.Child>
+
+						<div className="fixed inset-0 z-40 flex">
+							<Transition.Child
+								as={Fragment}
+								enter="transition ease-in-out duration-300 transform"
+								enterFrom="-translate-x-full"
+								enterTo="translate-x-0"
+								leave="transition ease-in-out duration-300 transform"
+								leaveFrom="translate-x-0"
+								leaveTo="-translate-x-full">
+								<Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
+									<Transition.Child
+										as={Fragment}
+										enter="ease-in-out duration-300"
+										enterFrom="opacity-0"
+										enterTo="opacity-100"
+										leave="ease-in-out duration-300"
+										leaveFrom="opacity-100"
+										leaveTo="opacity-0">
+										<div className="absolute top-0 right-0 -mr-12 pt-2">
+											<button
+												type="button"
+												className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+												onClick={() => setSidebarOpen(false)}>
+												<span className="sr-only">Close sidebar</span>
+												<XIcon className="h-6 w-6 text-white" aria-hidden="true" />
+											</button>
+										</div>
+									</Transition.Child>
+									<div className="flex flex-shrink-0 items-center px-4">
+										<img
+											className="h-8 w-auto"
+											src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
+											alt="Workflow"
+										/>
 									</div>
-								)}
+									<div className="mt-5 h-0 flex-1 overflow-y-auto">
+										<nav className="space-y-1 px-2">
+											{navigation.map((item) => (
+												<Link
+													key={item.name}
+													to={item.href}
+													className={classNames(
+														item.current
+															? 'bg-gray-100 text-gray-900'
+															: 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+														'group flex items-center rounded-md py-2 px-2 text-base font-medium'
+													)}>
+													<item.icon
+														className={classNames(
+															item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
+															'mr-4 h-6 w-6 flex-shrink-0'
+														)}
+														aria-hidden="true"
+													/>
+													{item.name}
+												</Link>
+											))}
+										</nav>
+									</div>
+								</Dialog.Panel>
+							</Transition.Child>
+							<div className="w-14 flex-shrink-0">
+								{/* Dummy element to force sidebar to shrink to fit close icon */}
 							</div>
-							<a href="https://remix.run">
-								<img
-									src="https://user-images.githubusercontent.com/1500684/158298926-e45dafff-3544-4b69-96d6-d3bcc33fc76a.svg"
-									alt="Remix"
-									className="mx-auto mt-16 w-full max-w-[12rem] md:max-w-[16rem]"
-								/>
-							</a>
+						</div>
+					</Dialog>
+				</Transition.Root>
+
+				{/* Static sidebar for desktop */}
+				<div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+					{/* Sidebar component, swap this element with another sidebar if you like */}
+					<div className="flex min-h-0 flex-1 flex-col bg-gray-800">
+						<div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
+							<nav className="mt-5 flex-1 space-y-1 px-2">
+								{navigation.map((item) => (
+									<Link
+										key={item.name}
+										to={item.href}
+										className={classNames(
+											item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+											'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
+										)}>
+										<item.icon
+											className={classNames(
+												item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+												'mr-3 h-6 w-6 flex-shrink-0'
+											)}
+											aria-hidden="true"
+										/>
+										{item.name}
+									</Link>
+								))}
+							</nav>
 						</div>
 					</div>
 				</div>
 
-				<div className="mx-auto max-w-7xl py-2 px-4 sm:px-6 lg:px-8">
-					<div className="mt-6 flex flex-wrap justify-center gap-8">
-						{[
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157764397-ccd8ea10-b8aa-4772-a99b-35de937319e1.svg',
-								alt: 'Fly.io',
-								href: 'https://fly.io',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157764395-137ec949-382c-43bd-a3c0-0cb8cb22e22d.svg',
-								alt: 'SQLite',
-								href: 'https://sqlite.org',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157764484-ad64a21a-d7fb-47e3-8669-ec046da20c1f.svg',
-								alt: 'Prisma',
-								href: 'https://prisma.io',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157764276-a516a239-e377-4a20-b44a-0ac7b65c8c14.svg',
-								alt: 'Tailwind',
-								href: 'https://tailwindcss.com',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157764454-48ac8c71-a2a9-4b5e-b19c-edef8b8953d6.svg',
-								alt: 'Cypress',
-								href: 'https://www.cypress.io',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157772386-75444196-0604-4340-af28-53b236faa182.svg',
-								alt: 'MSW',
-								href: 'https://mswjs.io',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157772447-00fccdce-9d12-46a3-8bb4-fac612cdc949.svg',
-								alt: 'Vitest',
-								href: 'https://vitest.dev',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157772662-92b0dd3a-453f-4d18-b8be-9fa6efde52cf.png',
-								alt: 'Testing Library',
-								href: 'https://testing-library.com',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157772934-ce0a943d-e9d0-40f8-97f3-f464c0811643.svg',
-								alt: 'Prettier',
-								href: 'https://prettier.io',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157772990-3968ff7c-b551-4c55-a25c-046a32709a8e.svg',
-								alt: 'ESLint',
-								href: 'https://eslint.org',
-							},
-							{
-								src: 'https://user-images.githubusercontent.com/1500684/157773063-20a0ed64-b9f8-4e0b-9d1e-0b65a3d4a6db.svg',
-								alt: 'TypeScript',
-								href: 'https://typescriptlang.org',
-							},
-						].map((img) => (
-							<a
-								key={img.href}
-								href={img.href}
-								className="flex h-16 w-32 justify-center p-1 grayscale transition hover:grayscale-0 focus:grayscale-0"
-							>
-								<img alt={img.alt} src={img.src} />
-							</a>
-						))}
+				<div className="md:pl-64">
+					<div className="mx-auto flex max-w-4xl flex-col md:px-8 xl:px-0">
+						<div className="sticky top-0 z-10 flex h-16 flex-shrink-0 border-b border-gray-200">
+							<button
+								type="button"
+								className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
+								onClick={() => setSidebarOpen(true)}>
+								<span className="sr-only">Open sidebar</span>
+								<MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
+							</button>
+							<div className="flex flex-1 justify-between px-4 md:px-0">
+								<div className="flex flex-1">
+									<form className="flex w-full md:ml-0" action="#" method="GET">
+										<label htmlFor="search-field" className="sr-only">
+											Search
+										</label>
+										<div className="relative w-full text-gray-400 focus-within:text-gray-600">
+											<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
+												<SearchIcon className="h-5 w-5" aria-hidden="true" />
+											</div>
+											<input
+												id="search-field"
+												className="block h-full w-full border-transparent bg-gray-100 py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-sm"
+												placeholder="Search"
+												type="search"
+												name="search"
+											/>
+										</div>
+									</form>
+								</div>
+								<div className="ml-4 flex items-center md:ml-6">
+									<button
+										type="button"
+										className="rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+										<span className="sr-only">View notifications</span>
+										<BellIcon className="h-6 w-6" aria-hidden="true" />
+									</button>
+
+									{/* Profile dropdown */}
+									<Menu as="div" className="relative ml-3">
+										<div>
+											<Menu.Button className="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+												<span className="sr-only">Open user menu</span>
+												<img
+													className="h-8 w-8 rounded-full"
+													src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+													alt=""
+												/>
+											</Menu.Button>
+										</div>
+										<Transition
+											as={Fragment}
+											enter="transition ease-out duration-100"
+											enterFrom="transform opacity-0 scale-95"
+											enterTo="transform opacity-100 scale-100"
+											leave="transition ease-in duration-75"
+											leaveFrom="transform opacity-100 scale-100"
+											leaveTo="transform opacity-0 scale-95">
+											<Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-gray-100 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+												{userNavigation.map((item) => (
+													<Menu.Item key={item.name}>
+														{({ active }) => (
+															<Link
+																to={item.href}
+																className={classNames(
+																	active ? 'bg-gray-200' : '',
+																	'block py-2 px-4 text-sm text-gray-700'
+																)}>
+																{item.name}
+															</Link>
+														)}
+													</Menu.Item>
+												))}
+											</Menu.Items>
+										</Transition>
+									</Menu>
+								</div>
+							</div>
+						</div>
+
+						<main className="flex-1">
+							<div className="py-6">
+								<div className="px-4 sm:px-6 md:px-0">
+									<h1 className="text-2xl font-semibold text-gray-900">To-dos</h1>
+								</div>
+								<div className="px-4 sm:px-6 md:px-0">
+									{/* Replace with your content */}
+									<div className="py-4">
+										<div className="h-96 rounded-lg border-4 border-dashed border-gray-200" />
+									</div>
+									{/* /End replace */}
+								</div>
+							</div>
+						</main>
 					</div>
 				</div>
 			</div>
-		</main>
+		</>
 	);
 }
