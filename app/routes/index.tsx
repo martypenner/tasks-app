@@ -29,7 +29,7 @@ const userNavigation = [
 	{ name: 'Sign out', href: '#' },
 ];
 
-export default function Example() {
+export default function Index() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	return (
