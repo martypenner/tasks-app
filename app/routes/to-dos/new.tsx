@@ -3,7 +3,7 @@ import { json, redirect } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
 
-import { createNote } from '~/models/note.server';
+import { createTodo } from '~/models/todo.server';
 import { requireUserId } from '~/session.server';
 
 export async function action({ request }: ActionArgs) {
@@ -21,12 +21,12 @@ export async function action({ request }: ActionArgs) {
 		return json({ errors: { title: null, body: 'Body is required' } }, { status: 400 });
 	}
 
-	const note = await createNote({ title, body, userId });
+	const todo = await createTodo({ title, body, userId });
 
-	return redirect(`/notes/${note.id}`);
+	return redirect(`/to-dos/${todo.id}`);
 }
 
-export default function NewNotePage() {
+export default function NewTodoPage() {
 	const actionData = useActionData<typeof action>();
 	const titleRef = React.useRef<HTMLInputElement>(null);
 	const bodyRef = React.useRef<HTMLTextAreaElement>(null);
@@ -47,8 +47,7 @@ export default function NewNotePage() {
 				flexDirection: 'column',
 				gap: 8,
 				width: '100%',
-			}}
-		>
+			}}>
 			<div>
 				<label className="flex w-full flex-col gap-1">
 					<span>Title: </span>

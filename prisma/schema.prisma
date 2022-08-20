@@ -15,7 +15,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   password Password?
-  notes    Note[]
+  todos    Todo[]
 }
 
 model Password {
@@ -25,7 +25,7 @@ model Password {
   userId String @unique
 }
 
-model Note {
+model Todo {
   id    String @id @default(cuid())
   title String
   body  String

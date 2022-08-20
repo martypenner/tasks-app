@@ -3,7 +3,7 @@ import { json, redirect } from '@remix-run/node';
 import { Form, Link, useActionData, useSearchParams } from '@remix-run/react';
 import * as React from 'react';
 
-import { getUserId, createUserSession } from '~/session.server';
+import { createUserSession, getUserId } from '~/session.server';
 
 import { createUser, getUserByEmail } from '~/models/user.server';
 import { safeRedirect, validateEmail } from '~/utils';
@@ -57,7 +57,7 @@ export async function action({ request }: ActionArgs) {
 
 export const meta: MetaFunction = () => {
 	return {
-		title: 'Sign Up',
+		title: 'Sign up',
 	};
 };
 
@@ -131,9 +131,8 @@ export default function Join() {
 					<input type="hidden" name="redirectTo" value={redirectTo} />
 					<button
 						type="submit"
-						className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-					>
-						Create Account
+						className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
+						Create account
 					</button>
 					<div className="flex items-center justify-center">
 						<div className="text-center text-sm text-gray-500">
@@ -143,8 +142,7 @@ export default function Join() {
 								to={{
 									pathname: '/login',
 									search: searchParams.toString(),
-								}}
-							>
+								}}>
 								Log in
 							</Link>
 						</div>
