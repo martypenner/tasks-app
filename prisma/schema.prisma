@@ -26,9 +26,12 @@ model Password {
 }
 
 model Todo {
-  id    String @id @default(cuid())
-  title String
-  notes String? @default("")
+  id       String    @id @default(cuid())
+  title    String
+  notes    String?   @default("")
+  when     String    @default("inbox")
+  whenDate DateTime?
+  done     Boolean   @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -11,7 +11,7 @@ export function getTodo({
 	userId: User['id'];
 }) {
 	return prisma.todo.findFirst({
-		select: { id: true, notes: true, title: true },
+		select: { id: true, notes: true, title: true, when: true, whenDate: true, done: true },
 		where: { id, userId },
 	});
 }
@@ -27,14 +27,18 @@ export function getTodoListItems({ userId }: { userId: User['id'] }) {
 export function createTodo({
 	notes,
 	title,
+	when,
+	whenDate,
 	userId,
-}: Pick<Todo, 'notes' | 'title'> & {
+}: Pick<Todo, 'notes' | 'title' | 'when' | 'whenDate'> & {
 	userId: User['id'];
 }) {
 	return prisma.todo.create({
 		data: {
 			title,
 			notes,
+			when,
+			whenDate,
 			user: {
 				connect: {
 					id: userId,

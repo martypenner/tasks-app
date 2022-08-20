@@ -33,6 +33,9 @@ export default function TodoDetailsPage() {
 		<div>
 			<h3 className="text-2xl font-bold">{data.todo.title}</h3>
 			<p className="py-6">{data.todo.notes}</p>
+			<p>Done: {data.todo.done ? 'Done' : 'Not done'}</p>
+			<p>When: {data.todo.when}</p>
+			<p>Date: {data.todo.whenDate}</p>
 			<hr className="my-4" />
 			<Form method="post">
 				<button type="submit" className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">

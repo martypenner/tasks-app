@@ -12,6 +12,8 @@ export async function action({ request }: ActionArgs) {
 	const formData = await request.formData();
 	const title = formData.get('title');
 	const notes = formData.get('notes');
+	const when = formData.get('when');
+	const whenDate = formData.get('whenDate');
 
 	if (typeof title !== 'string' || title.length === 0) {
 		return json({ errors: { title: 'Title is required', notes: null } }, { status: 400 });
@@ -21,7 +23,28 @@ export async function action({ request }: ActionArgs) {
 		return json({ errors: { title: null, notes: 'Notes must be text' } }, { status: 400 });
 	}
 
-	const todo = await createTodo({ title, notes, userId });
+	if (typeof when !== 'string' || title.length === 0) {
+		return json({ errors: { title: 'When is required', notes: null } }, { status: 400 });
+	}
+	const validWhen = ['inbox', 'today', 'upcoming', 'anytime', 'someday', 'specificDate'];
+	if (!validWhen.includes(when)) {
+		return json(
+			{ errors: { title: `When must be on the following: ${validWhen.join(', ')}`, notes: null } },
+			{ status: 400 }
+		);
+	}
+
+	if (when === 'specific' && (typeof whenDate !== 'string' || whenDate.length === 0)) {
+		return json({ errors: { title: '`When date` is required when `when` is specific', notes: null } }, { status: 400 });
+	}
+
+	const todo = await createTodo({
+		title,
+		notes,
+		when,
+		whenDate: when === 'specific' ? new Date(whenDate as string) : null,
+		userId,
+	});
 
 	return redirect(`/to-dos/${todo.id}`);
 }

@@ -28,6 +28,7 @@ async function seed() {
 		data: {
 			title: 'My first to-do',
 			notes: 'Hello, world!',
+			done: true,
 			userId: user.id,
 		},
 	});
