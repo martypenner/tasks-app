@@ -1,27 +1,28 @@
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
+	ArchiveIcon,
 	BellIcon,
 	CalendarIcon,
-	ChartBarIcon,
-	FolderIcon,
-	HomeIcon,
+	CollectionIcon,
 	InboxIcon,
 	MenuAlt2Icon,
-	UsersIcon,
+	NewspaperIcon,
+	TrashIcon,
 	XIcon,
 } from '@heroicons/react/outline';
-import { SearchIcon } from '@heroicons/react/solid';
+import { SearchIcon, StarIcon } from '@heroicons/react/solid';
 import { Link } from '@remix-run/react';
 import { Fragment, useState } from 'react';
 import { classNames } from '~/utils';
 
 const navigation = [
-	{ name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-	{ name: 'Team', href: '#', icon: UsersIcon, current: false },
-	{ name: 'Projects', href: '#', icon: FolderIcon, current: false },
-	{ name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-	{ name: 'Documents', href: '#', icon: InboxIcon, current: false },
-	{ name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
+	{ name: 'Inbox', href: '#', icon: InboxIcon, current: true },
+	{ name: 'Today', href: '#', icon: StarIcon, current: false },
+	{ name: 'Upcoming', href: '#', icon: CalendarIcon, current: false },
+	{ name: 'Anytime', href: '#', icon: CollectionIcon, current: false },
+	{ name: 'Someday', href: '#', icon: ArchiveIcon, current: false },
+	{ name: 'Logbook', href: '#', icon: NewspaperIcon, current: false },
+	{ name: 'Trash', href: '#', icon: TrashIcon, current: false },
 ];
 const userNavigation = [
 	{ name: 'Your Profile', href: '#' },
@@ -76,14 +77,8 @@ export default function Index() {
 											</button>
 										</div>
 									</Transition.Child>
-									<div className="flex flex-shrink-0 items-center px-4">
-										<img
-											className="h-8 w-auto"
-											src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=600"
-											alt="Workflow"
-										/>
-									</div>
-									<div className="mt-5 h-0 flex-1 overflow-y-auto">
+
+									<div className="h-0 flex-1 overflow-y-auto">
 										<nav className="space-y-1 px-2">
 											{navigation.map((item) => (
 												<Link
