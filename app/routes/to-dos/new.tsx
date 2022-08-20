@@ -16,26 +16,73 @@ export async function action({ request }: ActionArgs) {
 	const whenDate = formData.get('whenDate');
 
 	if (typeof title !== 'string' || title.length === 0) {
-		return json({ errors: { title: 'Title is required', notes: null } }, { status: 400 });
+		return json(
+			{
+				errors: {
+					title: 'Title is required',
+					notes: null,
+					when: null,
+					whenDate: null,
+				},
+			},
+			{ status: 400 }
+		);
 	}
 
 	if (typeof notes !== 'string') {
-		return json({ errors: { title: null, notes: 'Notes must be text' } }, { status: 400 });
+		return json(
+			{
+				errors: {
+					notes: 'Notes must be text.',
+					title: null,
+					when: null,
+					whenDate: null,
+				},
+			},
+			{ status: 400 }
+		);
 	}
 
 	if (typeof when !== 'string' || title.length === 0) {
-		return json({ errors: { title: 'When is required', notes: null } }, { status: 400 });
+		return json(
+			{
+				errors: {
+					title: null,
+					notes: null,
+					when: 'When is required',
+					whenDate: null,
+				},
+			},
+			{ status: 400 }
+		);
 	}
 	const validWhen = ['inbox', 'today', 'upcoming', 'anytime', 'someday', 'specificDate'];
 	if (!validWhen.includes(when)) {
 		return json(
-			{ errors: { title: `When must be on the following: ${validWhen.join(', ')}`, notes: null } },
+			{
+				errors: {
+					title: null,
+					notes: null,
+					when: `When must be one of the following: ${validWhen.join(', ')}`,
+					whenDate: null,
+				},
+			},
 			{ status: 400 }
 		);
 	}
 
 	if (when === 'specific' && (typeof whenDate !== 'string' || whenDate.length === 0)) {
-		return json({ errors: { title: '`When date` is required when `when` is specific', notes: null } }, { status: 400 });
+		return json(
+			{
+				errors: {
+					title: null,
+					notes: null,
+					when: null,
+					whenDate: '`When date` is required when `when` is specific',
+				},
+			},
+			{ status: 400 }
+		);
 	}
 
 	const todo = await createTodo({
@@ -53,12 +100,15 @@ export default function NewTodoPage() {
 	const actionData = useActionData<typeof action>();
 	const titleRef = React.useRef<HTMLInputElement>(null);
 	const notesRef = React.useRef<HTMLTextAreaElement>(null);
+	const whenRef = React.useRef<HTMLInputElement>(null);
 
 	React.useEffect(() => {
 		if (actionData?.errors?.title) {
 			titleRef.current?.focus();
 		} else if (actionData?.errors?.notes) {
 			notesRef.current?.focus();
+		} else if (actionData?.errors?.when) {
+			whenRef.current?.focus();
 		}
 	}, [actionData]);
 
@@ -104,6 +154,25 @@ export default function NewTodoPage() {
 				{actionData?.errors?.notes && (
 					<div className="pt-1 text-red-700" id="notes-error">
 						{actionData.errors.notes}
+					</div>
+				)}
+			</div>
+
+			<div>
+				<label className="flex w-full flex-col gap-1">
+					<span>When</span>
+					<input
+						ref={whenRef}
+						name="when"
+						defaultValue="inbox"
+						className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+						aria-invalid={actionData?.errors?.when ? true : undefined}
+						aria-errormessage={actionData?.errors?.when ? 'when-error' : undefined}
+					/>
+				</label>
+				{actionData?.errors?.when && (
+					<div className="pt-1 text-red-700" id="when-error">
+						{actionData.errors.when}
 					</div>
 				)}
 			</div>

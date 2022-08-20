@@ -21,7 +21,10 @@ export async function action({ request, params }: ActionArgs) {
 	const userId = await requireUserId(request);
 	invariant(params.todoId, 'todoId not found');
 
-	await deleteTodo({ userId, id: params.todoId });
+	const todo = await getTodo({ userId, id: params.todoId });
+	invariant(todo, 'todo not found');
+
+	await deleteTodo(todo);
 
 	return redirect('/to-dos/inbox');
 }
@@ -35,7 +38,7 @@ export default function TodoDetailsPage() {
 			<p className="py-6">{data.todo.notes}</p>
 			<p>Done: {data.todo.done ? 'Done' : 'Not done'}</p>
 			<p>When: {data.todo.when}</p>
-			<p>Date: {data.todo.whenDate}</p>
+			<p>When date: {data.todo.whenDate}</p>
 			<hr className="my-4" />
 			<Form method="post">
 				<button type="submit" className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
