@@ -27,6 +27,19 @@ export function getTodoListItems({ userId }: { userId: User['id'] }) {
 	});
 }
 
+export function getDeletedTodos({ userId }: { userId: User['id'] }) {
+	return prisma.todo.findMany({
+		where: {
+			userId,
+			deleted: {
+				not: null,
+			},
+		},
+		select: { id: true, title: true },
+		orderBy: { updatedAt: 'desc' },
+	});
+}
+
 export function createTodo({
 	notes,
 	title,

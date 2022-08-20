@@ -1,7 +1,3 @@
-import type { LoaderArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
-
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
 	ArchiveIcon,
@@ -15,19 +11,18 @@ import {
 	XIcon,
 } from '@heroicons/react/outline';
 import { SearchIcon, StarIcon } from '@heroicons/react/solid';
+import { Link, NavLink, Outlet } from '@remix-run/react';
 import { Fragment, useState } from 'react';
-import { getTodoListItems } from '~/models/todo.server';
-import { requireUserId } from '~/session.server';
-import { classNames, useUser } from '~/utils';
+import { classNames } from '~/utils';
 
 const navigation = [
-	{ name: 'Inbox', href: '/to-dos/inbox', icon: InboxIcon, current: true },
-	{ name: 'Today', href: '/to-dos/today', icon: StarIcon, current: false },
-	{ name: 'Upcoming', href: '/to-dos/upcoming', icon: CalendarIcon, current: false },
-	{ name: 'Anytime', href: '/to-dos/anytime', icon: CollectionIcon, current: false },
-	{ name: 'Someday', href: '/to-dos/someday', icon: ArchiveIcon, current: false },
-	{ name: 'Logbook', href: '/to-dos/logbook', icon: NewspaperIcon, current: false },
-	{ name: 'Trash', href: '/to-dos/trash', icon: TrashIcon, current: false },
+	{ name: 'Inbox', href: '/to-dos/inbox', icon: InboxIcon },
+	{ name: 'Today', href: '/to-dos/today', icon: StarIcon },
+	{ name: 'Upcoming', href: '/to-dos/upcoming', icon: CalendarIcon },
+	{ name: 'Anytime', href: '/to-dos/anytime', icon: CollectionIcon },
+	{ name: 'Someday', href: '/to-dos/someday', icon: ArchiveIcon },
+	{ name: 'Logbook', href: '/to-dos/logbook', icon: NewspaperIcon },
+	{ name: 'Trash', href: '/to-dos/trash', icon: TrashIcon },
 ];
 const userNavigation = [
 	{ name: 'Your Profile', href: '#' },
@@ -35,16 +30,7 @@ const userNavigation = [
 	{ name: 'Sign out', href: '/logout' },
 ];
 
-export async function loader({ request }: LoaderArgs) {
-	const userId = await requireUserId(request);
-	const todoListItems = await getTodoListItems({ userId });
-	return json({ todoListItems });
-}
-
 export default function TodosPage() {
-	const data = useLoaderData<typeof loader>();
-	const user = useUser();
-
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	return (
@@ -95,24 +81,31 @@ export default function TodosPage() {
 									<div className="h-0 flex-1 overflow-y-auto">
 										<nav className="space-y-1 px-2">
 											{navigation.map((item) => (
-												<Link
+												<NavLink
 													key={item.name}
 													to={item.href}
-													className={classNames(
-														item.current
-															? 'bg-gray-100 text-gray-900'
-															: 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-														'group flex items-center rounded-md py-2 px-2 text-base font-medium'
-													)}>
-													<item.icon
-														className={classNames(
-															item.current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-															'mr-4 h-6 w-6 flex-shrink-0'
-														)}
-														aria-hidden="true"
-													/>
-													{item.name}
-												</Link>
+													className={({ isActive }) =>
+														classNames(
+															isActive
+																? 'bg-gray-100 text-gray-900'
+																: 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+															'group flex items-center rounded-md py-2 px-2 text-base font-medium'
+														)
+													}>
+													{({ isActive }) => (
+														<>
+															<item.icon
+																className={classNames(
+																	isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
+																	'mr-4 h-6 w-6 flex-shrink-0'
+																)}
+																aria-hidden="true"
+															/>
+
+															{item.name}
+														</>
+													)}
+												</NavLink>
 											))}
 										</nav>
 									</div>
@@ -132,22 +125,28 @@ export default function TodosPage() {
 						<div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
 							<nav className="mt-5 flex-1 space-y-1 px-2">
 								{navigation.map((item) => (
-									<Link
+									<NavLink
 										key={item.name}
 										to={item.href}
-										className={classNames(
-											item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-											'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
-										)}>
-										<item.icon
-											className={classNames(
-												item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-												'mr-3 h-6 w-6 flex-shrink-0'
-											)}
-											aria-hidden="true"
-										/>
-										{item.name}
-									</Link>
+										className={({ isActive }) =>
+											classNames(
+												isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+												'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
+											)
+										}>
+										{({ isActive }) => (
+											<>
+												<item.icon
+													className={classNames(
+														isActive ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+														'mr-3 h-6 w-6 flex-shrink-0'
+													)}
+													aria-hidden="true"
+												/>
+												{item.name}
+											</>
+										)}
+									</NavLink>
 								))}
 							</nav>
 						</div>
@@ -242,36 +241,8 @@ export default function TodosPage() {
 								<div className="px-4 sm:px-6 md:px-0">
 									<div className="py-4">
 										<div className="flex h-full min-h-screen flex-col">
-											<main className="flex h-full bg-white">
-												<div className="h-full w-80 border-r bg-gray-50">
-													<Link to="new" className="block p-4 text-xl text-blue-500">
-														+ New to-do
-													</Link>
-
-													<hr />
-
-													{data.todoListItems.length === 0 ? (
-														<p className="p-4">No to-dos yet</p>
-													) : (
-														<ol>
-															{data.todoListItems.map((todo) => (
-																<li key={todo.id}>
-																	<NavLink
-																		className={({ isActive }) =>
-																			`block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`
-																		}
-																		to={todo.id}>
-																		📝 {todo.title}
-																	</NavLink>
-																</li>
-															))}
-														</ol>
-													)}
-												</div>
-
-												<div className="flex-1 p-6">
-													<Outlet />
-												</div>
+											<main className="h-full p-6">
+												<Outlet />
 											</main>
 										</div>
 									</div>
