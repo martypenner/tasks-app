@@ -16,13 +16,13 @@ import { Fragment, useState } from 'react';
 import { classNames } from '~/utils';
 
 const navigation = [
-	{ name: 'Inbox', href: '/to-dos/inbox', icon: InboxIcon },
-	{ name: 'Today', href: '/to-dos/today', icon: StarIcon },
-	{ name: 'Upcoming', href: '/to-dos/upcoming', icon: CalendarIcon },
-	{ name: 'Anytime', href: '/to-dos/anytime', icon: CollectionIcon },
-	{ name: 'Someday', href: '/to-dos/someday', icon: ArchiveIcon },
-	{ name: 'Logbook', href: '/to-dos/logbook', icon: NewspaperIcon },
-	{ name: 'Trash', href: '/to-dos/trash', icon: TrashIcon },
+	{ name: 'Inbox', href: '/tasks/inbox', icon: InboxIcon },
+	{ name: 'Today', href: '/tasks/today', icon: StarIcon },
+	{ name: 'Upcoming', href: '/tasks/upcoming', icon: CalendarIcon },
+	{ name: 'Anytime', href: '/tasks/anytime', icon: CollectionIcon },
+	{ name: 'Someday', href: '/tasks/someday', icon: ArchiveIcon },
+	{ name: 'Logbook', href: '/tasks/logbook', icon: NewspaperIcon },
+	{ name: 'Trash', href: '/tasks/trash', icon: TrashIcon },
 ];
 const userNavigation = [
 	{ name: 'Your Profile', href: '#' },
@@ -30,7 +30,7 @@ const userNavigation = [
 	{ name: 'Sign out', href: '/logout' },
 ];
 
-export default function TodosPage() {
+export default function TasksPage() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	return (
@@ -236,7 +236,7 @@ export default function TodosPage() {
 						<main className="flex-1">
 							<div className="py-6">
 								<div className="px-4 sm:px-6 md:px-0">
-									<h1 className="text-2xl font-semibold text-gray-900">To-dos</h1>
+									<h1 className="text-2xl font-semibold text-gray-900">Tasks</h1>
 								</div>
 								<div className="px-4 sm:px-6 md:px-0">
 									<div className="py-4">

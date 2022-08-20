@@ -2,13 +2,13 @@ import { InboxIcon } from '@heroicons/react/outline';
 import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, NavLink, useLoaderData } from '@remix-run/react';
-import { getTodoListItems } from '~/models/todo.server';
+import { getTaskListItems } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
-	const todoListItems = await getTodoListItems({ userId });
-	return json({ todoListItems });
+	const taskListItems = await getTaskListItems({ userId });
+	return json({ taskListItems });
 }
 
 export default function InboxPage() {
@@ -17,21 +17,21 @@ export default function InboxPage() {
 	return (
 		<div className="h-full w-80 border-r">
 			<Link to="../new" className="block p-4 text-xl text-blue-500">
-				+ New to-do
+				+ New task
 			</Link>
 
 			<hr />
 
-			{data.todoListItems.length === 0 ? (
+			{data.taskListItems.length === 0 ? (
 				<InboxIcon className="p-4" />
 			) : (
 				<ol>
-					{data.todoListItems.map((todo) => (
-						<li key={todo.id}>
+					{data.taskListItems.map((task) => (
+						<li key={task.id}>
 							<NavLink
 								className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-								to={`../${todo.id}`}>
-								📝 {todo.title}
+								to={`../${task.id}`}>
+								📝 {task.title}
 							</NavLink>
 						</li>
 					))}

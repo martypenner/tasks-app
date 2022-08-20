@@ -24,18 +24,18 @@ async function seed() {
 		},
 	});
 
-	await prisma.todo.create({
+	await prisma.task.create({
 		data: {
-			title: 'My first to-do',
+			title: 'My first task',
 			notes: 'Hello, world!',
 			done: true,
 			userId: user.id,
 		},
 	});
 
-	await prisma.todo.create({
+	await prisma.task.create({
 		data: {
-			title: 'My second to-do',
+			title: 'My second task',
 			userId: user.id,
 		},
 	});

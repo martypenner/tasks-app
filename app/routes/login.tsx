@@ -17,7 +17,7 @@ export async function action({ request }: ActionArgs) {
 	const formData = await request.formData();
 	const email = formData.get('email');
 	const password = formData.get('password');
-	const redirectTo = safeRedirect(formData.get('redirectTo'), '/to-dos');
+	const redirectTo = safeRedirect(formData.get('redirectTo'), '/tasks');
 	const remember = formData.get('remember');
 
 	if (!validateEmail(email)) {
@@ -54,7 +54,7 @@ export const meta: MetaFunction = () => {
 
 export default function LoginPage() {
 	const [searchParams] = useSearchParams();
-	const redirectTo = searchParams.get('redirectTo') || '/to-dos';
+	const redirectTo = searchParams.get('redirectTo') || '/tasks';
 	const actionData = useActionData<typeof action>();
 	const emailRef = React.useRef<HTMLInputElement>(null);
 	const passwordRef = React.useRef<HTMLInputElement>(null);

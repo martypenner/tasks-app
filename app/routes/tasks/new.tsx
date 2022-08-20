@@ -3,7 +3,7 @@ import { json, redirect } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
 
-import { createTodo } from '~/models/todo.server';
+import { createTask } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
 
 export async function action({ request }: ActionArgs) {
@@ -85,7 +85,7 @@ export async function action({ request }: ActionArgs) {
 		);
 	}
 
-	const todo = await createTodo({
+	const task = await createTask({
 		title,
 		notes,
 		when,
@@ -93,10 +93,10 @@ export async function action({ request }: ActionArgs) {
 		userId,
 	});
 
-	return redirect(`/to-dos/${todo.id}`);
+	return redirect(`/tasks/${task.id}`);
 }
 
-export default function NewTodoPage() {
+export default function NewTaskPage() {
 	const actionData = useActionData<typeof action>();
 	const titleRef = React.useRef<HTMLInputElement>(null);
 	const notesRef = React.useRef<HTMLTextAreaElement>(null);
