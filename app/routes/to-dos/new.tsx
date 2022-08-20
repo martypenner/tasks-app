@@ -56,7 +56,7 @@ export async function action({ request }: ActionArgs) {
 			{ status: 400 }
 		);
 	}
-	const validWhen = ['inbox', 'today', 'upcoming', 'anytime', 'someday', 'specificDate'];
+	const validWhen = ['inbox', 'today', 'thisEvening', 'anytime', 'someday', 'specificDate'];
 	if (!validWhen.includes(when)) {
 		return json(
 			{
@@ -100,7 +100,7 @@ export default function NewTodoPage() {
 	const actionData = useActionData<typeof action>();
 	const titleRef = React.useRef<HTMLInputElement>(null);
 	const notesRef = React.useRef<HTMLTextAreaElement>(null);
-	const whenRef = React.useRef<HTMLInputElement>(null);
+	const whenRef = React.useRef<HTMLSelectElement>(null);
 
 	React.useEffect(() => {
 		if (actionData?.errors?.title) {
@@ -161,14 +161,44 @@ export default function NewTodoPage() {
 			<div>
 				<label className="flex w-full flex-col gap-1">
 					<span>When</span>
-					<input
-						ref={whenRef}
-						name="when"
-						defaultValue="inbox"
-						className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-						aria-invalid={actionData?.errors?.when ? true : undefined}
-						aria-errormessage={actionData?.errors?.when ? 'when-error' : undefined}
-					/>
+
+					{/* <Select.Root name="when" defaultValue="inbox">
+						<Select.Trigger>
+							<Select.Value />
+							<Select.Icon />
+						</Select.Trigger>
+
+						<Select.Portal>
+							<Select.Content ref={whenRef}>
+								<Select.ScrollUpButton />
+
+								<Select.Viewport>
+									<Select.Item value="inbox">
+										<Select.ItemText>Inbox</Select.ItemText>
+										<Select.ItemIndicator>
+											<InboxIcon />
+										</Select.ItemIndicator>
+									</Select.Item>
+									<Select.Item value="Trash">
+										<Select.ItemText>Trash</Select.ItemText>
+										<Select.ItemIndicator>
+											<TrashIcon />
+										</Select.ItemIndicator>
+									</Select.Item>
+								</Select.Viewport>
+
+								<Select.ScrollDownButton />
+							</Select.Content>
+						</Select.Portal>
+					</Select.Root> */}
+					<select name="when" ref={whenRef} defaultValue="inbox">
+						<option value="inbox">Inbox</option>
+						<option value="thisEvening">This evening</option>
+						<option value="specificDate">Specific date</option>
+						<option value="someday">Someday</option>
+						{/* For later */}
+						{/* <option value="reminder">+ Reminder</option> */}
+					</select>
 				</label>
 				{actionData?.errors?.when && (
 					<div className="pt-1 text-red-700" id="when-error">
