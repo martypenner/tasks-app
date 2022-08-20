@@ -14,7 +14,6 @@ export function getTodo({
 		where: {
 			id,
 			userId,
-			deleted: null,
 		},
 	});
 }
@@ -70,6 +69,17 @@ export function deleteTodo({ userId, ...todo }: Todo & { userId: User['id'] }) {
 		data: {
 			...todo,
 			deleted: new Date(),
+		},
+	});
+}
+
+export function permaDeleteAllDeletedTodos({ userId }: { userId: User['id'] }) {
+	return prisma.todo.deleteMany({
+		where: {
+			userId,
+			deleted: {
+				not: null,
+			},
 		},
 	});
 }
