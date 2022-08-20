@@ -27,7 +27,7 @@ async function seed() {
 	await prisma.todo.create({
 		data: {
 			title: 'My first to-do',
-			body: 'Hello, world!',
+			notes: 'Hello, world!',
 			userId: user.id,
 		},
 	});
@@ -35,7 +35,6 @@ async function seed() {
 	await prisma.todo.create({
 		data: {
 			title: 'My second to-do',
-			body: 'Hello, world!',
 			userId: user.id,
 		},
 	});
