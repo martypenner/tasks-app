@@ -21,13 +21,13 @@ import { requireUserId } from '~/session.server';
 import { classNames, useUser } from '~/utils';
 
 const navigation = [
-	{ name: 'Inbox', href: '#', icon: InboxIcon, current: true },
-	{ name: 'Today', href: '#', icon: StarIcon, current: false },
-	{ name: 'Upcoming', href: '#', icon: CalendarIcon, current: false },
-	{ name: 'Anytime', href: '#', icon: CollectionIcon, current: false },
-	{ name: 'Someday', href: '#', icon: ArchiveIcon, current: false },
-	{ name: 'Logbook', href: '#', icon: NewspaperIcon, current: false },
-	{ name: 'Trash', href: '#', icon: TrashIcon, current: false },
+	{ name: 'Inbox', href: '/to-dos/inbox', icon: InboxIcon, current: true },
+	{ name: 'Today', href: '/to-dos/today', icon: StarIcon, current: false },
+	{ name: 'Upcoming', href: '/to-dos/upcoming', icon: CalendarIcon, current: false },
+	{ name: 'Anytime', href: '/to-dos/anytime', icon: CollectionIcon, current: false },
+	{ name: 'Someday', href: '/to-dos/someday', icon: ArchiveIcon, current: false },
+	{ name: 'Logbook', href: '/to-dos/logbook', icon: NewspaperIcon, current: false },
+	{ name: 'Trash', href: '/to-dos/trash', icon: TrashIcon, current: false },
 ];
 const userNavigation = [
 	{ name: 'Your Profile', href: '#' },

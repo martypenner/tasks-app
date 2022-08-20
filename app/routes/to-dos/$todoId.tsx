@@ -12,7 +12,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
 	const todo = await getTodo({ userId, id: params.todoId });
 	if (!todo) {
-		throw new Response('Not Found', { status: 404 });
+		throw redirect('/to-dos/inbox');
 	}
 	return json({ todo });
 }
@@ -23,7 +23,7 @@ export async function action({ request, params }: ActionArgs) {
 
 	await deleteTodo({ userId, id: params.todoId });
 
-	return redirect('/to-dos');
+	return redirect('/to-dos/inbox');
 }
 
 export default function TodoDetailsPage() {
