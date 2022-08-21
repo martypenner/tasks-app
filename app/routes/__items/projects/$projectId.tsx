@@ -21,10 +21,7 @@ export async function action({ request, params }: ActionArgs) {
 	const userId = await requireUserId(request);
 	invariant(params.projectId, 'projectId not found');
 
-	const project = await getProject({ userId, id: params.projectId });
-	invariant(project, 'Project not found');
-
-	await deleteProject(project);
+	await deleteProject({ userId, id: params.projectId });
 
 	return redirect('/tasks/inbox');
 }

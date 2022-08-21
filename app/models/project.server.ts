@@ -48,11 +48,10 @@ export function createProject({
 	});
 }
 
-export function deleteProject({ userId, ...project }: Project & { userId: User['id'] }) {
+export function deleteProject({ id, userId }: { id: Project['id']; userId: User['id'] }) {
 	return prisma.project.updateMany({
-		where: { id: project.id, userId },
+		where: { id, userId },
 		data: {
-			...project,
 			deleted: new Date(),
 		},
 	});
