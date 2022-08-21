@@ -2,12 +2,12 @@ import { InboxIcon } from '@heroicons/react/outline';
 import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, NavLink, useLoaderData } from '@remix-run/react';
-import { getTaskListItems } from '~/models/task.server';
+import { getTaskListItemsByWhen } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
-	const taskListItems = await getTaskListItems({ userId });
+	const taskListItems = await getTaskListItemsByWhen({ userId, when: 'inbox' });
 	return json({ taskListItems });
 }
 

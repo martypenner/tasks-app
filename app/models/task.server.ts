@@ -18,9 +18,17 @@ export function getTask({
 	});
 }
 
-export function getTaskListItems({ userId }: { userId: User['id'] }) {
+export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: User['id']; when?: Task['when'] }) {
 	return prisma.task.findMany({
-		where: { userId, deleted: null },
+		where: { userId, deleted: null, when, done: false },
+		select: { id: true, title: true },
+		orderBy: { updatedAt: 'desc' },
+	});
+}
+
+export function getCompletedTasks({ userId }: { userId: User['id'] }) {
+	return prisma.task.findMany({
+		where: { userId, deleted: null, done: true },
 		select: { id: true, title: true },
 		orderBy: { updatedAt: 'desc' },
 	});
