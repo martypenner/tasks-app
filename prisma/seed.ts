@@ -23,6 +23,18 @@ async function seed() {
 			},
 		},
 	});
+	const project = await prisma.project.create({
+		data: {
+			userId: user.id,
+			title: 'My cool project',
+		},
+	});
+	const area = await prisma.area.create({
+		data: {
+			userId: user.id,
+			title: 'My important area',
+		},
+	});
 
 	await prisma.task.create({
 		data: {
@@ -79,6 +91,13 @@ async function seed() {
 			title: 'My eighth task',
 			userId: user.id,
 			deleted: new Date(),
+		},
+	});
+	await prisma.task.create({
+		data: {
+			title: 'My ninth task',
+			userId: user.id,
+			projectId: project.id,
 		},
 	});
 

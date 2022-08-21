@@ -20,7 +20,13 @@ export function getTask({
 
 export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: User['id']; when?: Task['when'] }) {
 	return prisma.task.findMany({
-		where: { userId, deleted: null, when, done: false },
+		where: {
+			userId,
+			deleted: null,
+			when,
+			done: false,
+			projectId: null,
+		},
 		select: { id: true, title: true },
 		orderBy: { updatedAt: 'desc' },
 	});

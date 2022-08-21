@@ -1,6 +1,6 @@
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { Form, useCatch, useLoaderData } from '@remix-run/react';
+import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import { deleteProject, getProject } from '~/models/project.server';
 
@@ -34,17 +34,36 @@ export default function ProjectDetailsPage() {
 
 	return (
 		<div>
-			<h3 className="text-2xl font-bold">{data.project.title}</h3>
+			<div className="flex items-center">
+				<h3 className="text-2xl font-bold">{data.project.title}</h3>
+
+				<Form method="post" className="ml-8">
+					<button
+						type="submit"
+						className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
+						Delete
+					</button>
+				</Form>
+			</div>
+
 			<p className="py-6">{data.project.notes}</p>
 			<p>Done: {data.project.done ? 'Done' : 'Not done'}</p>
 			<p>When: {data.project.when}</p>
 			<p>When date: {data.project.whenDate}</p>
+
 			<hr className="my-4" />
-			<Form method="post">
-				<button type="submit" className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
-					Delete
-				</button>
-			</Form>
+
+			<ol>
+				{data.project.tasks.map((task) => (
+					<li key={task.id}>
+						<NavLink
+							className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+							to={`/tasks/${task.id}`}>
+							📝 {task.title}
+						</NavLink>
+					</li>
+				))}
+			</ol>
 		</div>
 	);
 }

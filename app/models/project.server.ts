@@ -11,10 +11,8 @@ export function getProject({
 	userId: User['id'];
 }) {
 	return prisma.project.findFirst({
-		where: {
-			id,
-			userId,
-		},
+		where: { id, userId },
+		include: { tasks: true },
 	});
 }
 
