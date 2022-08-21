@@ -22,7 +22,7 @@ export async function action({ request, params }: ActionArgs) {
 	invariant(params.taskId, 'taskId not found');
 
 	const task = await getTask({ userId, id: params.taskId });
-	invariant(task, 'task not found');
+	invariant(task, 'Task not found');
 
 	await deleteTask(task);
 

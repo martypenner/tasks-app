@@ -30,7 +30,7 @@ export default function InboxPage() {
 						<li key={task.id}>
 							<NavLink
 								className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-								to={`../${task.id}`}>
+								to={`/tasks/${task.id}`}>
 								📝 {task.title}
 							</NavLink>
 						</li>

@@ -80,14 +80,3 @@ export function deleteTask({ userId, ...task }: Task & { userId: User['id'] }) {
 		},
 	});
 }
-
-export function permaDeleteAllDeletedTasks({ userId }: { userId: User['id'] }) {
-	return prisma.task.deleteMany({
-		where: {
-			userId,
-			deleted: {
-				not: null,
-			},
-		},
-	});
-}

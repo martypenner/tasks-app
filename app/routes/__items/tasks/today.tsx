@@ -7,7 +7,7 @@ import { requireUserId } from '~/session.server';
 
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
-	const taskListItems = await getTaskListItemsByWhen({ userId, when: 'anytime' });
+	const taskListItems = await getTaskListItemsByWhen({ userId, when: 'today' });
 	return json({ taskListItems });
 }
 
@@ -30,7 +30,7 @@ export default function InboxPage() {
 						<li key={task.id}>
 							<NavLink
 								className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-								to={`../${task.id}`}>
+								to={`/tasks/${task.id}`}>
 								📝 {task.title}
 							</NavLink>
 						</li>

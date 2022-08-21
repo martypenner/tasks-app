@@ -2,7 +2,8 @@ import { TrashIcon } from '@heroicons/react/outline';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Form, NavLink, useLoaderData } from '@remix-run/react';
-import { getDeletedTasks, permaDeleteAllDeletedTasks } from '~/models/task.server';
+import { permaDeleteAllDeletedItems } from '~/models/empty-trash.server';
+import { getDeletedTasks } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request }: LoaderArgs) {
@@ -13,7 +14,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export async function action({ request }: ActionArgs) {
 	const userId = await requireUserId(request);
-	const stuff = await permaDeleteAllDeletedTasks({ userId });
+	const stuff = await permaDeleteAllDeletedItems({ userId });
 	console.log(stuff);
 	return json({});
 }
@@ -37,7 +38,7 @@ export default function InboxPage() {
 							<li key={task.id}>
 								<NavLink
 									className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-									to={`../${task.id}`}>
+									to={`/tasks/${task.id}`}>
 									📝 {task.title}
 								</NavLink>
 							</li>

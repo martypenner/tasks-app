@@ -2,12 +2,12 @@ import { InboxIcon } from '@heroicons/react/outline';
 import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, NavLink, useLoaderData } from '@remix-run/react';
-import { getTaskListItemsByWhen } from '~/models/task.server';
+import { getCompletedTasks } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
-	const taskListItems = await getTaskListItemsByWhen({ userId, when: 'someday' });
+	const taskListItems = await getCompletedTasks({ userId });
 	return json({ taskListItems });
 }
 
@@ -30,7 +30,7 @@ export default function InboxPage() {
 						<li key={task.id}>
 							<NavLink
 								className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-								to={`../${task.id}`}>
+								to={`/tasks/${task.id}`}>
 								📝 {task.title}
 							</NavLink>
 						</li>
