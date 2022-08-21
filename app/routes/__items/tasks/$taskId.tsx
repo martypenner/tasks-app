@@ -21,10 +21,7 @@ export async function action({ request, params }: ActionArgs) {
 	const userId = await requireUserId(request);
 	invariant(params.taskId, 'taskId not found');
 
-	const task = await getTask({ userId, id: params.taskId });
-	invariant(task, 'Task not found');
-
-	await deleteTask(task);
+	await deleteTask({ userId, id: params.taskId });
 
 	return redirect('/tasks/inbox');
 }

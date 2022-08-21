@@ -77,11 +77,10 @@ export function createTask({
 	});
 }
 
-export function deleteTask({ userId, ...task }: Task & { userId: User['id'] }) {
+export function deleteTask({ id, userId }: { id: Task['id']; userId: User['id'] }) {
 	return prisma.task.updateMany({
-		where: { id: task.id, userId },
+		where: { id, userId },
 		data: {
-			...task,
 			deleted: new Date(),
 		},
 	});
