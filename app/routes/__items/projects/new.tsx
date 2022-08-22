@@ -1,10 +1,13 @@
-import { ActionArgs, json, redirect } from '@remix-run/node';
+import { ActionArgs, json, MetaFunction, redirect } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
 import { createProject } from '~/models/project.server';
-
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
+
+export const meta: MetaFunction = () => ({
+	title: 'Create new project',
+});
 
 export async function action({ request }: ActionArgs) {
 	const userId = await requireUserId(request);

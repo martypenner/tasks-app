@@ -1,10 +1,14 @@
-import type { ActionArgs } from '@remix-run/node';
+import type { ActionArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
 import { createTask } from '~/models/task.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
+
+export const meta: MetaFunction = () => ({
+	title: 'Create new task',
+});
 
 export async function action({ request }: ActionArgs) {
 	const userId = await requireUserId(request);

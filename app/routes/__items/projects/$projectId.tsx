@@ -1,10 +1,15 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import { deleteProject, getProject } from '~/models/project.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
+
+// todo: figure out how to type this
+export const meta: MetaFunction = ({ data }) => ({
+	title: `${data.project.title}`,
+});
 
 export async function loader({ request, params }: LoaderArgs) {
 	const userId = await requireUserId(request);

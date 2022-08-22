@@ -1,5 +1,5 @@
 import { TrashIcon } from '@heroicons/react/outline';
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Form, NavLink, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
@@ -8,6 +8,10 @@ import { getDeletedTasks } from '~/models/task.server';
 import { permaDeleteAllDeletedItems } from '~/models/trash.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
+
+export const meta: MetaFunction = () => ({
+	title: 'Trash',
+});
 
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);

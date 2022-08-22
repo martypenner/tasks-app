@@ -1,10 +1,14 @@
 import { InboxIcon } from '@heroicons/react/outline';
-import type { LoaderArgs } from '@remix-run/node';
+import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, NavLink, useLoaderData } from '@remix-run/react';
 import { getTaskListItemsByWhen } from '~/models/task.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
+
+export const meta: MetaFunction = () => ({
+	title: 'Today',
+});
 
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
