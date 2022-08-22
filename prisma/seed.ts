@@ -107,6 +107,7 @@ async function seed() {
 			title: 'My area task',
 			userId: user.id,
 			areaId: area.id,
+			createdAt: new Date('2020-01-01'),
 		},
 	});
 

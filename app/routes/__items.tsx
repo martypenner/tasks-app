@@ -16,18 +16,25 @@ import { json } from '@remix-run/node';
 import { Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
 import { getAreas } from '~/models/area.server';
-import { getProjects } from '~/models/project.server';
+import { getProjects, Project } from '~/models/project.server';
 import { getTaskListItemsByWhen } from '~/models/task.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 import { classNames } from '~/utils';
 
+function sortByCreatedTime(a: Pick<Project, 'createdAt'>, b: Pick<Project, 'createdAt'>) {
+	return b.createdAt!.getTime() - a.createdAt!.getTime();
+}
+
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
 	const taskListItems = await getTaskListItemsByWhen({ userId, when: 'inbox' });
-	const projects = (await getProjects({ userId })).map((project) => ({ ...project, isProject: true }));
-	const areas = (await getAreas({ userId })).map((area) => ({ ...area, isProject: false }));
-	const projectsAndAreas = [...projects, ...areas].sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
+	const projects = await getProjects({ userId });
+	const areas = await getAreas({ userId });
+	const projectsAndAreas = [
+		...projects.sort(sortByCreatedTime).map((project) => ({ ...project, isProject: true })),
+		...areas.sort(sortByCreatedTime).map((area) => ({ ...area, isProject: false })),
+	];
 	return json({ taskListItems, projectsAndAreas });
 }
 
@@ -161,36 +168,46 @@ export default function App() {
 								</NavLink>
 							))}
 
-							<div className="h-full w-80 border-r">
-								<Link to={paths.newProject({})} className="block p-4 text-xl text-gray-300">
-									+ New project
-								</Link>
-								<Link to={paths.newArea({})} className="block p-4 text-xl text-gray-300">
-									+ New area
-								</Link>
+							<div className="flex flex-col justify-between">
+								<div>
+									{data.projectsAndAreas.length > 0 && (
+										<ol>
+											{data.projectsAndAreas.map((projectOrArea) => (
+												<li key={projectOrArea.id}>
+													<NavLink
+														className={({ isActive }) =>
+															classNames(
+																isActive
+																	? 'bg-gray-900 text-white'
+																	: 'text-gray-300 hover:bg-gray-700 hover:text-white',
+																'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
+															)
+														}
+														to={
+															projectOrArea.isProject
+																? paths.project({ projectId: projectOrArea.id })
+																: paths.area({ areaId: projectOrArea.id })
+														}>
+														📝 {projectOrArea.title}
+													</NavLink>
+												</li>
+											))}
+										</ol>
+									)}
+								</div>
 
-								{data.projectsAndAreas.length > 0 && (
-									<ol>
-										{data.projectsAndAreas.map((projectOrArea) => (
-											<li key={projectOrArea.id}>
-												<NavLink
-													className={({ isActive }) =>
-														classNames(
-															isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-															'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
-														)
-													}
-													to={
-														projectOrArea.isProject
-															? paths.project({ projectId: projectOrArea.id })
-															: paths.area({ areaId: projectOrArea.id })
-													}>
-													📝 {projectOrArea.title}
-												</NavLink>
-											</li>
-										))}
-									</ol>
-								)}
+								<div>
+									<Link
+										to={paths.newProject({})}
+										className="block py-2 text-gray-300 hover:bg-gray-700 hover:text-white group-hover:text-gray-300">
+										+ New project
+									</Link>
+									<Link
+										to={paths.newArea({})}
+										className="block py-2 text-gray-300 hover:bg-gray-700 hover:text-white group-hover:text-gray-300">
+										+ New area
+									</Link>
+								</div>
 							</div>
 						</nav>
 					</div>
