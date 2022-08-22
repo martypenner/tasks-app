@@ -1,7 +1,3 @@
-import type { LoaderArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { Outlet, useLoaderData } from '@remix-run/react';
-
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
 	ArchiveIcon,
@@ -15,11 +11,14 @@ import {
 	XIcon,
 } from '@heroicons/react/outline';
 import { SearchIcon, StarIcon } from '@heroicons/react/solid';
-import { Link, NavLink } from '@remix-run/react';
+import type { LoaderArgs } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import { Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
 import { getAreas } from '~/models/area.server';
 import { getProjects } from '~/models/project.server';
 import { getTaskListItemsByWhen } from '~/models/task.server';
+import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 import { classNames } from '~/utils';
 
@@ -165,10 +164,10 @@ export default function App() {
 							))}
 
 							<div className="h-full w-80 border-r">
-								<Link to="../projects/new" className="block p-4 text-xl text-blue-500">
+								<Link to={paths.newProject({})} className="block p-4 text-xl text-blue-500">
 									+ New project
 								</Link>
-								<Link to="../areas/new" className="block p-4 text-xl text-blue-500">
+								<Link to={paths.newArea({})} className="block p-4 text-xl text-blue-500">
 									+ New area
 								</Link>
 
@@ -178,7 +177,11 @@ export default function App() {
 											<li key={projectOrArea.id}>
 												<NavLink
 													className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-													to={`/${projectOrArea.isProject ? 'projects' : 'areas'}/${projectOrArea.id}`}>
+													to={
+														projectOrArea.isProject
+															? paths.project({ projectId: projectOrArea.id })
+															: paths.area({ areaId: projectOrArea.id })
+													}>
 													📝 {projectOrArea.title}
 												</NavLink>
 											</li>

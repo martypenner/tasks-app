@@ -3,7 +3,7 @@ import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import { deleteArea, getArea } from '~/models/area.server';
-
+import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -50,7 +50,7 @@ export default function AreaDetailsPage() {
 					<li key={project.id}>
 						<NavLink
 							className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-							to={`/projects/${project.id}`}>
+							to={paths.project({ projectId: project.id })}>
 							📝 {project.title}
 						</NavLink>
 					</li>
@@ -58,12 +58,12 @@ export default function AreaDetailsPage() {
 			</ol>
 
 			<ol>
-				{data.area.tasks.map((tasks) => (
-					<li key={tasks.id}>
+				{data.area.tasks.map((task) => (
+					<li key={task.id}>
 						<NavLink
 							className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-							to={`/tasks/${tasks.id}`}>
-							📝 {tasks.title}
+							to={paths.task({ taskId: task.id })}>
+							📝 {task.title}
 						</NavLink>
 					</li>
 				))}

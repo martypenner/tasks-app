@@ -3,6 +3,7 @@ import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, NavLink, useLoaderData } from '@remix-run/react';
 import { getCompletedTasks } from '~/models/task.server';
+import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request }: LoaderArgs) {
@@ -16,7 +17,7 @@ export default function InboxPage() {
 
 	return (
 		<div className="h-full w-80 border-r">
-			<Link to="../new" className="block p-4 text-xl text-blue-500">
+			<Link to={paths.newTask({})} className="block p-4 text-xl text-blue-500">
 				+ New task
 			</Link>
 

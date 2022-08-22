@@ -3,6 +3,7 @@ import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
 import { createProject } from '~/models/project.server';
 
+import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
 export async function action({ request }: ActionArgs) {
@@ -92,7 +93,7 @@ export async function action({ request }: ActionArgs) {
 		userId,
 	});
 
-	return redirect(`/projects/${project.id}`);
+	return redirect(paths.project({ projectId: project.id }));
 }
 
 export default function NewProjectPage() {

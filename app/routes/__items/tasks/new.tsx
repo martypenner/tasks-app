@@ -2,8 +2,8 @@ import type { ActionArgs } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
-
 import { createTask } from '~/models/task.server';
+import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
 export async function action({ request }: ActionArgs) {
@@ -93,7 +93,7 @@ export async function action({ request }: ActionArgs) {
 		userId,
 	});
 
-	return redirect(`/tasks/${task.id}`);
+	return redirect(paths.task({ taskId: task.id }));
 }
 
 export default function NewTaskPage() {

@@ -3,7 +3,7 @@ import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import { deleteProject, getProject } from '~/models/project.server';
-
+import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -55,7 +55,7 @@ export default function ProjectDetailsPage() {
 					<li key={task.id}>
 						<NavLink
 							className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-							to={`/tasks/${task.id}`}>
+							to={paths.task({ taskId: task.id })}>
 							📝 {task.title}
 						</NavLink>
 					</li>
