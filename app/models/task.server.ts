@@ -45,9 +45,8 @@ export function getDeletedTasks({ userId }: { userId: User['id'] }) {
 	return prisma.task.findMany({
 		where: {
 			userId,
-			deleted: {
-				not: null,
-			},
+			deleted: { not: null },
+			projectId: { not: null },
 		},
 		select: { id: true, title: true, deleted: true },
 		orderBy: { deleted: 'desc' },
