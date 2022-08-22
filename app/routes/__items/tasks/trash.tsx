@@ -36,7 +36,7 @@ export default function InboxPage() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<div className="h-full w-80 border-r">
+		<>
 			{data.items.length === 0 ? (
 				<TrashIcon className="p-4" />
 			) : (
@@ -64,6 +64,6 @@ export default function InboxPage() {
 					</ol>
 				</>
 			)}
-		</div>
+		</>
 	);
 }

@@ -2,6 +2,7 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
+import NewTask from '~/components/NewTask';
 import { deleteArea, getArea } from '~/models/area.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
@@ -49,6 +50,8 @@ export default function AreaDetailsPage() {
 			</div>
 
 			<hr className="my-4" />
+
+			<NewTask key={data.area.tasks.length} defaultWhen="anytime" />
 
 			<ol>
 				{data.area.Project.map((project) => (

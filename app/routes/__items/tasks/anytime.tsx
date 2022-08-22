@@ -1,9 +1,9 @@
 import { InboxIcon } from '@heroicons/react/outline';
 import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Link, NavLink, useLoaderData } from '@remix-run/react';
+import { NavLink, useLoaderData } from '@remix-run/react';
+import NewTask from '~/components/NewTask';
 import { getTaskListItemsByWhen } from '~/models/task.server';
-import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction = () => ({
@@ -21,11 +21,7 @@ export default function InboxPage() {
 
 	return (
 		<div className="h-full w-80 border-r">
-			<Link to={paths.newTask({})} className="block p-4 text-xl text-blue-500">
-				+ New task
-			</Link>
-
-			<hr />
+			<NewTask key={data.taskListItems.length} defaultWhen="anytime" />
 
 			{data.taskListItems.length === 0 ? (
 				<InboxIcon className="p-4" />

@@ -2,6 +2,7 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
+import NewTask from '~/components/NewTask';
 import { deleteProject, getProject } from '~/models/project.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
@@ -56,6 +57,8 @@ export default function ProjectDetailsPage() {
 			<p>When date: {data.project.whenDate}</p>
 
 			<hr className="my-4" />
+
+			<NewTask key={data.project.tasks.length} defaultWhen="anytime" />
 
 			<ol>
 				{data.project.tasks.map((task) => (
