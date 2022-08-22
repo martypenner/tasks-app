@@ -29,7 +29,7 @@ export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: Use
 			areaId: null,
 		},
 		select: { id: true, title: true },
-		orderBy: { updatedAt: 'desc' },
+		orderBy: { createdAt: 'asc' },
 	});
 }
 

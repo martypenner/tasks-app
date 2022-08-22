@@ -86,6 +86,7 @@ async function seed() {
 			title: 'My seventh task',
 			userId: user.id,
 			done: true,
+			createdAt: new Date('2020-01-01'),
 		},
 	});
 	await prisma.task.create({
