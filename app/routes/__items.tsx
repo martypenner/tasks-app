@@ -102,10 +102,8 @@ export default function App() {
 												to={item.href}
 												className={({ isActive }) =>
 													classNames(
-														isActive
-															? 'bg-gray-100 text-gray-900'
-															: 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-														'group flex items-center rounded-md py-2 px-2 text-base font-medium'
+														isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+														'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
 													)
 												}>
 												{({ isActive }) => (
@@ -176,7 +174,12 @@ export default function App() {
 										{data.projectsAndAreas.map((projectOrArea) => (
 											<li key={projectOrArea.id}>
 												<NavLink
-													className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+													className={({ isActive }) =>
+														classNames(
+															isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+															'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
+														)
+													}
 													to={
 														projectOrArea.isProject
 															? paths.project({ projectId: projectOrArea.id })
