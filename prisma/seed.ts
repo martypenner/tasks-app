@@ -97,14 +97,14 @@ async function seed() {
 	});
 	await prisma.task.create({
 		data: {
-			title: 'My ninth task',
+			title: 'My project task',
 			userId: user.id,
 			projectId: project.id,
 		},
 	});
 	await prisma.task.create({
 		data: {
-			title: 'My tenth task',
+			title: 'My area task',
 			userId: user.id,
 			areaId: area.id,
 		},

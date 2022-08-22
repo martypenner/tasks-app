@@ -24,19 +24,6 @@ export function getAreas({ userId }: { userId: User['id'] }) {
 	});
 }
 
-export function getDeletedAreas({ userId }: { userId: User['id'] }) {
-	return prisma.area.findMany({
-		where: {
-			userId,
-			deleted: {
-				not: null,
-			},
-		},
-		select: { id: true, title: true, deleted: true },
-		orderBy: { deleted: 'desc' },
-	});
-}
-
 export function createArea({
 	title,
 	userId,
@@ -55,11 +42,35 @@ export function createArea({
 	});
 }
 
-export function deleteArea({ id, userId }: { id: Area['id']; userId: User['id'] }) {
-	return prisma.area.updateMany({
-		where: { id, userId },
+// Areas are perma-deleted immediately, but their associated tasks and projects
+// (and tasks within those projects) are soft-deleted.
+export async function deleteArea({ id, userId }: { id: Area['id']; userId: User['id'] }) {
+	// By soft-deleting projects first, we can soft-delete all tasks which are
+	// tied to a soft-deleted project instead of querying some deep relation by ID
+	// and soft-deleting that.
+	await prisma.project.updateMany({
+		where: { userId, areaId: id },
 		data: {
 			deleted: new Date(),
 		},
+	});
+	await prisma.task.updateMany({
+		where: {
+			userId,
+			OR: [
+				{
+					Project: {
+						deleted: { not: null },
+					},
+				},
+				{ areaId: id },
+			],
+		},
+		data: {
+			deleted: new Date(),
+		},
+	});
+	return prisma.area.deleteMany({
+		where: { id, userId },
 	});
 }
