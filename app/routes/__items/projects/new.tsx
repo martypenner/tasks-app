@@ -84,7 +84,7 @@ export async function action({ request }: ActionArgs) {
 		);
 	}
 
-	const task = await createProject({
+	const project = await createProject({
 		title,
 		notes,
 		when,
@@ -92,7 +92,7 @@ export async function action({ request }: ActionArgs) {
 		userId,
 	});
 
-	return redirect(`/tasks/${task.id}`);
+	return redirect(`/projects/${project.id}`);
 }
 
 export default function NewProjectPage() {
