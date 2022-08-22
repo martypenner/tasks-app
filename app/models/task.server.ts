@@ -58,8 +58,10 @@ export function createTask({
 	title,
 	when,
 	whenDate,
+	projectId,
+	areaId,
 	userId,
-}: Pick<Task, 'notes' | 'title' | 'when' | 'whenDate'> & {
+}: Pick<Task, 'notes' | 'title' | 'when' | 'whenDate' | 'projectId' | 'areaId'> & {
 	userId: User['id'];
 }) {
 	return prisma.task.create({
@@ -68,6 +70,27 @@ export function createTask({
 			notes,
 			when,
 			whenDate,
+
+			...(projectId == null
+				? {}
+				: {
+						Project: {
+							connect: {
+								id: projectId,
+							},
+						},
+				  }),
+
+			...(areaId == null
+				? {}
+				: {
+						Area: {
+							connect: {
+								id: areaId,
+							},
+						},
+				  }),
+
 			user: {
 				connect: {
 					id: userId,

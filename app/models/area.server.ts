@@ -12,7 +12,12 @@ export function getArea({
 }) {
 	return prisma.area.findFirst({
 		where: { id, userId },
-		include: { Project: true, tasks: true },
+		include: {
+			Project: true,
+			tasks: {
+				orderBy: { createdAt: 'desc' },
+			},
+		},
 	});
 }
 

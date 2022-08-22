@@ -12,7 +12,11 @@ export function getProject({
 }) {
 	return prisma.project.findFirst({
 		where: { id, userId },
-		include: { tasks: true },
+		include: {
+			tasks: {
+				orderBy: { createdAt: 'desc' },
+			},
+		},
 	});
 }
 
@@ -52,6 +56,7 @@ export function createProject({
 			notes,
 			when,
 			whenDate,
+			// todo: add area
 			user: {
 				connect: {
 					id: userId,

@@ -58,7 +58,7 @@ export default function ProjectDetailsPage() {
 
 			<hr className="my-4" />
 
-			<NewTask key={data.project.tasks.length} defaultWhen="anytime" />
+			<NewTask key={data.project.tasks.length} defaultWhen="anytime" projectId={data.project.id} />
 
 			<ol>
 				{data.project.tasks.map((task) => (

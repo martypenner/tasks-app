@@ -11,6 +11,8 @@ export async function newTaskAction({ request }: ActionArgs) {
 	const notes = formData.get('notes');
 	const when = formData.get('when');
 	const whenDate = formData.get('whenDate');
+	const projectId = formData.get('projectId');
+	const areaId = formData.get('areaId');
 	const redirectTo = (formData.get('redirectTo') as string) ?? allTasks({});
 
 	if (typeof title !== 'string' || title.length === 0) {
@@ -89,6 +91,8 @@ export async function newTaskAction({ request }: ActionArgs) {
 		when,
 		whenDate: when === 'specific' ? new Date(whenDate as string) : null,
 		userId,
+		projectId: typeof projectId === 'string' ? projectId : null,
+		areaId: typeof areaId === 'string' ? areaId : null,
 	});
 
 	return redirect(redirectTo);

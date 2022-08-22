@@ -7,9 +7,11 @@ import * as paths from '~/paths';
 
 type Props = {
 	defaultWhen?: Task['when'];
+	projectId?: Task['projectId'];
+	areaId?: Task['areaId'];
 };
 
-export default function NewTask({ defaultWhen = 'inbox' }: Props) {
+export default function NewTask({ defaultWhen = 'inbox', projectId, areaId }: Props) {
 	const actionData = useActionData<typeof newTaskAction>();
 	const titleRef = React.useRef<HTMLInputElement>(null);
 	const notesRef = React.useRef<HTMLTextAreaElement>(null);
@@ -75,6 +77,9 @@ export default function NewTask({ defaultWhen = 'inbox' }: Props) {
 			}}>
 			{/* Provide a return URL */}
 			<input type="hidden" name="redirectTo" value={location.pathname} />
+
+			{projectId != null && <input type="hidden" name="projectId" value={projectId} />}
+			{areaId != null && <input type="hidden" name="areaId" value={areaId} />}
 
 			<div>
 				<input

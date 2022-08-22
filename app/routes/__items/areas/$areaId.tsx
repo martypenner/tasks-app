@@ -51,7 +51,7 @@ export default function AreaDetailsPage() {
 
 			<hr className="my-4" />
 
-			<NewTask key={data.area.tasks.length} defaultWhen="anytime" />
+			<NewTask key={data.area.tasks.length} defaultWhen="anytime" areaId={data.area.id} />
 
 			<ol>
 				{data.area.Project.map((project) => (
