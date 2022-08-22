@@ -14,6 +14,7 @@ export function getProject({
 		where: { id, userId },
 		include: {
 			tasks: {
+				where: { deleted: null, done: false },
 				orderBy: { createdAt: 'desc' },
 			},
 		},

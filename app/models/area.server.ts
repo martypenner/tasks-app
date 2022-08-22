@@ -15,6 +15,7 @@ export function getArea({
 		include: {
 			Project: true,
 			tasks: {
+				where: { deleted: null, done: false },
 				orderBy: { createdAt: 'desc' },
 			},
 		},
