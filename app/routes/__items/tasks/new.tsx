@@ -106,6 +106,8 @@ export default function NewTaskPage() {
 	const notesRef = React.useRef<HTMLTextAreaElement>(null);
 	const whenRef = React.useRef<HTMLSelectElement>(null);
 
+	const [notes, setNotes] = React.useState('');
+
 	React.useEffect(() => {
 		if (actionData?.errors?.title) {
 			titleRef.current?.focus();
@@ -126,16 +128,14 @@ export default function NewTaskPage() {
 				width: '100%',
 			}}>
 			<div>
-				<label className="flex w-full flex-col gap-1">
-					<span>Title</span>
-					<input
-						ref={titleRef}
-						name="title"
-						className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-						aria-invalid={actionData?.errors?.title ? true : undefined}
-						aria-errormessage={actionData?.errors?.title ? 'title-error' : undefined}
-					/>
-				</label>
+				<input
+					ref={titleRef}
+					name="title"
+					placeholder="New To-Do"
+					className="flex w-full rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+					aria-invalid={actionData?.errors?.title ? true : undefined}
+					aria-errormessage={actionData?.errors?.title ? 'title-error' : undefined}
+				/>
 				{actionData?.errors?.title && (
 					<div className="pt-1 text-red-700" id="title-error">
 						{actionData.errors.title}
@@ -144,17 +144,18 @@ export default function NewTaskPage() {
 			</div>
 
 			<div>
-				<label className="flex w-full flex-col gap-1">
-					<span>Notes</span>
-					<textarea
-						ref={notesRef}
-						name="notes"
-						rows={8}
-						className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
-						aria-invalid={actionData?.errors?.notes ? true : undefined}
-						aria-errormessage={actionData?.errors?.notes ? 'notes-error' : undefined}
-					/>
-				</label>
+				<textarea
+					ref={notesRef}
+					name="notes"
+					// todo: cross-platform line breaks
+					placeholder="Notes"
+					rows={Math.max(2, notes.split('\n').length ?? 2)}
+					value={notes}
+					onChange={(event) => setNotes(event.target.value)}
+					className="flex w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
+					aria-invalid={actionData?.errors?.notes ? true : undefined}
+					aria-errormessage={actionData?.errors?.notes ? 'notes-error' : undefined}
+				/>
 				{actionData?.errors?.notes && (
 					<div className="pt-1 text-red-700" id="notes-error">
 						{actionData.errors.notes}
