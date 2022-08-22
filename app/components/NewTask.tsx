@@ -66,15 +66,7 @@ export default function NewTask({ defaultWhen = 'inbox', projectId, areaId }: Pr
 	}
 
 	return (
-		<Form
-			method="post"
-			action={paths.newTask({})}
-			style={{
-				display: 'flex',
-				flexDirection: 'column',
-				gap: 8,
-				width: '100%',
-			}}>
+		<Form method="post" action={paths.newTask({})} className="flex w-full flex-col gap-2">
 			{/* Provide a return URL */}
 			<input type="hidden" name="redirectTo" value={location.pathname} />
 
