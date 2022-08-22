@@ -34,13 +34,15 @@ export default function ProjectDetailsPage() {
 			<div className="flex items-center">
 				<h3 className="text-2xl font-bold">{data.project.title}</h3>
 
-				<Form method="post" className="ml-8">
-					<button
-						type="submit"
-						className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
-						Delete
-					</button>
-				</Form>
+				{data.project.deleted == null && (
+					<Form method="post" className="ml-8">
+						<button
+							type="submit"
+							className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
+							Delete
+						</button>
+					</Form>
+				)}
 			</div>
 
 			<p className="py-6">{data.project.notes}</p>

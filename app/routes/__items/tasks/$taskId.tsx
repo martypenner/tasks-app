@@ -31,17 +31,24 @@ export default function TaskDetailsPage() {
 
 	return (
 		<div>
-			<h3 className="text-2xl font-bold">{data.task.title}</h3>
+			<div className="flex items-center">
+				<h3 className="text-2xl font-bold">{data.task.title}</h3>
+
+				{data.task.deleted == null && (
+					<Form method="post" className="ml-8">
+						<button
+							type="submit"
+							className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
+							Delete
+						</button>
+					</Form>
+				)}
+			</div>
+
 			<p className="py-6">{data.task.notes}</p>
 			<p>Done: {data.task.done ? 'Done' : 'Not done'}</p>
 			<p>When: {data.task.when}</p>
 			<p>When date: {data.task.whenDate}</p>
-			<hr className="my-4" />
-			<Form method="post">
-				<button type="submit" className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
-					Delete
-				</button>
-			</Form>
 		</div>
 	);
 }
