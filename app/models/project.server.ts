@@ -31,7 +31,6 @@ export function getDeletedProjects({ userId }: { userId: User['id'] }) {
 			deleted: {
 				not: null,
 			},
-			done: false,
 		},
 		select: { id: true, title: true, deleted: true },
 		orderBy: { deleted: 'desc' },
