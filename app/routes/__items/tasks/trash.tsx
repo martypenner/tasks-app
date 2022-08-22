@@ -13,7 +13,7 @@ export async function loader({ request }: LoaderArgs) {
 	const taskListItems = await getDeletedTasks({ userId });
 	const projects = await getDeletedProjects({ userId });
 	invariant(
-		[...taskListItems, ...projects].some((item) => item.deleted != null),
+		[...taskListItems, ...projects].every((item) => item.deleted != null),
 		'items must be deleted'
 	);
 
