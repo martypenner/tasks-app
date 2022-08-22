@@ -59,7 +59,7 @@ export async function action({ request }: ActionArgs) {
 			{ status: 400 }
 		);
 	}
-	const validWhen = ['inbox', 'today', 'thisEvening', 'anytime', 'someday', 'specificDate'];
+	const validWhen = ['today', 'thisEvening', 'anytime', 'someday', 'specificDate'];
 	if (!validWhen.includes(when)) {
 		return json(
 			{
