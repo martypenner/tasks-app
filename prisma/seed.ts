@@ -102,6 +102,13 @@ async function seed() {
 			projectId: project.id,
 		},
 	});
+	await prisma.task.create({
+		data: {
+			title: 'My tenth task',
+			userId: user.id,
+			areaId: area.id,
+		},
+	});
 
 	console.log(`Database has been seeded. 🌱`);
 }

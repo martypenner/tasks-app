@@ -50,8 +50,20 @@ export default function AreaDetailsPage() {
 					<li key={project.id}>
 						<NavLink
 							className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-							to={`/tasks/${project.id}`}>
+							to={`/projects/${project.id}`}>
 							📝 {project.title}
+						</NavLink>
+					</li>
+				))}
+			</ol>
+
+			<ol>
+				{data.area.tasks.map((tasks) => (
+					<li key={tasks.id}>
+						<NavLink
+							className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+							to={`/tasks/${tasks.id}`}>
+							📝 {tasks.title}
 						</NavLink>
 					</li>
 				))}

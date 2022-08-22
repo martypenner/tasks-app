@@ -26,6 +26,7 @@ export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: Use
 			when,
 			done: false,
 			projectId: null,
+			areaId: null,
 		},
 		select: { id: true, title: true },
 		orderBy: { updatedAt: 'desc' },

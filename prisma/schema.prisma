@@ -44,6 +44,9 @@ model Task {
 
   Project   Project? @relation(fields: [projectId], references: [id])
   projectId String?
+
+  Area   Area?   @relation(fields: [areaId], references: [id])
+  areaId String?
 }
 
 model Project {
@@ -69,6 +72,7 @@ model Project {
 model Area {
   id    String @id @default(cuid())
   title String
+  tasks Task[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
