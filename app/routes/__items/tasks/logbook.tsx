@@ -20,8 +20,6 @@ export default function InboxPage() {
 
 	return (
 		<div className="h-full w-80 border-r">
-			<hr />
-
 			{data.taskListItems.length === 0 ? (
 				<InboxIcon className="p-4" />
 			) : (

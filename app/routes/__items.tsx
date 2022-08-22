@@ -162,10 +162,10 @@ export default function App() {
 							))}
 
 							<div className="h-full w-80 border-r">
-								<Link to={paths.newProject({})} className="block p-4 text-xl text-blue-500">
+								<Link to={paths.newProject({})} className="block p-4 text-xl text-gray-300">
 									+ New project
 								</Link>
-								<Link to={paths.newArea({})} className="block p-4 text-xl text-blue-500">
+								<Link to={paths.newArea({})} className="block p-4 text-xl text-gray-300">
 									+ New area
 								</Link>
 
@@ -278,18 +278,11 @@ export default function App() {
 					</div>
 
 					<main className="flex-1">
-						<div className="py-6">
-							<div className="px-4 sm:px-6 md:px-0">
-								<h1 className="text-2xl font-semibold text-gray-900">Tasks</h1>
-							</div>
-							<div className="px-4 sm:px-6 md:px-0">
-								<div className="py-4">
-									<div className="flex h-full min-h-screen flex-col">
-										<main className="h-full p-6">
-											<Outlet />
-										</main>
-									</div>
-								</div>
+						<div className="px-4 pb-6 sm:px-6 md:px-0">
+							<div className="flex h-full min-h-screen flex-col">
+								<main className="h-full p-6">
+									<Outlet />
+								</main>
 							</div>
 						</div>
 					</main>
