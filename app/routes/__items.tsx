@@ -17,6 +17,7 @@ import {
 import { SearchIcon, StarIcon } from '@heroicons/react/solid';
 import { Link, NavLink } from '@remix-run/react';
 import { Fragment, useState } from 'react';
+import { getAreas } from '~/models/area.server';
 import { getProjects } from '~/models/project.server';
 import { getTaskListItemsByWhen } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
@@ -25,8 +26,10 @@ import { classNames } from '~/utils';
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
 	const taskListItems = await getTaskListItemsByWhen({ userId, when: 'inbox' });
-	const projects = await getProjects({ userId });
-	return json({ taskListItems, projects });
+	const projects = (await getProjects({ userId })).map((project) => ({ ...project, isProject: true }));
+	const areas = (await getAreas({ userId })).map((area) => ({ ...area, isProject: false }));
+	const projectsAndAreas = [...projects, ...areas].sort((a, b) => b.createdAt!.getTime() - a.createdAt!.getTime());
+	return json({ taskListItems, projectsAndAreas });
 }
 
 const navigation = [
@@ -165,15 +168,18 @@ export default function App() {
 								<Link to="../projects/new" className="block p-4 text-xl text-blue-500">
 									+ New project
 								</Link>
+								<Link to="../areas/new" className="block p-4 text-xl text-blue-500">
+									+ New area
+								</Link>
 
-								{data.projects.length > 0 && (
+								{data.projectsAndAreas.length > 0 && (
 									<ol>
-										{data.projects.map((project) => (
-											<li key={project.id}>
+										{data.projectsAndAreas.map((projectOrArea) => (
+											<li key={projectOrArea.id}>
 												<NavLink
 													className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-													to={`../projects/${project.id}`}>
-													📝 {project.title}
+													to={`/${projectOrArea.isProject ? 'projects' : 'areas'}/${projectOrArea.id}`}>
+													📝 {projectOrArea.title}
 												</NavLink>
 											</li>
 										))}

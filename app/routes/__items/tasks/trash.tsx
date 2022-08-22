@@ -17,7 +17,7 @@ export async function loader({ request }: LoaderArgs) {
 		'items must be deleted'
 	);
 
-	const items = [...taskListItems, ...projects].sort((a, b) => a.deleted!.getTime() - b.deleted!.getTime());
+	const items = [...taskListItems, ...projects].sort((a, b) => b.deleted!.getTime() - a.deleted!.getTime());
 	return json({ items });
 }
 

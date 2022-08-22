@@ -19,7 +19,7 @@ export function getProject({
 export function getProjects({ userId }: { userId: User['id'] }) {
 	return prisma.project.findMany({
 		where: { userId, deleted: null, done: false },
-		select: { id: true, title: true },
+		select: { id: true, title: true, createdAt: true, updatedAt: true },
 		orderBy: { updatedAt: 'desc' },
 	});
 }
