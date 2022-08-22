@@ -6,12 +6,13 @@ import invariant from 'tiny-invariant';
 import { getDeletedProjects } from '~/models/project.server';
 import { getDeletedTasks } from '~/models/task.server';
 import { permaDeleteAllDeletedItems } from '~/models/trash.server';
+import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
-	const taskListItems = await getDeletedTasks({ userId });
-	const projects = await getDeletedProjects({ userId });
+	const taskListItems = (await getDeletedTasks({ userId })).map((task) => ({ ...task, isProject: false }));
+	const projects = (await getDeletedProjects({ userId })).map((project) => ({ ...project, isProject: true }));
 	invariant(
 		[...taskListItems, ...projects].every((item) => item.deleted != null),
 		'items must be deleted'
@@ -41,13 +42,18 @@ export default function InboxPage() {
 							Empty trash
 						</button>
 					</Form>
+
 					<ol>
-						{data.items.map((task) => (
-							<li key={task.id}>
+						{data.items.map((taskOrProject) => (
+							<li key={taskOrProject.id}>
 								<NavLink
 									className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-									to={`/tasks/${task.id}`}>
-									📝 {task.title}
+									to={
+										taskOrProject.isProject
+											? paths.project({ projectId: taskOrProject.id })
+											: paths.task({ taskId: taskOrProject.id })
+									}>
+									📝 {taskOrProject.title}
 								</NavLink>
 							</li>
 						))}
