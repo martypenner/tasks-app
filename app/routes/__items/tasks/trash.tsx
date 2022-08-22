@@ -2,20 +2,28 @@ import { TrashIcon } from '@heroicons/react/outline';
 import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Form, NavLink, useLoaderData } from '@remix-run/react';
-import { permaDeleteAllDeletedItems } from '~/models/empty-trash.server';
+import invariant from 'tiny-invariant';
+import { getDeletedProjects } from '~/models/project.server';
 import { getDeletedTasks } from '~/models/task.server';
+import { permaDeleteAllDeletedItems } from '~/models/trash.server';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
 	const taskListItems = await getDeletedTasks({ userId });
-	return json({ taskListItems });
+	const projects = await getDeletedProjects({ userId });
+	invariant(
+		[...taskListItems, ...projects].some((item) => item.deleted != null),
+		'items must be deleted'
+	);
+
+	const items = [...taskListItems, ...projects].sort((a, b) => a.deleted!.getTime() - b.deleted!.getTime());
+	return json({ items });
 }
 
 export async function action({ request }: ActionArgs) {
 	const userId = await requireUserId(request);
-	const stuff = await permaDeleteAllDeletedItems({ userId });
-	console.log(stuff);
+	await permaDeleteAllDeletedItems({ userId });
 	return json({});
 }
 
@@ -24,7 +32,7 @@ export default function InboxPage() {
 
 	return (
 		<div className="h-full w-80 border-r">
-			{data.taskListItems.length === 0 ? (
+			{data.items.length === 0 ? (
 				<TrashIcon className="p-4" />
 			) : (
 				<>
@@ -34,7 +42,7 @@ export default function InboxPage() {
 						</button>
 					</Form>
 					<ol>
-						{data.taskListItems.map((task) => (
+						{data.items.map((task) => (
 							<li key={task.id}>
 								<NavLink
 									className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}

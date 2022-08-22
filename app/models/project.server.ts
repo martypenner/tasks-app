@@ -24,6 +24,20 @@ export function getProjects({ userId }: { userId: User['id'] }) {
 	});
 }
 
+export function getDeletedProjects({ userId }: { userId: User['id'] }) {
+	return prisma.project.findMany({
+		where: {
+			userId,
+			deleted: {
+				not: null,
+			},
+			done: false,
+		},
+		select: { id: true, title: true, deleted: true },
+		orderBy: { deleted: 'desc' },
+	});
+}
+
 export function createProject({
 	notes,
 	title,

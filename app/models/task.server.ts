@@ -48,8 +48,8 @@ export function getDeletedTasks({ userId }: { userId: User['id'] }) {
 				not: null,
 			},
 		},
-		select: { id: true, title: true },
-		orderBy: { updatedAt: 'desc' },
+		select: { id: true, title: true, deleted: true },
+		orderBy: { deleted: 'desc' },
 	});
 }
 
