@@ -1,3 +1,4 @@
+import { Heading, Task } from '@prisma/client';
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
@@ -20,7 +21,17 @@ export async function loader({ request, params }: LoaderArgs) {
 	if (!project) {
 		throw redirect('/tasks/inbox');
 	}
-	return json({ project });
+
+	// Initialize the map with the default "heading" so it's first in the order
+	const groupedTasksByHeading = new Map<Heading | null, Task[]>([[null, []]]);
+	for (const task of project.tasks) {
+		groupedTasksByHeading.set(task.Heading, (groupedTasksByHeading.get(task.Heading) ?? []).concat(task));
+	}
+
+	return json({
+		project,
+		groupedTasks: Array.from(groupedTasksByHeading),
+	});
 }
 
 export async function action({ request, params }: ActionArgs) {
@@ -61,13 +72,21 @@ export default function ProjectDetailsPage() {
 			<NewTask key={data.project.tasks.length} defaultWhen="anytime" projectId={data.project.id} />
 
 			<ol>
-				{data.project.tasks.map((task) => (
-					<li key={task.id}>
-						<NavLink
-							className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-							to={paths.task({ taskId: task.id })}>
-							📝 {task.title}
-						</NavLink>
+				{data.groupedTasks.map(([heading, tasks]) => (
+					<li key={heading?.id ?? 'default'}>
+						{heading?.title != null && <h4 className="mt-8 mb-4 text-xl">{heading.title}</h4>}
+
+						<ol>
+							{tasks.map((task) => (
+								<li key={task.id}>
+									<NavLink
+										className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+										to={paths.task({ taskId: task.id })}>
+										📝 {task.title}
+									</NavLink>
+								</li>
+							))}
+						</ol>
 					</li>
 				))}
 			</ol>

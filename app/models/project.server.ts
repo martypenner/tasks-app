@@ -15,6 +15,12 @@ export function getProject({
 		include: {
 			tasks: {
 				where: { deleted: null, done: false },
+				include: {
+					Heading: true,
+				},
+				orderBy: { createdAt: 'desc' },
+			},
+			Headings: {
 				orderBy: { createdAt: 'desc' },
 			},
 		},
