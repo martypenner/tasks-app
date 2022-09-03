@@ -7,6 +7,12 @@ import { PassThrough } from 'stream';
 
 const ABORT_DELAY = 5000;
 
+// https://github.com/prisma/studio/issues/614#issuecomment-795213237
+// @ts-expect-error
+BigInt.prototype.toJSON = function () {
+	return this.toString();
+};
+
 export default function handleRequest(
 	request: Request,
 	responseStatusCode: number,
