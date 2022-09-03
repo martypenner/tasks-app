@@ -1,4 +1,5 @@
-import { ActionArgs, json, MetaFunction, redirect } from '@remix-run/node';
+import type { ActionArgs, MetaFunction } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
 import { createProject } from '~/models/project.server';
@@ -129,6 +130,7 @@ export default function NewProjectPage() {
 					<span>Title</span>
 					<input
 						ref={titleRef}
+						autoFocus
 						name="title"
 						className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
 						aria-invalid={actionData?.errors?.title ? true : undefined}
