@@ -25,20 +25,26 @@ export function getArea({
 export function getAreas({ userId }: { userId: User['id'] }) {
 	return prisma.area.findMany({
 		where: { userId, deleted: null },
-		select: { id: true, title: true, createdAt: true, updatedAt: true },
-		orderBy: { updatedAt: 'desc' },
+		select: { id: true, title: true, createdAt: true },
+		orderBy: { globalOrder: 'desc' },
 	});
 }
 
-export function createArea({
+export async function createArea({
 	title,
 	userId,
 }: Pick<Area, 'title'> & {
 	userId: User['id'];
 }) {
+	const order = (await prisma.area.findFirst({
+		where: { userId, deleted: null },
+		select: { globalOrder: true },
+		orderBy: { globalOrder: 'desc' },
+	})) ?? { globalOrder: BigInt(-1) };
 	return prisma.area.create({
 		data: {
 			title,
+			globalOrder: Number(order.globalOrder) + 1,
 			user: {
 				connect: {
 					id: userId,

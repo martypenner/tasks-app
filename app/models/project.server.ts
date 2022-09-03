@@ -18,10 +18,10 @@ export function getProject({
 				include: {
 					Heading: true,
 				},
-				orderBy: { createdAt: 'desc' },
+				orderBy: { globalOrder: 'desc' },
 			},
 			Headings: {
-				orderBy: { createdAt: 'desc' },
+				orderBy: { globalOrder: 'desc' },
 			},
 		},
 	});
@@ -31,7 +31,7 @@ export function getProjects({ userId }: { userId: User['id'] }) {
 	return prisma.project.findMany({
 		where: { userId, deleted: null, done: false },
 		select: { id: true, title: true, createdAt: true, updatedAt: true },
-		orderBy: { updatedAt: 'desc' },
+		orderBy: { globalOrder: 'desc' },
 	});
 }
 
@@ -48,7 +48,7 @@ export function getDeletedProjects({ userId }: { userId: User['id'] }) {
 	});
 }
 
-export function createProject({
+export async function createProject({
 	notes,
 	title,
 	when,
@@ -57,12 +57,18 @@ export function createProject({
 }: Pick<Project, 'notes' | 'title' | 'when' | 'whenDate'> & {
 	userId: User['id'];
 }) {
+	const order = (await prisma.project.findFirst({
+		where: { userId, deleted: null },
+		select: { globalOrder: true },
+		orderBy: { globalOrder: 'desc' },
+	})) ?? { globalOrder: BigInt(-1) };
 	return prisma.project.create({
 		data: {
 			title,
 			notes,
 			when,
 			whenDate,
+			globalOrder: Number(order.globalOrder) + 1,
 			// todo: add area
 			user: {
 				connect: {

@@ -29,7 +29,7 @@ export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: Use
 			areaId: null,
 		},
 		select: { id: true, title: true },
-		orderBy: { createdAt: 'asc' },
+		orderBy: { globalOrder: 'desc' },
 	});
 }
 
@@ -37,7 +37,7 @@ export function getCompletedTasks({ userId }: { userId: User['id'] }) {
 	return prisma.task.findMany({
 		where: { userId, deleted: null, done: true },
 		select: { id: true, title: true },
-		orderBy: { updatedAt: 'desc' },
+		orderBy: { globalOrder: 'desc' },
 	});
 }
 
@@ -53,7 +53,7 @@ export function getDeletedTasks({ userId }: { userId: User['id'] }) {
 	});
 }
 
-export function createTask({
+export async function createTask({
 	notes,
 	title,
 	when,
@@ -64,12 +64,18 @@ export function createTask({
 }: Pick<Task, 'notes' | 'title' | 'when' | 'whenDate' | 'projectId' | 'areaId'> & {
 	userId: User['id'];
 }) {
+	const order = (await prisma.task.findFirst({
+		where: { userId },
+		select: { globalOrder: true },
+		orderBy: { globalOrder: 'desc' },
+	})) ?? { globalOrder: BigInt(-1) };
 	return prisma.task.create({
 		data: {
 			title,
 			notes,
 			when,
 			whenDate,
+			globalOrder: Number(order.globalOrder) + 1,
 
 			...(projectId == null
 				? {}

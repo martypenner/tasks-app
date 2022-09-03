@@ -29,12 +29,13 @@ model Password {
 }
 
 model Task {
-  id       String    @id @default(cuid())
-  title    String
-  notes    String?   @default("")
-  when     String    @default("inbox")
-  whenDate DateTime?
-  done     Boolean   @default(false)
+  id          String    @id @default(cuid())
+  title       String
+  notes       String?   @default("")
+  when        String    @default("inbox")
+  whenDate    DateTime?
+  done        Boolean   @default(false)
+  globalOrder BigInt    @unique @default(0)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -54,13 +55,14 @@ model Task {
 }
 
 model Project {
-  id       String    @id @default(cuid())
-  title    String
-  notes    String?   @default("")
-  when     String    @default("inbox")
-  whenDate DateTime?
-  done     Boolean   @default(false)
-  tasks    Task[]
+  id          String    @id @default(cuid())
+  title       String
+  notes       String?   @default("")
+  when        String    @default("inbox")
+  whenDate    DateTime?
+  done        Boolean   @default(false)
+  tasks       Task[]
+  globalOrder BigInt    @unique @default(0)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -76,9 +78,10 @@ model Project {
 }
 
 model Area {
-  id    String @id @default(cuid())
-  title String
-  tasks Task[]
+  id          String @id @default(cuid())
+  title       String
+  tasks       Task[]
+  globalOrder BigInt @unique @default(0)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -91,8 +94,9 @@ model Area {
 }
 
 model Heading {
-  id    String @id @default(cuid())
-  title String
+  id          String @id @default(cuid())
+  title       String
+  globalOrder BigInt @unique @default(0)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

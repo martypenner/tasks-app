@@ -1,8 +1,8 @@
-import { Task } from '@prisma/client';
+import type { Task } from '@prisma/client';
 import { Form, useActionData, useLocation } from '@remix-run/react';
 import * as React from 'react';
 import { useKey, useKeyPressEvent } from 'react-use';
-import { newTaskAction } from '~/actions';
+import type { newTaskAction } from '~/actions';
 import * as paths from '~/paths';
 
 type Props = {
