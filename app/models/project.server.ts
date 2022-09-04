@@ -79,9 +79,16 @@ export async function createProject({
 	});
 }
 
-export function deleteProject({ id, userId }: { id: Project['id']; userId: User['id'] }) {
+export async function deleteProject({ id, userId }: { id: Project['id']; userId: User['id'] }) {
+	await prisma.task.updateMany({
+		where: { projectId: id, userId },
+		data: { deleted: new Date() },
+	});
 	return prisma.project.updateMany({
 		where: { id, userId },
+		data: { deleted: new Date() },
+	});
+}
 
 export async function toggleProjectComplete({
 	id,
