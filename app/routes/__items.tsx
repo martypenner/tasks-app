@@ -35,11 +35,11 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 const navigation = [
-	{ name: 'Inbox', href: '/tasks/inbox', icon: InboxIcon, itemClass: 'pb-4', iconClass: 'text-blue-500' },
+	{ name: 'Inbox', href: '/tasks/inbox', icon: InboxIcon, itemClass: 'mb-4', iconClass: 'text-blue-500' },
 	{ name: 'Today', href: '/tasks/today', icon: StarIcon, iconClass: 'text-yellow-500' },
 	{ name: 'Upcoming', href: '/tasks/upcoming', icon: CalendarIcon, iconClass: 'text-red-500' },
 	{ name: 'Anytime', href: '/tasks/anytime', icon: RectangleStackIcon, iconClass: 'text-teal-600' },
-	{ name: 'Someday', href: '/tasks/someday', icon: ArchiveBoxIcon, itemClass: 'pb-4', iconClass: 'text-amber-100' },
+	{ name: 'Someday', href: '/tasks/someday', icon: ArchiveBoxIcon, itemClass: 'mb-4', iconClass: 'text-amber-100' },
 	{ name: 'Logbook', href: '/tasks/logbook', icon: NewspaperIcon, iconClass: 'text-green-600' },
 	{ name: 'Trash', href: '/tasks/trash', icon: TrashIcon, iconClass: 'text-zinc-100' },
 ];
@@ -98,7 +98,7 @@ export default function App() {
 								</Transition.Child>
 
 								<div className="h-0 flex-1 overflow-y-auto">
-									<nav className="space-y-2 px-2">
+									<nav className="px-2">
 										{navigation.map((item) => (
 											<NavLink
 												key={item.name}
@@ -106,7 +106,7 @@ export default function App() {
 												className={({ isActive }) =>
 													`${
 														isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-													} ${item.itemClass} group flex items-center rounded-md px-2 text-sm font-medium`
+													} ${item.itemClass} group flex items-center rounded-md px-2 py-1 text-sm font-medium`
 												}>
 												{({ isActive }) => (
 													<>
@@ -136,7 +136,7 @@ export default function App() {
 				{/* Sidebar component, swap this element with another sidebar if you like */}
 				<div className="flex min-h-0 flex-1 flex-col bg-gray-800">
 					<div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-						<nav className="mt-5 flex-1 space-y-2 px-2">
+						<nav className="mt-5 flex-1 px-2">
 							{navigation.map((item) => (
 								<NavLink
 									key={item.name}
@@ -144,7 +144,7 @@ export default function App() {
 									className={({ isActive }) =>
 										`${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'} ${
 											item.itemClass
-										} group flex items-center rounded-md px-2 text-sm font-medium`
+										} group flex items-center rounded-md px-2 py-1 text-sm font-medium`
 									}>
 									{({ isActive }) => (
 										<>
