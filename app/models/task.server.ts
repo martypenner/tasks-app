@@ -36,7 +36,7 @@ export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: Use
 export function getCompletedTasks({ userId }: { userId: User['id'] }) {
 	return prisma.task.findMany({
 		where: { userId, deleted: null, done: true },
-		select: { id: true, title: true },
+		include: { Project: true },
 		orderBy: { globalOrder: 'desc' },
 	});
 }

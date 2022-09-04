@@ -30,6 +30,7 @@ export default function InboxPage() {
 								className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
 								to={`/tasks/${task.id}`}>
 								📝 {task.title}
+								{task.Project?.title && <div className="text-sm text-gray-600">{task.Project?.title}</div>}
 							</NavLink>
 						</li>
 					))}
