@@ -13,7 +13,9 @@ export function getArea({
 	return prisma.area.findFirst({
 		where: { id, userId },
 		include: {
-			Project: true,
+			Project: {
+				where: { deleted: null },
+			},
 			tasks: {
 				where: { deleted: null, done: false },
 				orderBy: { createdAt: 'desc' },
