@@ -14,7 +14,7 @@ export function getArea({
 		where: { id, userId },
 		include: {
 			Project: {
-				where: { deleted: null },
+				where: { deleted: null, done: false },
 			},
 			tasks: {
 				where: { deleted: null, done: false },
@@ -29,7 +29,7 @@ export function getAreas({ userId }: { userId: User['id'] }) {
 		where: { userId, deleted: null },
 		include: {
 			Project: {
-				where: { deleted: null },
+				where: { deleted: null, done: false },
 			},
 		},
 		orderBy: { globalOrder: 'desc' },
