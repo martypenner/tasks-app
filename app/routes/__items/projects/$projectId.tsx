@@ -25,19 +25,24 @@ export async function loader({ request, params }: LoaderArgs) {
 
 	// Initialize the map with the default "heading" so it's first in the order
 	const groupedTasksByHeading = new Map<Heading | null, Task[]>([[null, []]]);
-	for (const task of project.tasks.filter((task) => task.deleted == null).filter((task) => !task.done)) {
+	for (const task of project.tasks.filter((task) => task.deleted == null)) {
+		// Find the heading instead of setting it based on task.Heading so we have referential stability
+		const heading = project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null;
 		groupedTasksByHeading.set(
-			task.Heading?.archived ? null : task.Heading,
-			(groupedTasksByHeading.get(task.Heading) ?? []).concat(task)
+			task.Heading?.archived ? null : heading,
+			(groupedTasksByHeading.get(heading) ?? []).concat(task)
 		);
 	}
+	console.dir(Array.from(groupedTasksByHeading), { depth: null });
 
 	return json({
 		project,
 		groupedTasks: Array.from(groupedTasksByHeading),
-		doneTasks: project.tasks
-			.filter((task) => task.done)
-			.filter((task) => (project.deleted != null ? true : task.deleted == null)),
+		doneTasks: project.done
+			? []
+			: project.tasks
+					.filter((task) => task.done)
+					.filter((task) => (project.deleted != null ? true : task.deleted == null)),
 	});
 }
 
@@ -135,15 +140,17 @@ export default function ProjectDetailsPage() {
 						)}
 
 						<ol>
-							{tasks.map((task) => (
-								<li key={task.id}>
-									<NavLink
-										className={({ isActive }) => `block p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-										to={paths.task({ taskId: task.id })}>
-										📝 {task.title}
-									</NavLink>
-								</li>
-							))}
+							{tasks
+								.filter((task) => (data.project.done ? true : !task.done))
+								.map((task) => (
+									<li key={task.id}>
+										<NavLink
+											className={({ isActive }) => `block p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+											to={paths.task({ taskId: task.id })}>
+											📝 {task.title}
+										</NavLink>
+									</li>
+								))}
 						</ol>
 					</li>
 				))}
