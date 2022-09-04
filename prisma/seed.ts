@@ -76,7 +76,7 @@ async function seed() {
 		data: {
 			title: 'My first task',
 			notes: 'Hello, world!',
-			done: true,
+			status: 'completed',
 			userId: user.id,
 			globalOrder: 0,
 		},
@@ -125,7 +125,7 @@ async function seed() {
 		data: {
 			title: 'My seventh task',
 			userId: user.id,
-			done: true,
+			status: 'completed',
 			createdAt: new Date('2020-01-01'),
 			globalOrder: 6,
 		},
@@ -170,7 +170,7 @@ async function seed() {
 			userId: user.id,
 			projectId: project.id,
 			headingId: heading2.id,
-			done: true,
+			status: 'completed',
 			globalOrder: 11,
 		},
 	});
@@ -179,7 +179,7 @@ async function seed() {
 			title: 'My task in a deleted project',
 			userId: user.id,
 			projectId: deletedProject.id,
-			done: true,
+			status: 'completed',
 			deleted: new Date(),
 			globalOrder: 12,
 		},
@@ -189,7 +189,7 @@ async function seed() {
 			title: 'My task in a completed project',
 			userId: user.id,
 			projectId: completedProject.id,
-			done: true,
+			status: 'completed',
 			globalOrder: 13,
 		},
 	});

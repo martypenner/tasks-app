@@ -30,9 +30,9 @@ export async function action({ request, params }: ActionArgs) {
 		await deleteTask({ userId, id: params.taskId });
 		return redirect(paths.inbox({}));
 	} else if (['markTaskAsComplete', 'markTaskAsIncomplete'].includes(intent)) {
-		const done = data.get('done') ?? 'false';
-		invariant(typeof done === 'string', 'must provide done');
-		await toggleTaskComplete({ userId, id: params.taskId, done: JSON.parse(done) });
+		const status = data.get('status') ?? 'false';
+		invariant(typeof status === 'string', 'must provide status');
+		await toggleTaskComplete({ userId, id: params.taskId, status });
 		return json({});
 	}
 
@@ -48,14 +48,14 @@ export default function TaskDetailsPage() {
 				<h3 className="text-2xl font-bold">{data.task.title}</h3>
 
 				<Form method="post" className="ml-8">
-					<input type="hidden" name="done" value={String(!data.task.done)} />
+					<input type="hidden" name="status" value={data.task.status === 'completed' ? 'in-progress' : 'completed'} />
 
 					<button
 						type="submit"
 						className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
 						name="intent"
-						value={data.task.done ? 'markTaskAsIncomplete' : 'markTaskAsComplete'}>
-						{data.task.done ? 'Mark as not done' : 'Complete'}
+						value={data.task.status === 'completed' ? 'markTaskAsIncomplete' : 'markTaskAsComplete'}>
+						{data.task.status === 'completed' ? 'Mark as not done' : 'Complete'}
 					</button>
 				</Form>
 
@@ -73,7 +73,7 @@ export default function TaskDetailsPage() {
 			</div>
 
 			<p className="py-6">{data.task.notes}</p>
-			<p>Done: {data.task.done ? 'Done' : 'Not done'}</p>
+			<p>Status: {data.task.status}</p>
 			<p>When: {data.task.when}</p>
 			<p>When date: {data.task.whenDate}</p>
 		</div>

@@ -17,7 +17,7 @@ export function getArea({
 				where: { deleted: null, done: false },
 			},
 			tasks: {
-				where: { deleted: null, done: false },
+				where: { deleted: null, status: 'in-progress' },
 				orderBy: { createdAt: 'desc' },
 			},
 		},

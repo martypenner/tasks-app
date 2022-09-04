@@ -24,7 +24,7 @@ export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: Use
 			userId,
 			deleted: null,
 			when,
-			done: false,
+			status: 'in-progress',
 			projectId: null,
 			areaId: null,
 		},
@@ -35,7 +35,13 @@ export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: Use
 
 export function getCompletedTasks({ userId }: { userId: User['id'] }) {
 	return prisma.task.findMany({
-		where: { userId, deleted: null, done: true },
+		where: {
+			userId,
+			deleted: null,
+			status: {
+				not: 'in-progress',
+			},
+		},
 		include: { Project: true },
 		orderBy: { globalOrder: 'desc' },
 	});
@@ -112,9 +118,17 @@ export function deleteTask({ id, userId }: { id: Task['id']; userId: User['id'] 
 	});
 }
 
-export function toggleTaskComplete({ id, userId, done }: { id: Task['id']; userId: User['id']; done: Task['done'] }) {
+export function toggleTaskComplete({
+	id,
+	userId,
+	status,
+}: {
+	id: Task['id'];
+	userId: User['id'];
+	status: Task['status'];
+}) {
 	return prisma.task.updateMany({
 		where: { id, userId },
-		data: { done },
+		data: { status },
 	});
 }

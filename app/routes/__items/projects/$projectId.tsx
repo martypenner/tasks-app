@@ -40,7 +40,7 @@ export async function loader({ request, params }: LoaderArgs) {
 		doneTasks:
 			project.deleted != null || project.done
 				? []
-				: project.tasks.filter((task) => task.done).filter((task) => task.deleted == null),
+				: project.tasks.filter((task) => task.status !== 'in-progress').filter((task) => task.deleted == null),
 	});
 }
 
@@ -139,7 +139,9 @@ export default function ProjectDetailsPage() {
 
 						<ol>
 							{tasks
-								.filter((task) => (data.project.deleted != null || data.project.done ? true : !task.done))
+								.filter((task) =>
+									data.project.deleted != null || data.project.done ? true : task.status === 'in-progress'
+								)
 								.map((task) => (
 									<li key={task.id}>
 										<NavLink

@@ -102,7 +102,7 @@ export async function toggleProjectComplete({
 	if (done) {
 		await prisma.task.updateMany({
 			where: { projectId: id, userId },
-			data: { done },
+			data: { status: 'completed' },
 		});
 	}
 	return prisma.project.updateMany({

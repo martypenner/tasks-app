@@ -34,7 +34,7 @@ model Task {
   notes       String?   @default("")
   when        String    @default("inbox")
   whenDate    DateTime?
-  done        Boolean   @default(false)
+  status      String    @default("in-progress")
   globalOrder BigInt    @unique @default(0)
 
   createdAt DateTime  @default(now())
