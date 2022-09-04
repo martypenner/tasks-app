@@ -25,7 +25,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
 	// Initialize the map with the default "heading" so it's first in the order
 	const groupedTasksByHeading = new Map<Heading | null, Task[]>([[null, []]]);
-	for (const task of project.tasks.filter((task) => task.deleted == null)) {
+	for (const task of project.tasks.filter((task) => (project.deleted == null ? task.deleted == null : true))) {
 		// Find the heading instead of setting it based on task.Heading so we have referential stability
 		const heading = project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null;
 		groupedTasksByHeading.set(
@@ -33,16 +33,14 @@ export async function loader({ request, params }: LoaderArgs) {
 			(groupedTasksByHeading.get(heading) ?? []).concat(task)
 		);
 	}
-	console.dir(Array.from(groupedTasksByHeading), { depth: null });
 
 	return json({
 		project,
 		groupedTasks: Array.from(groupedTasksByHeading),
-		doneTasks: project.done
-			? []
-			: project.tasks
-					.filter((task) => task.done)
-					.filter((task) => (project.deleted != null ? true : task.deleted == null)),
+		doneTasks:
+			project.deleted != null || project.done
+				? []
+				: project.tasks.filter((task) => task.done).filter((task) => task.deleted == null),
 	});
 }
 
@@ -141,7 +139,7 @@ export default function ProjectDetailsPage() {
 
 						<ol>
 							{tasks
-								.filter((task) => (data.project.done ? true : !task.done))
+								.filter((task) => (data.project.deleted != null || data.project.done ? true : !task.done))
 								.map((task) => (
 									<li key={task.id}>
 										<NavLink
