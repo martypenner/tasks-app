@@ -2,7 +2,7 @@ import type { Heading, Task } from '@prisma/client';
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import invariant from 'tiny-invariant';
 import NewTask from '~/components/NewTask';
 import { convertHeadingToProject, deleteProject, getProject, toggleProjectComplete } from '~/models/project.server';
@@ -26,12 +26,18 @@ export async function loader({ request, params }: LoaderArgs) {
 	// Initialize the map with the default "heading" so it's first in the order
 	const groupedTasksByHeading = new Map<Heading | null, Task[]>([[null, []]]);
 	for (const task of project.tasks.filter((task) => !task.done)) {
-		groupedTasksByHeading.set(task.Heading, (groupedTasksByHeading.get(task.Heading) ?? []).concat(task));
+		groupedTasksByHeading.set(
+			task.Heading?.archived ? null : task.Heading,
+			(groupedTasksByHeading.get(task.Heading) ?? []).concat(task)
+		);
 	}
 
 	return json({
 		project,
 		groupedTasks: Array.from(groupedTasksByHeading),
+		doneTasks: project.tasks
+			.filter((task) => task.done)
+			.filter((task) => (project.deleted != null ? true : task.deleted == null)),
 	});
 }
 
@@ -54,7 +60,6 @@ export async function action({ request, params }: ActionArgs) {
 	} else if (['markProjectAsComplete', 'markProjectAsIncomplete'].includes(intent)) {
 		const done = data.get('done') ?? 'false';
 		invariant(typeof done === 'string', 'must provide done');
-		console.log(params, JSON.parse(done));
 
 		await toggleProjectComplete({ userId, id: params.projectId, done: JSON.parse(done) });
 		return json({});
@@ -66,7 +71,6 @@ export async function action({ request, params }: ActionArgs) {
 export default function ProjectDetailsPage() {
 	const data = useLoaderData<typeof loader>();
 	const [showLoggedItems, setShowLoggedItems] = useState(false);
-	const doneTasks = data.project.tasks.filter((task) => task.done);
 
 	return (
 		<div>
@@ -145,23 +149,27 @@ export default function ProjectDetailsPage() {
 				))}
 			</ol>
 
-			<button type="button" className="mt-4" onClick={() => setShowLoggedItems(!showLoggedItems)}>
-				{showLoggedItems
-					? `Hide logged item${doneTasks.length === 1 ? '' : 's'}`
-					: `Show ${doneTasks.length} logged item${doneTasks.length === 1 ? '' : 's'}`}
-			</button>
-			{showLoggedItems && (
-				<ol>
-					{doneTasks.map((task) => (
-						<li key={task.id}>
-							<NavLink
-								className={({ isActive }) => `block p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-								to={paths.task({ taskId: task.id })}>
-								📝 {task.title}
-							</NavLink>
-						</li>
-					))}
-				</ol>
+			{data.doneTasks.length > 0 && (
+				<Fragment>
+					<button type="button" className="mt-4" onClick={() => setShowLoggedItems(!showLoggedItems)}>
+						{showLoggedItems
+							? `Hide logged item${data.doneTasks.length === 1 ? '' : 's'}`
+							: `Show ${data.doneTasks.length} logged item${data.doneTasks.length === 1 ? '' : 's'}`}
+					</button>
+					{showLoggedItems && (
+						<ol>
+							{data.doneTasks.map((task) => (
+								<li key={task.id}>
+									<NavLink
+										className={({ isActive }) => `block p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+										to={paths.task({ taskId: task.id })}>
+										📝 {task.title}
+									</NavLink>
+								</li>
+							))}
+						</ol>
+					)}
+				</Fragment>
 			)}
 		</div>
 	);
