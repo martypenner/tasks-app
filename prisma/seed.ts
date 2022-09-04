@@ -126,7 +126,7 @@ async function seed() {
 		data: {
 			title: 'My eighth task',
 			userId: user.id,
-			deleted: new Date(),
+			deleted: new Date('2020-01-01'),
 			globalOrder: 7,
 		},
 	});
