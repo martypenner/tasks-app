@@ -109,8 +109,13 @@ export async function createTask({
 export function deleteTask({ id, userId }: { id: Task['id']; userId: User['id'] }) {
 	return prisma.task.updateMany({
 		where: { id, userId },
-		data: {
-			deleted: new Date(),
-		},
+		data: { deleted: new Date() },
+	});
+}
+
+export function toggleTaskComplete({ id, userId, done }: { id: Task['id']; userId: User['id']; done: Task['done'] }) {
+	return prisma.task.updateMany({
+		where: { id, userId },
+		data: { done },
 	});
 }

@@ -36,13 +36,14 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export async function action({ request, params }: ActionArgs) {
 	const userId = await requireUserId(request);
+	invariant(params.projectId, 'projectId not found');
+
 	const data = await request.formData();
 	const intent = data.get('intent');
 	const headingId = data.get('headingId');
 	invariant(typeof intent === 'string', 'must provide an intent');
 
 	if (intent === 'deleteProject') {
-		invariant(params.projectId, 'projectId not found');
 		await deleteProject({ userId, id: params.projectId });
 	} else if (intent === 'convertToProject') {
 		invariant(typeof headingId === 'string', 'headingId not found');
