@@ -1,10 +1,10 @@
-import { Heading, Task } from '@prisma/client';
+import type { Heading, Task } from '@prisma/client';
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import NewTask from '~/components/NewTask';
-import { deleteProject, getProject } from '~/models/project.server';
+import { convertHeadingToProject, deleteProject, getProject } from '~/models/project.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
@@ -36,9 +36,18 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export async function action({ request, params }: ActionArgs) {
 	const userId = await requireUserId(request);
-	invariant(params.projectId, 'projectId not found');
+	const data = await request.formData();
+	const intent = data.get('intent');
+	const headingId = data.get('headingId');
+	invariant(typeof intent === 'string', 'must provide an intent');
 
-	await deleteProject({ userId, id: params.projectId });
+	if (intent === 'deleteProject') {
+		invariant(params.projectId, 'projectId not found');
+		await deleteProject({ userId, id: params.projectId });
+	} else if (intent === 'convertToProject') {
+		invariant(typeof headingId === 'string', 'headingId not found');
+		await convertHeadingToProject({ userId, id: headingId });
+	}
 
 	return redirect('/tasks/inbox');
 }
@@ -53,9 +62,13 @@ export default function ProjectDetailsPage() {
 
 				{data.project.deleted == null && (
 					<Form method="post" className="ml-8">
+						<input type="hidden" name="projectId" value={data.project.id} />
+
 						<button
 							type="submit"
-							className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
+							className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+							name="intent"
+							value="deleteProject">
 							Delete
 						</button>
 					</Form>
@@ -74,7 +87,22 @@ export default function ProjectDetailsPage() {
 			<ol>
 				{data.groupedTasks.map(([heading, tasks]) => (
 					<li key={heading?.id ?? 'default'}>
-						{heading?.title != null && <h4 className="mt-8 mb-4 text-xl">{heading.title}</h4>}
+						{heading != null && (
+							<div className="mt-8 mb-4 flex items-center">
+								<h4 className="text-xl">{heading.title}</h4>
+								<Form method="post" className="ml-8">
+									<input type="hidden" name="headingId" value={heading.id} />
+
+									<button
+										type="submit"
+										className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+										name="intent"
+										value="convertToProject">
+										Convert to project
+									</button>
+								</Form>
+							</div>
+						)}
 
 						<ol>
 							{tasks.map((task) => (

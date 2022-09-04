@@ -1,4 +1,4 @@
-import type { Project, User } from '@prisma/client';
+import type { Heading, Project, User } from '@prisma/client';
 
 import { prisma } from '~/db.server';
 
@@ -85,5 +85,29 @@ export function deleteProject({ id, userId }: { id: Project['id']; userId: User[
 		data: {
 			deleted: new Date(),
 		},
+	});
+}
+
+export async function convertHeadingToProject({ id, userId }: { id: Heading['id']; userId: User['id'] }) {
+	const heading = await prisma.heading.findFirstOrThrow({
+		where: { id, userId },
+	});
+	const project = await createProject({
+		title: heading.title,
+		notes: '',
+		when: 'inbox',
+		whenDate: null,
+		userId,
+	});
+	// Re-associate all of the heading tasks to the new project
+	await prisma.task.updateMany({
+		where: { headingId: heading.id, userId },
+		data: {
+			headingId: null,
+			projectId: project.id,
+		},
+	});
+	return prisma.heading.deleteMany({
+		where: { id: heading.id, userId },
 	});
 }
