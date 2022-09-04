@@ -25,7 +25,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
 	// Initialize the map with the default "heading" so it's first in the order
 	const groupedTasksByHeading = new Map<Heading | null, Task[]>([[null, []]]);
-	for (const task of project.tasks.filter((task) => !task.done)) {
+	for (const task of project.tasks.filter((task) => task.deleted == null).filter((task) => !task.done)) {
 		groupedTasksByHeading.set(
 			task.Heading?.archived ? null : task.Heading,
 			(groupedTasksByHeading.get(task.Heading) ?? []).concat(task)

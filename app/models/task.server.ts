@@ -46,7 +46,6 @@ export function getDeletedTasks({ userId }: { userId: User['id'] }) {
 		where: {
 			userId,
 			deleted: { not: null },
-			projectId: null,
 		},
 		select: { id: true, title: true, deleted: true },
 		orderBy: { deleted: 'desc' },
