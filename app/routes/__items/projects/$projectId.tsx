@@ -46,10 +46,11 @@ export async function action({ request, params }: ActionArgs) {
 		await deleteProject({ userId, id: params.projectId });
 	} else if (intent === 'convertToProject') {
 		invariant(typeof headingId === 'string', 'headingId not found');
-		await convertHeadingToProject({ userId, id: headingId });
+		const project = await convertHeadingToProject({ userId, id: headingId });
+		return redirect(paths.project({ projectId: project.id }));
 	}
 
-	return redirect('/tasks/inbox');
+	return redirect(paths.inbox({}));
 }
 
 export default function ProjectDetailsPage() {

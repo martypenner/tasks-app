@@ -107,7 +107,9 @@ export async function convertHeadingToProject({ id, userId }: { id: Heading['id'
 			projectId: project.id,
 		},
 	});
-	return prisma.heading.deleteMany({
+	await prisma.heading.deleteMany({
 		where: { id: heading.id, userId },
 	});
+
+	return project;
 }
