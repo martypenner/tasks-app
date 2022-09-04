@@ -11,7 +11,9 @@ export const meta: MetaFunction = () => ({
 
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
-	const taskListItems = await getCompletedTasks({ userId });
+	const taskListItems = (await getCompletedTasks({ userId }))
+		// Filter out tasks in completed projects. Was easier to do it here than in the query.
+		.filter((task) => !(task.Project?.done ?? false));
 	return json({ taskListItems });
 }
 

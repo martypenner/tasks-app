@@ -38,9 +38,7 @@ export function getDeletedProjects({ userId }: { userId: User['id'] }) {
 	return prisma.project.findMany({
 		where: {
 			userId,
-			deleted: {
-				not: null,
-			},
+			deleted: { not: null },
 		},
 		select: { id: true, title: true, deleted: true },
 		orderBy: { deleted: 'desc' },

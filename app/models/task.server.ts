@@ -38,9 +38,7 @@ export function getCompletedTasks({ userId }: { userId: User['id'] }) {
 		where: {
 			userId,
 			deleted: null,
-			status: {
-				not: 'in-progress',
-			},
+			status: { not: 'in-progress' },
 		},
 		include: { Project: true },
 		orderBy: { globalOrder: 'desc' },
@@ -52,8 +50,10 @@ export function getDeletedTasks({ userId }: { userId: User['id'] }) {
 		where: {
 			userId,
 			deleted: { not: null },
+			// Get tasks that don't have a project or the project isn't done.
+			OR: [{ Project: { is: null } }, { Project: { done: false } }],
 		},
-		select: { id: true, title: true, deleted: true },
+		include: { Project: true },
 		orderBy: { deleted: 'desc' },
 	});
 }
