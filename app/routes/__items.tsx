@@ -21,7 +21,6 @@ import { getProjectsWithoutAreas } from '~/models/project.server';
 import { getTaskListItemsByWhen } from '~/models/task.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
-import { classNames } from '~/utils';
 
 function sortByCreatedTime(a: Pick<Project, 'createdAt'>, b: Pick<Project, 'createdAt'>) {
 	return b.createdAt!.getTime() - a.createdAt!.getTime();
@@ -36,13 +35,13 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 const navigation = [
-	{ name: 'Inbox', href: '/tasks/inbox', icon: InboxIcon },
-	{ name: 'Today', href: '/tasks/today', icon: StarIcon },
-	{ name: 'Upcoming', href: '/tasks/upcoming', icon: CalendarIcon },
-	{ name: 'Anytime', href: '/tasks/anytime', icon: RectangleStackIcon },
-	{ name: 'Someday', href: '/tasks/someday', icon: ArchiveBoxIcon },
-	{ name: 'Logbook', href: '/tasks/logbook', icon: NewspaperIcon },
-	{ name: 'Trash', href: '/tasks/trash', icon: TrashIcon },
+	{ name: 'Inbox', href: '/tasks/inbox', icon: InboxIcon, class: 'text-blue-500' },
+	{ name: 'Today', href: '/tasks/today', icon: StarIcon, class: 'text-yellow-500' },
+	{ name: 'Upcoming', href: '/tasks/upcoming', icon: CalendarIcon, class: 'text-red-500' },
+	{ name: 'Anytime', href: '/tasks/anytime', icon: RectangleStackIcon, class: 'text-emerald-500' },
+	{ name: 'Someday', href: '/tasks/someday', icon: ArchiveBoxIcon, class: 'text-amber-100' },
+	{ name: 'Logbook', href: '/tasks/logbook', icon: NewspaperIcon, class: 'text-green-400' },
+	{ name: 'Trash', href: '/tasks/trash', icon: TrashIcon, class: 'text-zinc-100' },
 ];
 const userNavigation = [
 	{ name: 'Your Profile', href: '#' },
@@ -105,18 +104,16 @@ export default function App() {
 												key={item.name}
 												to={item.href}
 												className={({ isActive }) =>
-													classNames(
-														isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-														'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
-													)
+													`${
+														isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+													} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 												}>
 												{({ isActive }) => (
 													<>
 														<item.icon
-															className={classNames(
-																isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-																'mr-4 h-6 w-6 flex-shrink-0'
-															)}
+															className={`${
+																isActive ? 'text-gray-500' : 'group-hover:text-gray-500'
+															} mr-4 h-6 w-6 flex-shrink-0 ${item.class}`}
 															aria-hidden="true"
 														/>
 
@@ -145,18 +142,16 @@ export default function App() {
 									key={item.name}
 									to={item.href}
 									className={({ isActive }) =>
-										classNames(
-											isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-											'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
-										)
+										`${
+											isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+										} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 									}>
 									{({ isActive }) => (
 										<>
 											<item.icon
-												className={classNames(
-													isActive ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-													'mr-3 h-6 w-6 flex-shrink-0'
-												)}
+												className={`${
+													isActive ? 'text-gray-300' : 'group-hover:text-gray-300'
+												} mr-3 h-6 w-6 flex-shrink-0 ${item.class}`}
 												aria-hidden="true"
 											/>
 											{item.name}
@@ -173,13 +168,9 @@ export default function App() {
 												<li key={project.id}>
 													<NavLink
 														className={({ isActive }) =>
-															classNames(
-																isActive
-																	? 'bg-gray-900 text-white'
-																	: 'text-gray-300 hover:bg-gray-700 hover:text-white',
-																'group flex items-center rounded-md px-2 py-2 text-sm font-medium',
-																''
-															)
+															`${
+																isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+															} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 														}
 														to={paths.project({ projectId: project.id })}>
 														📝 {project.title}
@@ -192,13 +183,9 @@ export default function App() {
 												<li key={area.id} className="my-4">
 													<NavLink
 														className={({ isActive }) =>
-															classNames(
-																isActive
-																	? 'bg-gray-900 text-white'
-																	: 'text-gray-300 hover:bg-gray-700 hover:text-white',
-																'group flex items-center rounded-md px-2 py-2 text-sm font-medium',
-																''
-															)
+															`${
+																isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+															} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 														}
 														to={paths.area({ areaId: area.id })}>
 														📝 {area.title}
@@ -209,13 +196,11 @@ export default function App() {
 															<li key={project.id}>
 																<NavLink
 																	className={({ isActive }) =>
-																		classNames(
+																		`${
 																			isActive
 																				? 'bg-gray-900 text-white'
-																				: 'text-gray-300 hover:bg-gray-700 hover:text-white',
-																			'group flex items-center rounded-md px-2 py-2 text-sm font-medium',
-																			''
-																		)
+																				: 'text-gray-300 hover:bg-gray-700 hover:text-white'
+																		} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 																	}
 																	to={paths.project({ projectId: project.id })}>
 																	📝 {project.title}
@@ -310,10 +295,7 @@ export default function App() {
 													{({ active }) => (
 														<Link
 															to={item.href}
-															className={classNames(
-																active ? 'bg-gray-200' : '',
-																'block py-2 px-4 text-sm text-gray-700'
-															)}>
+															className={`${active ? 'bg-gray-200' : ''} block py-2 px-4 text-sm text-gray-700`}>
 															{item.name}
 														</Link>
 													)}
