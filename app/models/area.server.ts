@@ -25,7 +25,11 @@ export function getArea({
 export function getAreas({ userId }: { userId: User['id'] }) {
 	return prisma.area.findMany({
 		where: { userId, deleted: null },
-		select: { id: true, title: true, createdAt: true },
+		include: {
+			Project: {
+				where: { deleted: null },
+			},
+		},
 		orderBy: { globalOrder: 'desc' },
 	});
 }

@@ -17,7 +17,7 @@ import { Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
 import { getAreas } from '~/models/area.server';
 import type { Project } from '~/models/project.server';
-import { getProjects } from '~/models/project.server';
+import { getProjectsWithoutAreas } from '~/models/project.server';
 import { getTaskListItemsByWhen } from '~/models/task.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
@@ -30,12 +30,8 @@ function sortByCreatedTime(a: Pick<Project, 'createdAt'>, b: Pick<Project, 'crea
 export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
 	const taskListItems = await getTaskListItemsByWhen({ userId, when: 'inbox' });
-	const projects = (await getProjects({ userId }))
-		.sort(sortByCreatedTime)
-		.map((project) => ({ ...project, isProject: true }));
-	const areas = (await getAreas({ userId }))
-		.sort(sortByCreatedTime)
-		.map((project) => ({ ...project, isProject: true }));
+	const projects = (await getProjectsWithoutAreas({ userId })).sort(sortByCreatedTime);
+	const areas = (await getAreas({ userId })).sort(sortByCreatedTime);
 	return json({ taskListItems, projects, areas });
 }
 
@@ -207,6 +203,26 @@ export default function App() {
 														to={paths.area({ areaId: area.id })}>
 														📝 {area.title}
 													</NavLink>
+
+													<ol>
+														{area.Project.map((project) => (
+															<li key={project.id}>
+																<NavLink
+																	className={({ isActive }) =>
+																		classNames(
+																			isActive
+																				? 'bg-gray-900 text-white'
+																				: 'text-gray-300 hover:bg-gray-700 hover:text-white',
+																			'group flex items-center rounded-md px-2 py-2 text-sm font-medium',
+																			''
+																		)
+																	}
+																	to={paths.project({ projectId: project.id })}>
+																	📝 {project.title}
+																</NavLink>
+															</li>
+														))}
+													</ol>
 												</li>
 											))}
 									</ol>

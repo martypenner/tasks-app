@@ -89,8 +89,9 @@ export default function ProjectDetailsPage() {
 				{data.groupedTasks.map(([heading, tasks]) => (
 					<li key={heading?.id ?? 'default'}>
 						{heading != null && (
-							<div className="mt-8 mb-4 flex items-center">
+							<div className="mt-8 mb-4 flex items-center border-b-2 border-b-blue-500 pb-2">
 								<h4 className="text-xl">{heading.title}</h4>
+
 								<Form method="post" className="ml-8">
 									<input type="hidden" name="headingId" value={heading.id} />
 
@@ -109,7 +110,7 @@ export default function ProjectDetailsPage() {
 							{tasks.map((task) => (
 								<li key={task.id}>
 									<NavLink
-										className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+										className={({ isActive }) => `block p-4 text-xl ${isActive ? 'bg-white' : ''}`}
 										to={paths.task({ taskId: task.id })}>
 										📝 {task.title}
 									</NavLink>

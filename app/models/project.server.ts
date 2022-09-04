@@ -27,9 +27,9 @@ export function getProject({
 	});
 }
 
-export function getProjects({ userId }: { userId: User['id'] }) {
+export function getProjectsWithoutAreas({ userId }: { userId: User['id'] }) {
 	return prisma.project.findMany({
-		where: { userId, deleted: null, done: false },
+		where: { userId, areaId: null, deleted: null, done: false },
 		select: { id: true, title: true, createdAt: true, updatedAt: true },
 		orderBy: { globalOrder: 'desc' },
 	});
