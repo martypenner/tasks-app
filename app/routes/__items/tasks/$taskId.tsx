@@ -35,6 +35,8 @@ export async function action({ request, params }: ActionArgs) {
 		await toggleTaskComplete({ userId, id: params.taskId, done: JSON.parse(done) });
 		return json({});
 	}
+
+	return json({});
 }
 
 export default function TaskDetailsPage() {

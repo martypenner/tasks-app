@@ -4,7 +4,7 @@ import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import NewTask from '~/components/NewTask';
-import { convertHeadingToProject, deleteProject, getProject } from '~/models/project.server';
+import { convertHeadingToProject, deleteProject, getProject, toggleProjectComplete } from '~/models/project.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
@@ -50,6 +50,13 @@ export async function action({ request, params }: ActionArgs) {
 
 		const project = await convertHeadingToProject({ userId, id: headingId });
 		return redirect(paths.project({ projectId: project.id }));
+	} else if (['markProjectAsComplete', 'markProjectAsIncomplete'].includes(intent)) {
+		const done = data.get('done') ?? 'false';
+		invariant(typeof done === 'string', 'must provide done');
+		console.log(params, JSON.parse(done));
+
+		await toggleProjectComplete({ userId, id: params.projectId, done: JSON.parse(done) });
+		return json({});
 	}
 
 	return redirect(paths.inbox({}));
@@ -63,8 +70,20 @@ export default function ProjectDetailsPage() {
 			<div className="flex items-center">
 				<h3 className="text-2xl font-bold">{data.project.title}</h3>
 
+				<Form method="post" className="ml-8">
+					<input type="hidden" name="done" value={String(!data.project.done)} />
+
+					<button
+						type="submit"
+						className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+						name="intent"
+						value={data.project.done ? 'markProjectAsIncomplete' : 'markProjectAsComplete'}>
+						{data.project.done ? 'Mark as not done' : 'Complete'}
+					</button>
+				</Form>
+
 				{data.project.deleted == null && (
-					<Form method="post" className="ml-8">
+					<Form method="post" className="ml-2">
 						<input type="hidden" name="projectId" value={data.project.id} />
 
 						<button

@@ -14,7 +14,7 @@ export function getProject({
 		where: { id, userId },
 		include: {
 			tasks: {
-				where: { deleted: null, done: false },
+				where: { deleted: null },
 				include: {
 					Heading: true,
 				},
@@ -82,9 +82,26 @@ export async function createProject({
 export function deleteProject({ id, userId }: { id: Project['id']; userId: User['id'] }) {
 	return prisma.project.updateMany({
 		where: { id, userId },
-		data: {
-			deleted: new Date(),
-		},
+
+export async function toggleProjectComplete({
+	id,
+	userId,
+	done,
+}: {
+	id: Project['id'];
+	userId: User['id'];
+	done: Project['done'];
+}) {
+	// Mark child tasks as done if we're marking the project as done.
+	if (done) {
+		await prisma.task.updateMany({
+			where: { projectId: id, userId },
+			data: { done },
+		});
+	}
+	return prisma.project.updateMany({
+		where: { id, userId },
+		data: { done },
 	});
 }
 
