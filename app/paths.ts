@@ -1,9 +1,16 @@
 import { path } from 'static-path';
 
 export const allTasks = path('/tasks');
-export const inbox = allTasks.path('inbox');
 export const task = allTasks.path(':taskId');
 export const newTask = allTasks.path('new');
+
+export const inbox = allTasks.path('inbox');
+export const today = allTasks.path('today');
+export const upcoming = allTasks.path('upcoming');
+export const anytime = allTasks.path('anytime');
+export const someday = allTasks.path('someday');
+export const logbook = allTasks.path('logbook');
+export const trash = allTasks.path('trash');
 
 export const allProjects = path('/projects');
 export const project = allProjects.path(':projectId');

@@ -13,7 +13,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
 	const task = await getTask({ userId, id: params.taskId });
 	if (!task) {
-		throw redirect('/tasks/inbox');
+		throw redirect(paths.inbox({}));
 	}
 	return json({ task });
 }

@@ -35,13 +35,13 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 const navigation = [
-	{ name: 'Inbox', href: '/tasks/inbox', icon: InboxIcon, itemClass: 'mb-4', iconClass: 'text-blue-500' },
-	{ name: 'Today', href: '/tasks/today', icon: StarIcon, iconClass: 'text-yellow-500' },
-	{ name: 'Upcoming', href: '/tasks/upcoming', icon: CalendarIcon, iconClass: 'text-red-500' },
-	{ name: 'Anytime', href: '/tasks/anytime', icon: RectangleStackIcon, iconClass: 'text-teal-600' },
-	{ name: 'Someday', href: '/tasks/someday', icon: ArchiveBoxIcon, itemClass: 'mb-4', iconClass: 'text-amber-100' },
-	{ name: 'Logbook', href: '/tasks/logbook', icon: NewspaperIcon, iconClass: 'text-green-600' },
-	{ name: 'Trash', href: '/tasks/trash', icon: TrashIcon, iconClass: 'text-zinc-100' },
+	{ name: 'Inbox', href: paths.inbox({}), icon: InboxIcon, itemClass: 'mb-4', iconClass: 'text-blue-500' },
+	{ name: 'Today', href: paths.today({}), icon: StarIcon, iconClass: 'text-yellow-500' },
+	{ name: 'Upcoming', href: paths.upcoming({}), icon: CalendarIcon, iconClass: 'text-red-500' },
+	{ name: 'Anytime', href: paths.anytime({}), icon: RectangleStackIcon, iconClass: 'text-teal-600' },
+	{ name: 'Someday', href: paths.someday({}), icon: ArchiveBoxIcon, itemClass: 'mb-4', iconClass: 'text-amber-100' },
+	{ name: 'Logbook', href: paths.logbook({}), icon: NewspaperIcon, iconClass: 'text-green-600' },
+	{ name: 'Trash', href: paths.trash({}), icon: TrashIcon, iconClass: 'text-zinc-100' },
 ];
 const userNavigation = [
 	{ name: 'Your Profile', href: '#' },

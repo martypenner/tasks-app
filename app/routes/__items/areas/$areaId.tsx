@@ -18,7 +18,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
 	const area = await getArea({ userId, id: params.areaId });
 	if (!area) {
-		throw redirect('/tasks/inbox');
+		throw redirect(paths.inbox({}));
 	}
 	return json({ area });
 }
@@ -29,7 +29,7 @@ export async function action({ request, params }: ActionArgs) {
 
 	await deleteArea({ userId, id: params.areaId });
 
-	return redirect('/tasks/inbox');
+	return redirect(paths.inbox({}));
 }
 
 export default function AreaDetailsPage() {
