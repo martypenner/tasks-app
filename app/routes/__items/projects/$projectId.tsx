@@ -2,6 +2,7 @@ import type { Heading, Task } from '@prisma/client';
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
+import { useState } from 'react';
 import invariant from 'tiny-invariant';
 import NewTask from '~/components/NewTask';
 import { convertHeadingToProject, deleteProject, getProject, toggleProjectComplete } from '~/models/project.server';
@@ -19,12 +20,12 @@ export async function loader({ request, params }: LoaderArgs) {
 
 	const project = await getProject({ userId, id: params.projectId });
 	if (!project) {
-		throw redirect('/tasks/inbox');
+		throw redirect(paths.inbox({}));
 	}
 
 	// Initialize the map with the default "heading" so it's first in the order
 	const groupedTasksByHeading = new Map<Heading | null, Task[]>([[null, []]]);
-	for (const task of project.tasks) {
+	for (const task of project.tasks.filter((task) => !task.done)) {
 		groupedTasksByHeading.set(task.Heading, (groupedTasksByHeading.get(task.Heading) ?? []).concat(task));
 	}
 
@@ -64,6 +65,8 @@ export async function action({ request, params }: ActionArgs) {
 
 export default function ProjectDetailsPage() {
 	const data = useLoaderData<typeof loader>();
+	const [showLoggedItems, setShowLoggedItems] = useState(false);
+	const doneTasks = data.project.tasks.filter((task) => task.done);
 
 	return (
 		<div>
@@ -141,6 +144,25 @@ export default function ProjectDetailsPage() {
 					</li>
 				))}
 			</ol>
+
+			<button type="button" className="mt-4" onClick={() => setShowLoggedItems(!showLoggedItems)}>
+				{showLoggedItems
+					? `Hide logged item${doneTasks.length === 1 ? '' : 's'}`
+					: `Show ${doneTasks.length} logged item${doneTasks.length === 1 ? '' : 's'}`}
+			</button>
+			{showLoggedItems && (
+				<ol>
+					{doneTasks.map((task) => (
+						<li key={task.id}>
+							<NavLink
+								className={({ isActive }) => `block p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+								to={paths.task({ taskId: task.id })}>
+								📝 {task.title}
+							</NavLink>
+						</li>
+					))}
+				</ol>
+			)}
 		</div>
 	);
 }

@@ -150,11 +150,21 @@ async function seed() {
 	});
 	await prisma.task.create({
 		data: {
+			title: 'My fourth and completed project task',
+			userId: user.id,
+			projectId: project.id,
+			headingId: heading2.id,
+			done: true,
+			globalOrder: 11,
+		},
+	});
+	await prisma.task.create({
+		data: {
 			title: 'My area task',
 			userId: user.id,
 			areaId: area.id,
 			createdAt: new Date('2020-01-01'),
-			globalOrder: 11,
+			globalOrder: 12,
 		},
 	});
 
