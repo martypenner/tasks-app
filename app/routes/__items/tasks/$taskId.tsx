@@ -4,7 +4,7 @@ import { Form, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import * as paths from '~/paths';
 
-import { deleteTask, getTask, toggleTaskComplete } from '~/models/task.server';
+import { deleteTask, getTask, updateTaskStatus } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -29,10 +29,10 @@ export async function action({ request, params }: ActionArgs) {
 	if (intent === 'deleteTask') {
 		await deleteTask({ userId, id: params.taskId });
 		return redirect(paths.inbox({}));
-	} else if (['markTaskAsComplete', 'markTaskAsIncomplete'].includes(intent)) {
+	} else if (['markTaskAsComplete', 'markTaskAsIncomplete', 'markTaskAsCancelled'].includes(intent)) {
 		const status = data.get('status') ?? 'false';
 		invariant(typeof status === 'string', 'must provide status');
-		await toggleTaskComplete({ userId, id: params.taskId, status });
+		await updateTaskStatus({ userId, id: params.taskId, status });
 		return json({});
 	}
 
@@ -56,6 +56,17 @@ export default function TaskDetailsPage() {
 						name="intent"
 						value={data.task.status === 'completed' ? 'markTaskAsIncomplete' : 'markTaskAsComplete'}>
 						{data.task.status === 'completed' ? 'Mark as not done' : 'Complete'}
+					</button>
+				</Form>
+				<Form method="post" className="ml-2">
+					<input type="hidden" name="status" value={data.task.status === 'cancelled' ? 'in-progress' : 'cancelled'} />
+
+					<button
+						type="submit"
+						className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+						name="intent"
+						value={data.task.status === 'completed' ? 'markTaskAsIncomplete' : 'markTaskAsCancelled'}>
+						{data.task.status === 'cancelled' ? 'Mark as not done' : 'Cancel'}
 					</button>
 				</Form>
 

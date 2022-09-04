@@ -118,7 +118,7 @@ export function deleteTask({ id, userId }: { id: Task['id']; userId: User['id'] 
 	});
 }
 
-export function toggleTaskComplete({
+export function updateTaskStatus({
 	id,
 	userId,
 	status,
