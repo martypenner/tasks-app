@@ -38,9 +38,9 @@ const navigation = [
 	{ name: 'Inbox', href: '/tasks/inbox', icon: InboxIcon, class: 'text-blue-500' },
 	{ name: 'Today', href: '/tasks/today', icon: StarIcon, class: 'text-yellow-500' },
 	{ name: 'Upcoming', href: '/tasks/upcoming', icon: CalendarIcon, class: 'text-red-500' },
-	{ name: 'Anytime', href: '/tasks/anytime', icon: RectangleStackIcon, class: 'text-emerald-500' },
+	{ name: 'Anytime', href: '/tasks/anytime', icon: RectangleStackIcon, class: 'text-teal-600' },
 	{ name: 'Someday', href: '/tasks/someday', icon: ArchiveBoxIcon, class: 'text-amber-100' },
-	{ name: 'Logbook', href: '/tasks/logbook', icon: NewspaperIcon, class: 'text-green-400' },
+	{ name: 'Logbook', href: '/tasks/logbook', icon: NewspaperIcon, class: 'text-green-600' },
 	{ name: 'Trash', href: '/tasks/trash', icon: TrashIcon, class: 'text-zinc-100' },
 ];
 const userNavigation = [
