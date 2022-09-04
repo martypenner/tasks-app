@@ -64,7 +64,7 @@ export async function action({ request, params }: ActionArgs) {
 		const done = data.get('done') ?? 'false';
 		invariant(typeof done === 'string', 'must provide done');
 
-		await toggleProjectComplete({ userId, id: params.projectId, done: JSON.parse(done) });
+		await toggleProjectComplete({ userId, id: params.projectId, done: JSON.parse(done), taskStatus: 'completed' });
 		return json({});
 	}
 
@@ -87,7 +87,23 @@ export default function ProjectDetailsPage() {
 						type="submit"
 						className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
 						name="intent"
-						value={data.project.done ? 'markProjectAsIncomplete' : 'markProjectAsComplete'}>
+						value={data.project.done ? 'markProjectAsIncomplete' : 'markProjectAsComplete'}
+						onClick={(event) => {
+							const relevantTasks = data.project.tasks.filter(
+								(task) => task.deleted == null && task.status === 'in-progress'
+							);
+							// todo: allow cancelling and completing
+							if (
+								!(
+									relevantTasks.length > 0 &&
+									window.confirm(
+										`There are still ${relevantTasks.length} to-dos in this project that you haven’t completed. What would you like to do with them?`
+									)
+								)
+							) {
+								event.preventDefault();
+							}
+						}}>
 						{data.project.done ? 'Mark as not done' : 'Complete'}
 					</button>
 				</Form>

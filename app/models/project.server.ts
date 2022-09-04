@@ -1,4 +1,4 @@
-import type { Heading, Project, User } from '@prisma/client';
+import type { Heading, Project, Task, User } from '@prisma/client';
 
 import { prisma } from '~/db.server';
 
@@ -102,16 +102,18 @@ export async function toggleProjectComplete({
 	id,
 	userId,
 	done,
+	taskStatus = 'completed',
 }: {
 	id: Project['id'];
 	userId: User['id'];
 	done: Project['done'];
+	taskStatus?: Task['status'];
 }) {
 	// Mark child tasks as done if we're marking the project as done.
 	if (done) {
 		await prisma.task.updateMany({
 			where: { projectId: id, userId },
-			data: { status: 'completed' },
+			data: { status: taskStatus },
 		});
 	}
 	return prisma.project.updateMany({
