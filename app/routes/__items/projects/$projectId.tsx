@@ -40,13 +40,14 @@ export async function action({ request, params }: ActionArgs) {
 
 	const data = await request.formData();
 	const intent = data.get('intent');
-	const headingId = data.get('headingId');
 	invariant(typeof intent === 'string', 'must provide an intent');
 
 	if (intent === 'deleteProject') {
 		await deleteProject({ userId, id: params.projectId });
 	} else if (intent === 'convertToProject') {
+		const headingId = data.get('headingId');
 		invariant(typeof headingId === 'string', 'headingId not found');
+
 		const project = await convertHeadingToProject({ userId, id: headingId });
 		return redirect(paths.project({ projectId: project.id }));
 	}
