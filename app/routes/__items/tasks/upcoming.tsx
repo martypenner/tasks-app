@@ -4,6 +4,7 @@ import { json } from '@remix-run/node';
 import { NavLink, useLoaderData } from '@remix-run/react';
 import NewTask from '~/components/NewTask';
 import { getTaskListItemsByWhen } from '~/models/task.server';
+import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction = () => ({
@@ -31,7 +32,7 @@ export default function InboxPage() {
 						<li key={task.id}>
 							<NavLink
 								className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-								to={`../${task.id}`}>
+								to={paths.task({ taskId: task.id })}>
 								📝 {task.title}
 							</NavLink>
 						</li>
