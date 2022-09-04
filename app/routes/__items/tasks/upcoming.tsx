@@ -1,4 +1,4 @@
-import { InboxIcon } from '@heroicons/react/outline';
+import { InboxIcon } from '@heroicons/react/24/outline';
 import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { NavLink, useLoaderData } from '@remix-run/react';

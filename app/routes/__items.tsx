@@ -1,22 +1,23 @@
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
-	ArchiveIcon,
+	ArchiveBoxIcon,
+	Bars3Icon,
 	BellIcon,
 	CalendarIcon,
-	CollectionIcon,
 	InboxIcon,
-	MenuAlt2Icon,
 	NewspaperIcon,
+	RectangleStackIcon,
 	TrashIcon,
-	XIcon,
-} from '@heroicons/react/outline';
-import { SearchIcon, StarIcon } from '@heroicons/react/solid';
+	XMarkIcon,
+} from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, StarIcon } from '@heroicons/react/24/solid';
 import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
 import { getAreas } from '~/models/area.server';
-import { getProjects, Project } from '~/models/project.server';
+import type { Project } from '~/models/project.server';
+import { getProjects } from '~/models/project.server';
 import { getTaskListItemsByWhen } from '~/models/task.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
@@ -42,8 +43,8 @@ const navigation = [
 	{ name: 'Inbox', href: '/tasks/inbox', icon: InboxIcon },
 	{ name: 'Today', href: '/tasks/today', icon: StarIcon },
 	{ name: 'Upcoming', href: '/tasks/upcoming', icon: CalendarIcon },
-	{ name: 'Anytime', href: '/tasks/anytime', icon: CollectionIcon },
-	{ name: 'Someday', href: '/tasks/someday', icon: ArchiveIcon },
+	{ name: 'Anytime', href: '/tasks/anytime', icon: RectangleStackIcon },
+	{ name: 'Someday', href: '/tasks/someday', icon: ArchiveBoxIcon },
 	{ name: 'Logbook', href: '/tasks/logbook', icon: NewspaperIcon },
 	{ name: 'Trash', href: '/tasks/trash', icon: TrashIcon },
 ];
@@ -96,7 +97,7 @@ export default function App() {
 											className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
 											onClick={() => setSidebarOpen(false)}>
 											<span className="sr-only">Close sidebar</span>
-											<XIcon className="h-6 w-6 text-white" aria-hidden="true" />
+											<XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
 										</button>
 									</div>
 								</Transition.Child>
@@ -237,7 +238,7 @@ export default function App() {
 							className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
 							onClick={() => setSidebarOpen(true)}>
 							<span className="sr-only">Open sidebar</span>
-							<MenuAlt2Icon className="h-6 w-6" aria-hidden="true" />
+							<Bars3Icon className="h-6 w-6" aria-hidden="true" />
 						</button>
 						<div className="flex flex-1 justify-between px-4 md:px-0">
 							<div className="flex flex-1">
@@ -247,7 +248,7 @@ export default function App() {
 									</label>
 									<div className="relative w-full text-gray-400 focus-within:text-gray-600">
 										<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-											<SearchIcon className="h-5 w-5" aria-hidden="true" />
+											<MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />
 										</div>
 										<input
 											id="search-field"
