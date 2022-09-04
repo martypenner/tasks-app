@@ -161,7 +161,11 @@ export default function ProjectDetailsPage() {
 								.map((task) => (
 									<li key={task.id}>
 										<NavLink
-											className={({ isActive }) => `block p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+											className={({ isActive }) =>
+												`block p-4 text-xl ${isActive ? 'bg-white' : ''} ${
+													task.status === 'cancelled' ? 'line-through' : ''
+												}`
+											}
 											to={paths.task({ taskId: task.id })}>
 											📝 {task.title}
 										</NavLink>
