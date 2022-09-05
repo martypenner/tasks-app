@@ -52,7 +52,7 @@ export default function TaskDetailsPage() {
 
 					<button
 						type="submit"
-						className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+						className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
 						name="intent"
 						value={data.task.status === 'completed' ? 'markTaskAsIncomplete' : 'markTaskAsComplete'}>
 						{data.task.status === 'completed' ? 'Mark as not done' : 'Complete'}
@@ -63,7 +63,7 @@ export default function TaskDetailsPage() {
 
 					<button
 						type="submit"
-						className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+						className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
 						name="intent"
 						value={data.task.status === 'completed' ? 'markTaskAsIncomplete' : 'markTaskAsCancelled'}>
 						{data.task.status === 'cancelled' ? 'Mark as not done' : 'Cancel'}
@@ -74,7 +74,7 @@ export default function TaskDetailsPage() {
 					<Form method="post" className="ml-2">
 						<button
 							type="submit"
-							className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+							className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
 							name="intent"
 							value="deleteTask">
 							Delete
