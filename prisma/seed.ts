@@ -39,12 +39,19 @@ async function seed() {
 			globalOrder: 0,
 		},
 	});
+	const independentProject = await prisma.project.create({
+		data: {
+			userId: user.id,
+			title: 'My independent project',
+			globalOrder: 1,
+		},
+	});
 	const completedProject = await prisma.project.create({
 		data: {
 			userId: user.id,
 			title: 'My completed project',
 			completedDate: new Date(),
-			globalOrder: 1,
+			globalOrder: 2,
 		},
 	});
 	const deletedProject = await prisma.project.create({
@@ -52,7 +59,7 @@ async function seed() {
 			userId: user.id,
 			title: 'My deleted project',
 			deleted: new Date(),
-			globalOrder: 2,
+			globalOrder: 3,
 		},
 	});
 	const heading = await prisma.heading.create({
@@ -200,6 +207,16 @@ async function seed() {
 			areaId: area.id,
 			createdAt: new Date('2020-01-01'),
 			globalOrder: 14,
+		},
+	});
+	await prisma.task.create({
+		data: {
+			title: 'My first independent project task',
+			userId: user.id,
+			projectId: independentProject.id,
+			status: 'completed',
+			completedDate: new Date(),
+			globalOrder: 15,
 		},
 	});
 

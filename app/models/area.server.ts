@@ -30,6 +30,9 @@ export function getAreas({ userId }: { userId: User['id'] }) {
 		include: {
 			Project: {
 				where: { deleted: null, completedDate: null },
+				include: {
+					tasks: { orderBy: { globalOrder: 'desc' } },
+				},
 			},
 		},
 		orderBy: { globalOrder: 'desc' },

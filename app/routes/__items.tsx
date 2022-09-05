@@ -15,6 +15,7 @@ import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
+import RadialProgress from '~/components/RadialProgress';
 import { getAreas } from '~/models/area.server';
 import type { Project } from '~/models/project.server';
 import { getProjectsWithoutAreas } from '~/models/project.server';
@@ -173,7 +174,14 @@ export default function App() {
 															} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 														}
 														to={paths.project({ projectId: project.id })}>
-														📝 {project.title}
+														<RadialProgress
+															progress={
+																(project.tasks.filter((task) => task.completedDate != null).length /
+																	project.tasks.length) *
+																100
+															}
+														/>
+														{project.title}
 													</NavLink>
 												</li>
 											))}
@@ -203,7 +211,14 @@ export default function App() {
 																		} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 																	}
 																	to={paths.project({ projectId: project.id })}>
-																	📝 {project.title}
+																	<RadialProgress
+																		progress={
+																			(project.tasks.filter((task) => task.completedDate != null).length /
+																				project.tasks.length) *
+																			100
+																		}
+																	/>
+																	{project.title}
 																</NavLink>
 															</li>
 														))}
