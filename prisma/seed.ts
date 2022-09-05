@@ -43,7 +43,7 @@ async function seed() {
 		data: {
 			userId: user.id,
 			title: 'My completed project',
-			done: true,
+			completedDate: new Date(),
 			globalOrder: 1,
 		},
 	});

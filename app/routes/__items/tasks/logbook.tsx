@@ -15,7 +15,7 @@ export async function loader({ request }: LoaderArgs) {
 	const userId = await requireUserId(request);
 	const taskListItems = (await getCompletedTasks({ userId }))
 		// Filter out tasks in completed projects. Was easier to do it here than in the query.
-		.filter((task) => !task.Project?.done)
+		.filter((task) => task.Project == null || task.Project?.completedDate == null)
 		.map((task) => ({ ...task, isProject: false }));
 	const projects = (await getCompletedProjects({ userId })).map((project) => ({ ...project, isProject: true }));
 

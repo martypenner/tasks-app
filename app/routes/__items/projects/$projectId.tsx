@@ -38,7 +38,7 @@ export async function loader({ request, params }: LoaderArgs) {
 		project,
 		groupedTasks: Array.from(groupedTasksByHeading),
 		doneTasks:
-			project.deleted != null || project.done
+			project.deleted != null || project.completedDate != null
 				? []
 				: project.tasks.filter((task) => task.status !== 'in-progress').filter((task) => task.deleted == null),
 	});
@@ -61,10 +61,15 @@ export async function action({ request, params }: ActionArgs) {
 		const project = await convertHeadingToProject({ userId, id: headingId });
 		return redirect(paths.project({ projectId: project.id }));
 	} else if (['markProjectAsComplete', 'markProjectAsIncomplete'].includes(intent)) {
-		const done = data.get('done') ?? 'false';
-		invariant(typeof done === 'string', 'must provide done');
+		const completedDate = data.get('completedDate') ?? '';
+		invariant(typeof completedDate === 'string', 'must provide completedDate');
 
-		await toggleProjectComplete({ userId, id: params.projectId, done: JSON.parse(done), taskStatus: 'completed' });
+		await toggleProjectComplete({
+			userId,
+			id: params.projectId,
+			completedDate: completedDate.length === 0 ? new Date() : null,
+			taskStatus: 'completed',
+		});
 		return json({});
 	}
 
@@ -80,31 +85,31 @@ export default function ProjectDetailsPage() {
 			<div className="flex items-center">
 				<h3 className="text-2xl font-bold">{data.project.title}</h3>
 
-				<Form method="post" className="ml-8">
-					<input type="hidden" name="done" value={String(!data.project.done)} />
+				<Form
+					method="post"
+					className="ml-8"
+					onSubmit={(event) => {
+						const outstandingTasks = data.project.tasks.filter(
+							(task) => task.deleted == null && task.status === 'in-progress'
+						);
+						// todo: allow cancelling and completing
+						if (
+							outstandingTasks.length > 0 &&
+							!window.confirm(
+								`There are still ${outstandingTasks.length} to-dos in this project that you haven’t completed. What would you like to do with them?`
+							)
+						) {
+							event.preventDefault();
+						}
+					}}>
+					<input type="hidden" name="completedDate" value={data.project.completedDate ?? ''} />
 
 					<button
 						type="submit"
-						className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+						className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
 						name="intent"
-						value={data.project.done ? 'markProjectAsIncomplete' : 'markProjectAsComplete'}
-						onClick={(event) => {
-							const relevantTasks = data.project.tasks.filter(
-								(task) => task.deleted == null && task.status === 'in-progress'
-							);
-							// todo: allow cancelling and completing
-							if (
-								!(
-									relevantTasks.length > 0 &&
-									window.confirm(
-										`There are still ${relevantTasks.length} to-dos in this project that you haven’t completed. What would you like to do with them?`
-									)
-								)
-							) {
-								event.preventDefault();
-							}
-						}}>
-						{data.project.done ? 'Mark as not done' : 'Complete'}
+						value={data.project.completedDate == null ? 'markProjectAsComplete' : 'markProjectAsIncomplete'}>
+						{data.project.completedDate == null ? 'Complete' : 'Mark as not done'}
 					</button>
 				</Form>
 
@@ -114,7 +119,7 @@ export default function ProjectDetailsPage() {
 
 						<button
 							type="submit"
-							className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+							className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
 							name="intent"
 							value="deleteProject">
 							Delete
@@ -124,9 +129,10 @@ export default function ProjectDetailsPage() {
 			</div>
 
 			<p className="py-6">{data.project.notes}</p>
-			<p>Done: {data.project.done ? 'Done' : 'Not done'}</p>
+			<p>Done: {data.project.completedDate != null ? 'Done' : 'Not done'}</p>
 			<p>When: {data.project.when}</p>
 			<p>When date: {data.project.whenDate}</p>
+			<p>Completed on: {data.project.completedDate}</p>
 
 			<hr className="my-4" />
 
@@ -156,7 +162,9 @@ export default function ProjectDetailsPage() {
 						<ol>
 							{tasks
 								.filter((task) =>
-									data.project.deleted != null || data.project.done ? true : task.status === 'in-progress'
+									data.project.deleted != null || data.project.completedDate != null
+										? true
+										: task.status === 'in-progress'
 								)
 								.map((task) => (
 									<li key={task.id}>

@@ -87,6 +87,7 @@ export default function TaskDetailsPage() {
 			<p>Status: {data.task.status}</p>
 			<p>When: {data.task.when}</p>
 			<p>When date: {data.task.whenDate}</p>
+			<p>Completed on: {data.task.completedDate}</p>
 		</div>
 	);
 }

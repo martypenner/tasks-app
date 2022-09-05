@@ -28,7 +28,7 @@ export function getProject({
 
 export function getProjectsWithoutAreas({ userId }: { userId: User['id'] }) {
 	return prisma.project.findMany({
-		where: { userId, areaId: null, deleted: null, done: false },
+		where: { userId, areaId: null, deleted: null, completedDate: null },
 		select: { id: true, title: true, createdAt: true, updatedAt: true },
 		orderBy: { globalOrder: 'desc' },
 	});
@@ -39,7 +39,7 @@ export function getCompletedProjects({ userId }: { userId: User['id'] }) {
 		where: {
 			userId,
 			deleted: null,
-			done: true,
+			completedDate: { not: null },
 		},
 		orderBy: { deleted: 'desc' },
 	});
@@ -101,16 +101,16 @@ export async function deleteProject({ id, userId }: { id: Project['id']; userId:
 export async function toggleProjectComplete({
 	id,
 	userId,
-	done,
+	completedDate,
 	taskStatus = 'completed',
 }: {
 	id: Project['id'];
 	userId: User['id'];
-	done: Project['done'];
+	completedDate: Project['completedDate'];
 	taskStatus?: Task['status'];
 }) {
 	// Mark child tasks as done if we're marking the project as done.
-	if (done) {
+	if (completedDate != null) {
 		await prisma.task.updateMany({
 			where: { projectId: id, userId },
 			data: { status: taskStatus },
@@ -118,7 +118,7 @@ export async function toggleProjectComplete({
 	}
 	return prisma.project.updateMany({
 		where: { id, userId },
-		data: { done },
+		data: { completedDate },
 	});
 }
 

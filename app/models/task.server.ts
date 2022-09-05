@@ -51,7 +51,7 @@ export function getDeletedTasks({ userId }: { userId: User['id'] }) {
 			userId,
 			deleted: { not: null },
 			// Get tasks that don't have a project or the project isn't done.
-			OR: [{ Project: { is: null } }, { Project: { done: false } }],
+			OR: [{ Project: { is: null } }, { Project: { completedDate: null } }],
 		},
 		include: { Project: true },
 		orderBy: { deleted: 'desc' },
@@ -129,6 +129,9 @@ export function updateTaskStatus({
 }) {
 	return prisma.task.updateMany({
 		where: { id, userId },
-		data: { status },
+		data: {
+			status,
+			completedDate: status === 'in-progress' ? null : new Date(),
+		},
 	});
 }
