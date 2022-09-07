@@ -84,6 +84,7 @@ async function seed() {
 			title: 'My first task',
 			notes: 'Hello, world!',
 			status: 'completed',
+			completedDate: new Date(),
 			userId: user.id,
 			globalOrder: 0,
 		},
@@ -133,6 +134,7 @@ async function seed() {
 			title: 'My seventh task',
 			userId: user.id,
 			status: 'completed',
+			completedDate: new Date(),
 			createdAt: new Date('2020-01-01'),
 			globalOrder: 6,
 		},
@@ -178,6 +180,7 @@ async function seed() {
 			projectId: project.id,
 			headingId: heading2.id,
 			status: 'completed',
+			completedDate: new Date(),
 			globalOrder: 11,
 		},
 	});
@@ -187,6 +190,7 @@ async function seed() {
 			userId: user.id,
 			projectId: deletedProject.id,
 			status: 'completed',
+			completedDate: new Date(),
 			deleted: new Date(),
 			globalOrder: 12,
 		},
@@ -197,6 +201,7 @@ async function seed() {
 			userId: user.id,
 			projectId: completedProject.id,
 			status: 'completed',
+			completedDate: new Date(),
 			globalOrder: 13,
 		},
 	});
@@ -211,12 +216,22 @@ async function seed() {
 	});
 	await prisma.task.create({
 		data: {
+			title: 'My completed area task',
+			userId: user.id,
+			areaId: area.id,
+			status: 'completed',
+			completedDate: new Date(),
+			globalOrder: 15,
+		},
+	});
+	await prisma.task.create({
+		data: {
 			title: 'My first independent project task',
 			userId: user.id,
 			projectId: independentProject.id,
 			status: 'completed',
 			completedDate: new Date(),
-			globalOrder: 15,
+			globalOrder: 16,
 		},
 	});
 

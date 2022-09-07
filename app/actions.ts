@@ -1,4 +1,5 @@
-import { ActionArgs, json, redirect } from '@remix-run/server-runtime';
+import type { ActionArgs } from '@remix-run/server-runtime';
+import { json, redirect } from '@remix-run/server-runtime';
 import { createTask } from './models/task.server';
 import { allTasks } from './paths';
 import { requireUserId } from './session.server';

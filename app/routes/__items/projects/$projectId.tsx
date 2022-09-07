@@ -1,10 +1,11 @@
 import type { Heading, Task } from '@prisma/client';
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
+import { Form, useCatch, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
 import invariant from 'tiny-invariant';
 import NewTask from '~/components/NewTask';
+import TaskView from '~/components/TaskView';
 import { convertHeadingToProject, deleteProject, getProject, toggleProjectComplete } from '~/models/project.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
@@ -168,15 +169,7 @@ export default function ProjectDetailsPage() {
 								)
 								.map((task) => (
 									<li key={task.id}>
-										<NavLink
-											className={({ isActive }) =>
-												`block p-4 text-xl ${isActive ? 'bg-white' : ''} ${
-													task.status === 'cancelled' ? 'line-through' : ''
-												}`
-											}
-											to={paths.task({ taskId: task.id })}>
-											📝 {task.title}
-										</NavLink>
+										<TaskView task={task} className={task.status === 'cancelled' ? 'line-through' : ''} />
 									</li>
 								))}
 						</ol>
@@ -195,11 +188,7 @@ export default function ProjectDetailsPage() {
 						<ol>
 							{data.doneTasks.map((task) => (
 								<li key={task.id}>
-									<NavLink
-										className={({ isActive }) => `block p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-										to={paths.task({ taskId: task.id })}>
-										📝 {task.title}
-									</NavLink>
+									<TaskView task={task} />
 								</li>
 							))}
 						</ol>
