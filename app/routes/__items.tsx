@@ -196,7 +196,8 @@ export default function App() {
 															} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 														}
 														to={paths.area({ areaId: area.id })}>
-														📝 {area.title}
+														<RectangleStackIcon className="mr-3 h-6 w-6" />
+														{area.title}
 													</NavLink>
 
 													<ol>
