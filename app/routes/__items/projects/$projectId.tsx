@@ -1,9 +1,11 @@
 import type { Heading, Task } from '@prisma/client';
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { Form, useCatch, useLoaderData } from '@remix-run/react';
+import { Form, useCatch, useFetcher, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
 import invariant from 'tiny-invariant';
+import { AlertDialog } from '~/components/AlertDialog';
+import Button from '~/components/Button';
 import NewTask from '~/components/NewTask';
 import TaskView from '~/components/TaskView';
 import { convertHeadingToProject, deleteProject, getProject, toggleProjectComplete } from '~/models/project.server';
@@ -42,6 +44,9 @@ export async function loader({ request, params }: LoaderArgs) {
 			project.deleted != null || project.completedDate != null
 				? []
 				: project.tasks.filter((task) => task.status !== 'in-progress').filter((task) => task.deleted == null),
+		outstandingTasks: project.tasks
+			.filter((task) => task.status === 'in-progress')
+			.filter((task) => task.deleted == null),
 	});
 }
 
@@ -63,13 +68,14 @@ export async function action({ request, params }: ActionArgs) {
 		return redirect(paths.project({ projectId: project.id }));
 	} else if (['markProjectAsComplete', 'markProjectAsIncomplete'].includes(intent)) {
 		const completedDate = data.get('completedDate') ?? '';
+		const tasksIntent = data.get('tasksIntent') ?? '';
 		invariant(typeof completedDate === 'string', 'must provide completedDate');
 
 		await toggleProjectComplete({
 			userId,
 			id: params.projectId,
 			completedDate: completedDate.length === 0 ? new Date() : null,
-			taskStatus: 'completed',
+			taskStatus: tasksIntent === 'markAsComplete' ? 'completed' : 'cancelled',
 		});
 		return json({});
 	}
@@ -81,38 +87,76 @@ export default function ProjectDetailsPage() {
 	const data = useLoaderData<typeof loader>();
 	const [showLoggedItems, setShowLoggedItems] = useState(false);
 
+	const [showCompletionConfirmation, setShowCompletionConfirmation] = useState(false);
+	const toggleComplete = useFetcher();
+
 	return (
 		<div>
 			<div className="flex items-center">
 				<h3 className="text-2xl font-bold">{data.project.title}</h3>
 
-				<Form
+				<toggleComplete.Form
 					method="post"
 					className="ml-8"
 					onSubmit={(event) => {
-						const outstandingTasks = data.project.tasks.filter(
-							(task) => task.deleted == null && task.status === 'in-progress'
-						);
-						// todo: allow cancelling and completing
-						if (
-							outstandingTasks.length > 0 &&
-							!window.confirm(
-								`There are still ${outstandingTasks.length} to-dos in this project that you haven’t completed. What would you like to do with them?`
-							)
-						) {
+						if (data.outstandingTasks.length > 0 && data.project.completedDate == null) {
 							event.preventDefault();
+							setShowCompletionConfirmation(true);
+						} else {
+							setShowCompletionConfirmation(false);
 						}
 					}}>
 					<input type="hidden" name="completedDate" value={data.project.completedDate ?? ''} />
 
-					<button
+					<Button
 						type="submit"
-						className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
 						name="intent"
 						value={data.project.completedDate == null ? 'markProjectAsComplete' : 'markProjectAsIncomplete'}>
 						{data.project.completedDate == null ? 'Complete' : 'Mark as not done'}
-					</button>
-				</Form>
+					</Button>
+				</toggleComplete.Form>
+
+				<AlertDialog open={showCompletionConfirmation}>
+					<AlertDialog.Content>
+						<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+						<AlertDialog.Description>
+							There {data.outstandingTasks.length === 1 ? 'is' : 'are'} still {data.outstandingTasks.length} to-do
+							{data.outstandingTasks.length === 1 ? '' : 's'} in this project that you haven’t completed. What would you
+							like to do with {data.outstandingTasks.length === 1 ? 'it' : 'them'}?
+						</AlertDialog.Description>
+
+						<div className="flex justify-between">
+							<AlertDialog.Cancel>
+								<Button className="mr-6" onClick={() => setShowCompletionConfirmation(false)}>
+									Cancel
+								</Button>
+							</AlertDialog.Cancel>
+
+							<div className="flex">
+								<toggleComplete.Form method="post" onSubmit={() => setShowCompletionConfirmation(false)}>
+									<input type="hidden" name="completedDate" value={data.project.completedDate ?? ''} />
+									<input type="hidden" name="tasksIntent" value="markAsComplete" />
+
+									<AlertDialog.Action>
+										<Button type="submit" className="mr-1" name="intent" value="markProjectAsComplete">
+											Mark as Completed
+										</Button>
+									</AlertDialog.Action>
+								</toggleComplete.Form>
+								<toggleComplete.Form method="post" onSubmit={() => setShowCompletionConfirmation(false)}>
+									<input type="hidden" name="completedDate" value={data.project.completedDate ?? ''} />
+									<input type="hidden" name="tasksIntent" value="markAsCancelled" />
+
+									<AlertDialog.Action>
+										<Button type="submit" name="intent" value="markProjectAsComplete">
+											Mark as Canceled
+										</Button>
+									</AlertDialog.Action>
+								</toggleComplete.Form>
+							</div>
+						</div>
+					</AlertDialog.Content>
+				</AlertDialog>
 
 				{data.project.deleted == null && (
 					<Form method="post" className="ml-2">
