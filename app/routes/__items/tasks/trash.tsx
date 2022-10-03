@@ -2,7 +2,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Form, NavLink, useLoaderData } from '@remix-run/react';
-import invariant from 'ts-invariant';
+import invariant from 'tiny-invariant';
 import { getDeletedProjects } from '~/models/project.server';
 import { getDeletedTasks } from '~/models/task.server';
 import { permaDeleteAllDeletedItems } from '~/models/trash.server';

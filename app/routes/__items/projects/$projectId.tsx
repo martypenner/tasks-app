@@ -3,7 +3,7 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, useCatch, useFetcher, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
-import invariant from 'ts-invariant';
+import invariant from 'tiny-invariant';
 import { AlertDialog } from '~/components/AlertDialog';
 import Button from '~/components/Button';
 import NewTask from '~/components/NewTask';
