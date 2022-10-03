@@ -8,13 +8,7 @@ import { AlertDialog } from '~/components/AlertDialog';
 import Button from '~/components/Button';
 import NewTask from '~/components/NewTask';
 import TaskView from '~/components/TaskView';
-import {
-	archiveHeading,
-	convertHeadingToProject,
-	deleteProject,
-	getProject,
-	toggleProjectComplete,
-} from '~/models/project.server';
+import { convertHeadingToProject, deleteProject, getProject, toggleProjectComplete } from '~/models/project.server';
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
@@ -58,15 +52,20 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export async function action({ request, params }: ActionArgs) {
 	const userId = await requireUserId(request);
-	const { projectId } = params;
-	invariant(projectId, 'projectId not found');
+	invariant(params.projectId, 'projectId not found');
 
 	const data = await request.formData();
 	const intent = data.get('intent');
 	invariant(typeof intent === 'string', 'must provide an intent');
 
 	if (intent === 'deleteProject') {
-		await deleteProject({ userId, id: projectId });
+		await deleteProject({ userId, id: params.projectId });
+	} else if (intent === 'convertToProject') {
+		const headingId = data.get('headingId');
+		invariant(typeof headingId === 'string', 'headingId not found');
+
+		const project = await convertHeadingToProject({ userId, id: headingId });
+		return redirect(paths.project({ projectId: project.id }));
 	} else if (['markProjectAsComplete', 'markProjectAsIncomplete'].includes(intent)) {
 		const completedDate = data.get('completedDate') ?? '';
 		const tasksIntent = data.get('tasksIntent') ?? '';
@@ -74,23 +73,11 @@ export async function action({ request, params }: ActionArgs) {
 
 		await toggleProjectComplete({
 			userId,
-			id: projectId,
+			id: params.projectId,
 			completedDate: completedDate.length === 0 ? new Date() : null,
 			taskStatus: tasksIntent === 'markAsComplete' ? 'completed' : 'cancelled',
 		});
 		return json({});
-	} else if (intent === 'convertToProject') {
-		const headingId = data.get('headingId');
-		invariant(typeof headingId === 'string', 'headingId not found');
-
-		const project = await convertHeadingToProject({ userId, id: headingId });
-		return redirect(paths.project({ projectId: project.id }));
-	} else if (intent === 'archive') {
-		const headingId = data.get('headingId');
-		invariant(typeof headingId === 'string', 'headingId not found');
-
-		await archiveHeading({ userId, id: headingId });
-		return redirect(paths.project({ projectId }));
 	}
 
 	return redirect(paths.inbox({}));
@@ -175,9 +162,13 @@ export default function ProjectDetailsPage() {
 					<Form method="post" className="ml-2">
 						<input type="hidden" name="projectId" value={data.project.id} />
 
-						<Button type="submit" name="intent" value="deleteProject">
+						<button
+							type="submit"
+							className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+							name="intent"
+							value="deleteProject">
 							Delete
-						</Button>
+						</button>
 					</Form>
 				)}
 			</div>
@@ -202,16 +193,13 @@ export default function ProjectDetailsPage() {
 								<Form method="post" className="ml-8">
 									<input type="hidden" name="headingId" value={heading.id} />
 
-									<Button type="submit" name="intent" value="convertToProject">
+									<button
+										type="submit"
+										className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+										name="intent"
+										value="convertToProject">
 										Convert to project
-									</Button>
-
-									{/* Allow archiving headings with no active tasks */}
-									{tasks.filter((task) => task.completedDate == null).length === 0 && (
-										<Button type="submit" className="ml-2" name="intent" value="archive">
-											Archive
-										</Button>
-									)}
+									</button>
 								</Form>
 							</div>
 						)}

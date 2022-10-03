@@ -149,10 +149,3 @@ export async function convertHeadingToProject({ id, userId }: { id: Heading['id'
 
 	return project;
 }
-
-export async function archiveHeading({ id, userId }: { id: Heading['id']; userId: User['id'] }) {
-	return prisma.heading.updateMany({
-		where: { id, userId },
-		data: { archived: new Date() },
-	});
-}
