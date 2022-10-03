@@ -2,7 +2,7 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, NavLink, useCatch, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
-import invariant from 'tiny-invariant';
+import invariant from 'ts-invariant';
 import NewTask from '~/components/NewTask';
 import TaskView from '~/components/TaskView';
 import { deleteArea, getArea } from '~/models/area.server';
