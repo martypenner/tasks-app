@@ -1,29 +1,74 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/typescript-node
 {
-	"name": "Tasks app",
-	"build": { "dockerfile": "Dockerfile" },
-	"containerEnv": {
-		"NODE_ENV": "development"
+	"name": "Tasks app - Remix",
+	"build": {
+		"dockerfile": "Dockerfile",
+		// Update 'VARIANT' to pick a Node version: 18, 16, 14.
+		// Append -bullseye or -buster to pin to an OS version.
+		// Use -bullseye variants on local on arm64/Apple Silicon.
+		"args": {
+			"VARIANT": "16-bullseye"
+		}
 	},
+
 	"mounts": [
 		// Mount npmrc so we have auth
-		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.npmrc,target=/home/node/.npmrc,type=bind,consistency=cached",
-		// Mount the npm cache to speed up installs
-		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.npm,target=/home/node/.npm,type=bind,consistency=cached"
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.npmrc,target=/home/node/.npmrc,type=bind,consistency=cached"
 	],
-	"postCreateCommand": "npm install",
-	"extensions": [
-		"dbaeumer.vscode-eslint",
-		"esbenp.prettier-vscode",
-		"tauri-apps.tauri-vscode",
-		"rust-lang.rust-analyzer"
-	],
-	"settings": {
-		"terminal.integrated.defaultProfile.linux": "zsh",
-		"editor.formatOnSave": true,
-		"editor.codeActionsOnSave": {
-			"source.fixAll": true,
-			"source.organizeImports": true,
-			"source.sortMembers": true
+
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"bodil.prettier-toml",
+				"foxundermoon.shell-format",
+				"prisma.prisma",
+				"tauri-apps.tauri-vscode",
+				"rust-lang.rust-analyzer",
+				"naumovs.color-highlight",
+				"tamasfe.even-better-toml",
+				"github.vscode-pull-request-github",
+				"eamodio.gitlens",
+				"ms-vsliveshare.vslivesh",
+				"doggy8088.quicktype-refresh",
+				"snyk-security.snyk-vulnerability-scanner",
+				"alexcvzz.vscode-sqlite",
+				"bradlc.vscode-tailwindcss",
+				"gruntfuggly.todo-tree",
+				"zixuanchen.vitest-explorer"
+			],
+
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "zsh",
+				"zsh": {
+					"path": "/bin/zsh"
+				},
+				"editor.formatOnSave": true,
+				"editor.codeActionsOnSave": {
+					"source.fixAll": true,
+					"source.organizeImports": true,
+					"source.sortMembers": true
+				}
+			}
 		}
+	},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "npm install",
+
+	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "node",
+	"features": {
+		"git": "os-provided",
+		"github-cli": "latest",
+		"rust": "latest"
 	}
 }

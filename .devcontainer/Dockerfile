@@ -1,13 +1,19 @@
-FROM node:16-alpine
+# [Choice] Node.js version (use -bullseye variants on local arm64/Apple Silicon): 18, 16, 14, 18-bullseye, 16-bullseye, 14-bullseye, 18-buster, 16-buster, 14-buster
+ARG VARIANT=16-bullseye
+FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0-${VARIANT}
 
-# Let scripts know we're running in Docker (useful for containerized development)
-ENV RUNNING_IN_DOCKER true
-
-RUN apk add --no-cache git openssh-client zsh
+# [Optional] Uncomment this section to install additional OS packages.
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
+  apt-get -y install --no-install-recommends zsh
 
 # Set up ZSH as the unprivileged user (we just need to start it; it'll initialize our setup itself)
 USER node
-# set up oh my zsh
-RUN cd "$HOME" && wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh && sh install.sh
 # initialize ZSH
 RUN /bin/zsh "$HOME/.zshrc"
+
+# [Optional] Uncomment if you want to install an additional version of node using nvm
+# ARG EXTRA_NODE_VERSION=10
+# RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
+
+# [Optional] Uncomment if you want to install more global node packages
+# RUN su node -c "npm install -g <your-package-list -here>"
