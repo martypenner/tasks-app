@@ -1,0 +1,29 @@
+{
+	"name": "Tasks app",
+	"build": { "dockerfile": "Dockerfile" },
+	"containerEnv": {
+		"NODE_ENV": "development"
+	},
+	"mounts": [
+		// Mount npmrc so we have auth
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.npmrc,target=/home/node/.npmrc,type=bind,consistency=cached",
+		// Mount the npm cache to speed up installs
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.npm,target=/home/node/.npm,type=bind,consistency=cached"
+	],
+	"postCreateCommand": "npm install",
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"tauri-apps.tauri-vscode",
+		"rust-lang.rust-analyzer"
+	],
+	"settings": {
+		"terminal.integrated.defaultProfile.linux": "zsh",
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.fixAll": true,
+			"source.organizeImports": true,
+			"source.sortMembers": true
+		}
+	}
+}
