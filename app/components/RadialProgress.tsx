@@ -22,7 +22,7 @@ function RadialProgress({ progress, className = '', ...rest }: Props) {
 				r={half}
 				cx={half}
 				cy={half}
-				className={`fill-gray-800 stroke-blue-500 stroke-[${strokeWidth}px]`}
+				className="fill-gray-800 stroke-blue-500 stroke-[24px]"
 				style={{
 					strokeDasharray: `${clampedProgress} ${max}`,
 				}}
