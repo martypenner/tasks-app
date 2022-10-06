@@ -35,7 +35,7 @@ export async function loader({ request, params }: LoaderArgs) {
 	// Initialize the map with the default "heading" so it's first in the order
 	const groupedTasksByHeading = new Map<Heading | null, Task[]>([[null, []]]);
 	for (const task of project.tasks.filter((task) => (project.deleted == null ? task.deleted == null : true))) {
-		// Find the heading instead of setting it based on task.Heading so we have referential stability
+		// Find the heading instead of setting it based on task.Heading so we have referential stability in the map
 		const heading = project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null;
 		groupedTasksByHeading.set(
 			task.Heading?.archived ? null : heading,
@@ -43,13 +43,26 @@ export async function loader({ request, params }: LoaderArgs) {
 		);
 	}
 
+	const archivedHeadings = project.Headings.filter((heading) => heading.archived);
+	const groupedTasksByArchivedHeading = new Map<Heading | null, Task[]>([[null, []]]);
+	archivedHeadings.forEach((heading) => groupedTasksByArchivedHeading.set(heading, []));
+	let numGroupedDoneTasks = groupedTasksByArchivedHeading.size;
+	for (const task of project.tasks.filter((task) => task.deleted == null && task.status !== 'in-progress')) {
+		const heading = task.Heading?.archived
+			? // Find the heading instead of setting it based on task.Heading so we have referential stability in the map
+			  project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null
+			: null;
+		groupedTasksByArchivedHeading.set(heading, (groupedTasksByArchivedHeading.get(heading) ?? []).concat(task));
+		numGroupedDoneTasks++;
+	}
+
 	return json({
 		project,
+
 		groupedTasks: Array.from(groupedTasksByHeading),
-		doneTasks:
-			project.deleted != null || project.completedDate != null
-				? []
-				: project.tasks.filter((task) => task.status !== 'in-progress').filter((task) => task.deleted == null),
+		groupedDoneTasks: Array.from(groupedTasksByArchivedHeading),
+		numGroupedDoneTasks,
+
 		outstandingTasks: project.tasks
 			.filter((task) => task.status === 'in-progress')
 			.filter((task) => task.deleted == null),
@@ -233,22 +246,48 @@ export default function ProjectDetailsPage() {
 				))}
 			</ol>
 
-			{data.doneTasks.length > 0 && (
+			{data.numGroupedDoneTasks > 0 && (
 				<Fragment>
 					<button type="button" className="mt-4" onClick={() => setShowLoggedItems(!showLoggedItems)}>
 						{showLoggedItems
-							? `Hide logged item${data.doneTasks.length === 1 ? '' : 's'}`
-							: `Show ${data.doneTasks.length} logged item${data.doneTasks.length === 1 ? '' : 's'}`}
+							? `Hide logged item${data.numGroupedDoneTasks === 1 ? '' : 's'}`
+							: `Show ${data.numGroupedDoneTasks} logged item${data.numGroupedDoneTasks === 1 ? '' : 's'}`}
 					</button>
-					{showLoggedItems && (
-						<ol>
-							{data.doneTasks.map((task) => (
-								<li key={task.id}>
-									<TaskView task={task} />
+					<ol>
+						{showLoggedItems &&
+							data.groupedDoneTasks.map(([heading, tasks]) => (
+								<li key={heading?.id ?? 'default'}>
+									{heading != null && (
+										<div className="mt-8 mb-4 flex items-center border-b-2 border-b-blue-500 pb-2">
+											<h4 className="text-xl">{heading.title}</h4>
+
+											<Form method="post" className="ml-8">
+												<input type="hidden" name="headingId" value={heading.id} />
+
+												<Button type="submit" name="intent" value="convertToProject">
+													Convert to project
+												</Button>
+
+												{/* Allow restored archived headings */}
+												{tasks.filter((task) => task.completedDate == null).length === 0 && (
+													<Button type="submit" className="ml-2" name="intent" value="restore">
+														Restore
+													</Button>
+												)}
+											</Form>
+										</div>
+									)}
+
+									<ol>
+										{tasks.map((task) => (
+											<li key={task.id}>
+												<TaskView task={task} className={task.status === 'cancelled' ? 'line-through' : ''} />
+											</li>
+										))}
+									</ol>
 								</li>
 							))}
-						</ol>
-					)}
+					</ol>
 				</Fragment>
 			)}
 		</div>

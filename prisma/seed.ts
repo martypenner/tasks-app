@@ -13,6 +13,8 @@ async function seed() {
 
 	const hashedPassword = await bcrypt.hash('racheliscool', 10);
 
+	let globalOrder = 0;
+
 	const user = await prisma.user.create({
 		data: {
 			email,
@@ -28,7 +30,7 @@ async function seed() {
 			userId: user.id,
 			title: 'My important area',
 			createdAt: new Date('2020-01-01'),
-			globalOrder: 0,
+			globalOrder: globalOrder++,
 		},
 	});
 	const project = await prisma.project.create({
@@ -36,14 +38,14 @@ async function seed() {
 			userId: user.id,
 			title: 'My cool project',
 			areaId: area.id,
-			globalOrder: 0,
+			globalOrder: globalOrder++,
 		},
 	});
 	const independentProject = await prisma.project.create({
 		data: {
 			userId: user.id,
 			title: 'My independent project',
-			globalOrder: 1,
+			globalOrder: globalOrder++,
 		},
 	});
 	const completedProject = await prisma.project.create({
@@ -51,7 +53,7 @@ async function seed() {
 			userId: user.id,
 			title: 'My completed project',
 			completedDate: new Date(),
-			globalOrder: 2,
+			globalOrder: globalOrder++,
 		},
 	});
 	const deletedProject = await prisma.project.create({
@@ -59,7 +61,7 @@ async function seed() {
 			userId: user.id,
 			title: 'My deleted project',
 			deleted: new Date(),
-			globalOrder: 3,
+			globalOrder: globalOrder++,
 		},
 	});
 	const heading = await prisma.heading.create({
@@ -67,7 +69,7 @@ async function seed() {
 			userId: user.id,
 			title: 'My useful heading',
 			projectId: project.id,
-			globalOrder: 0,
+			globalOrder: globalOrder++,
 		},
 	});
 	const heading2 = await prisma.heading.create({
@@ -75,7 +77,25 @@ async function seed() {
 			userId: user.id,
 			title: 'My other useful heading',
 			projectId: project.id,
-			globalOrder: 1,
+			globalOrder: globalOrder++,
+		},
+	});
+	const heading3 = await prisma.heading.create({
+		data: {
+			userId: user.id,
+			title: 'My archived heading',
+			projectId: project.id,
+			archived: new Date(),
+			globalOrder: globalOrder++,
+		},
+	});
+	await prisma.heading.create({
+		data: {
+			userId: user.id,
+			title: 'My empty archived heading',
+			projectId: project.id,
+			archived: new Date(),
+			globalOrder: globalOrder++,
 		},
 	});
 
@@ -86,14 +106,14 @@ async function seed() {
 			status: 'completed',
 			completedDate: new Date(),
 			userId: user.id,
-			globalOrder: 0,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
 		data: {
 			title: 'My second task',
 			userId: user.id,
-			globalOrder: 1,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -101,7 +121,7 @@ async function seed() {
 			title: 'My third task',
 			userId: user.id,
 			when: 'today',
-			globalOrder: 2,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -110,7 +130,7 @@ async function seed() {
 			userId: user.id,
 			when: 'specificDate',
 			whenDate: new Date(`${new Date().getFullYear() + 1}-01-01`),
-			globalOrder: 3,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -118,7 +138,7 @@ async function seed() {
 			title: 'My fifth task',
 			userId: user.id,
 			when: 'anytime',
-			globalOrder: 4,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -126,7 +146,7 @@ async function seed() {
 			title: 'My sixth task',
 			userId: user.id,
 			when: 'someday',
-			globalOrder: 5,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -136,7 +156,7 @@ async function seed() {
 			status: 'completed',
 			completedDate: new Date(),
 			createdAt: new Date('2020-01-01'),
-			globalOrder: 6,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -144,7 +164,7 @@ async function seed() {
 			title: 'My eighth task',
 			userId: user.id,
 			deleted: new Date('2020-01-01'),
-			globalOrder: 7,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -152,7 +172,7 @@ async function seed() {
 			title: 'My project task',
 			userId: user.id,
 			projectId: project.id,
-			globalOrder: 8,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -161,7 +181,7 @@ async function seed() {
 			userId: user.id,
 			projectId: project.id,
 			headingId: heading.id,
-			globalOrder: 9,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -170,7 +190,7 @@ async function seed() {
 			userId: user.id,
 			projectId: project.id,
 			headingId: heading2.id,
-			globalOrder: 10,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -181,7 +201,28 @@ async function seed() {
 			headingId: heading2.id,
 			status: 'completed',
 			completedDate: new Date(),
-			globalOrder: 11,
+			globalOrder: globalOrder++,
+		},
+	});
+	await prisma.task.create({
+		data: {
+			title: 'My fifth and completed project task',
+			userId: user.id,
+			projectId: project.id,
+			status: 'completed',
+			completedDate: new Date(),
+			globalOrder: globalOrder++,
+		},
+	});
+	await prisma.task.create({
+		data: {
+			title: 'My sixth and completed project task',
+			userId: user.id,
+			projectId: project.id,
+			headingId: heading3.id,
+			status: 'completed',
+			completedDate: new Date(),
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -192,7 +233,7 @@ async function seed() {
 			status: 'completed',
 			completedDate: new Date(),
 			deleted: new Date(),
-			globalOrder: 12,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -202,7 +243,7 @@ async function seed() {
 			projectId: completedProject.id,
 			status: 'completed',
 			completedDate: new Date(),
-			globalOrder: 13,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -211,7 +252,7 @@ async function seed() {
 			userId: user.id,
 			areaId: area.id,
 			createdAt: new Date('2020-01-01'),
-			globalOrder: 14,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -221,7 +262,7 @@ async function seed() {
 			areaId: area.id,
 			status: 'completed',
 			completedDate: new Date(),
-			globalOrder: 15,
+			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
@@ -231,7 +272,7 @@ async function seed() {
 			projectId: independentProject.id,
 			status: 'completed',
 			completedDate: new Date(),
-			globalOrder: 16,
+			globalOrder: globalOrder++,
 		},
 	});
 
