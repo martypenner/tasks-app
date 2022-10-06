@@ -40,7 +40,8 @@
 				"alexcvzz.vscode-sqlite",
 				"bradlc.vscode-tailwindcss",
 				"gruntfuggly.todo-tree",
-				"zixuanchen.vitest-explorer"
+				"zixuanchen.vitest-explorer",
+				"tonybaloney.vscode-pets"
 			],
 
 			"settings": {
