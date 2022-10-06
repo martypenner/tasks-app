@@ -30,7 +30,10 @@ export function getProjectsWithoutAreas({ userId }: { userId: User['id'] }) {
 	return prisma.project.findMany({
 		where: { userId, areaId: null, deleted: null, completedDate: null },
 		include: {
-			tasks: { orderBy: { globalOrder: 'desc' } },
+			tasks: {
+				where: { deleted: null },
+				orderBy: { globalOrder: 'desc' },
+			},
 		},
 		orderBy: { globalOrder: 'desc' },
 	});
