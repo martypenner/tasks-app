@@ -117,8 +117,13 @@ export async function toggleProjectComplete({
 	// Mark child tasks as done if we're marking the project as done.
 	if (completedDate != null) {
 		await prisma.task.updateMany({
-			where: { projectId: id, userId },
-			data: { status: taskStatus },
+			where: { projectId: id, userId, status: 'in-progress' },
+			data: { status: taskStatus, ...(taskStatus === 'completed' ? { completedDate } : {}) },
+		});
+		// Mark unarchived headings as arhived.
+		await prisma.heading.updateMany({
+			where: { projectId: id, userId, archived: null },
+			data: { archived: new Date() },
 		});
 	}
 	return prisma.project.updateMany({

@@ -34,34 +34,52 @@ export async function loader({ request, params }: LoaderArgs) {
 
 	// Initialize the map with the default "heading" so it's first in the order
 	const groupedTasksByHeading = new Map<Heading | null, Task[]>([[null, []]]);
-	for (const task of project.tasks.filter((task) => (project.deleted == null ? task.deleted == null : true))) {
-		// Find the heading instead of setting it based on task.Heading so we have referential stability in the map
-		const heading = project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null;
-		groupedTasksByHeading.set(
-			task.Heading?.archived ? null : heading,
-			(groupedTasksByHeading.get(heading) ?? []).concat(task)
-		);
-	}
-
+	let groupedTasksByArchivedHeading = new Map<Heading | null, Task[]>([[null, []]]);
+	let numGroupedDoneItems = 0;
 	const archivedHeadings = project.Headings.filter((heading) => heading.archived);
-	const groupedTasksByArchivedHeading = new Map<Heading | null, Task[]>([[null, []]]);
-	archivedHeadings.forEach((heading) => groupedTasksByArchivedHeading.set(heading, []));
-	let numGroupedDoneTasks = groupedTasksByArchivedHeading.size;
-	for (const task of project.tasks.filter((task) => task.deleted == null && task.status !== 'in-progress')) {
-		const heading = task.Heading?.archived
-			? // Find the heading instead of setting it based on task.Heading so we have referential stability in the map
-			  project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null
-			: null;
-		groupedTasksByArchivedHeading.set(heading, (groupedTasksByArchivedHeading.get(heading) ?? []).concat(task));
-		numGroupedDoneTasks++;
+	// In-progress / deleted projects separate completed/cancelled tasks and archived
+	// headings from the in-progress ones.
+	// Completed / cancelled projects show everything in one view, i.e. no hidden items.
+	if (!project.completedDate || project.deleted) {
+		for (const task of project.tasks) {
+			// Find the heading instead of setting it based on task.Heading so we have referential stability in the map
+			const foundHeading = project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null;
+			const heading = task.Heading?.archived && !project.completedDate ? null : foundHeading;
+			groupedTasksByHeading.set(heading, (groupedTasksByHeading.get(heading) ?? []).concat(task));
+		}
+
+		// Initialize the map with the default "heading" so it's first in the order
+		groupedTasksByArchivedHeading = new Map<Heading | null, Task[]>([[null, []]]);
+		archivedHeadings.forEach((heading) => groupedTasksByArchivedHeading.set(heading, []));
+		numGroupedDoneItems = groupedTasksByArchivedHeading.size - 1; // account for the null heading
+
+		for (const task of project.tasks
+			.filter((task) => task.status !== 'in-progress')
+			.filter((task) => (project.deleted != null ? true : task.deleted == null))) {
+			const heading = task.Heading?.archived
+				? // Find the heading instead of setting it based on task.Heading so we have referential stability in the map
+				  project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null
+				: null;
+			groupedTasksByArchivedHeading.set(heading, (groupedTasksByArchivedHeading.get(heading) ?? []).concat(task));
+			numGroupedDoneItems++;
+		}
+	} else {
+		archivedHeadings.forEach((heading) => groupedTasksByHeading.set(heading, []));
+
+		for (const task of project.tasks.filter((task) => task.deleted == null)) {
+			// Find the heading instead of setting it based on task.Heading so we have referential stability in the map
+			const heading = project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null;
+			groupedTasksByHeading.set(heading, (groupedTasksByHeading.get(heading) ?? []).concat(task));
+		}
 	}
 
 	return json({
 		project,
 
+		showLoggedItems: !project.completedDate,
 		groupedTasks: Array.from(groupedTasksByHeading),
 		groupedDoneTasks: Array.from(groupedTasksByArchivedHeading),
-		numGroupedDoneTasks,
+		numGroupedDoneItems,
 
 		outstandingTasks: project.tasks
 			.filter((task) => task.status === 'in-progress')
@@ -231,11 +249,7 @@ export default function ProjectDetailsPage() {
 
 						<ol>
 							{tasks
-								.filter((task) =>
-									data.project.deleted != null || data.project.completedDate != null
-										? true
-										: task.status === 'in-progress'
-								)
+								.filter((task) => (data.project.completedDate != null ? true : task.status === 'in-progress'))
 								.map((task) => (
 									<li key={task.id}>
 										<TaskView task={task} className={task.status === 'cancelled' ? 'line-through' : ''} />
@@ -246,12 +260,12 @@ export default function ProjectDetailsPage() {
 				))}
 			</ol>
 
-			{data.numGroupedDoneTasks > 0 && (
+			{data.showLoggedItems && data.numGroupedDoneItems > 0 && (
 				<Fragment>
 					<button type="button" className="mt-4" onClick={() => setShowLoggedItems(!showLoggedItems)}>
 						{showLoggedItems
-							? `Hide logged item${data.numGroupedDoneTasks === 1 ? '' : 's'}`
-							: `Show ${data.numGroupedDoneTasks} logged item${data.numGroupedDoneTasks === 1 ? '' : 's'}`}
+							? `Hide logged item${data.numGroupedDoneItems === 1 ? '' : 's'}`
+							: `Show ${data.numGroupedDoneItems} logged item${data.numGroupedDoneItems === 1 ? '' : 's'}`}
 					</button>
 					<ol>
 						{showLoggedItems &&
