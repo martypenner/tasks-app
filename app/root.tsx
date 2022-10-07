@@ -23,12 +23,20 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
 	return (
-		<html lang="en" className="h-full bg-gray-100">
+		<html
+			lang="en"
+			className={`h-full ${
+				typeof localStorage !== 'undefined' &&
+				(localStorage.theme === 'dark' ||
+					(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches))
+					? 'dark'
+					: ''
+			}`}>
 			<head>
 				<Meta />
 				<Links />
 			</head>
-			<body className="h-full">
+			<body className="h-full bg-gray-100 text-black dark:bg-gray-800 dark:text-gray-300">
 				<Outlet />
 				<ScrollRestoration />
 				<Scripts />

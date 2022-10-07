@@ -53,6 +53,24 @@ const userNavigation = [
 export default function App() {
 	const data = useLoaderData<typeof loader>();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const [isDarkMode, setIsDarkMode] = useState(
+		typeof localStorage === 'undefined'
+			? false
+			: localStorage.theme === 'dark' ||
+					(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+	);
+
+	function toggleDarkMode() {
+		if (isDarkMode) {
+			document.documentElement.classList.remove('dark');
+			localStorage.theme = 'light';
+		} else {
+			document.documentElement.classList.add('dark');
+			localStorage.theme = 'dark';
+		}
+
+		setIsDarkMode((mode) => !mode);
+	}
 
 	return (
 		<div>
@@ -66,7 +84,7 @@ export default function App() {
 						leave="transition-opacity ease-linear duration-300"
 						leaveFrom="opacity-100"
 						leaveTo="opacity-0">
-						<div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
+						<div className="fixed inset-0 bg-opacity-75" />
 					</Transition.Child>
 
 					<div className="fixed inset-0 z-40 flex">
@@ -78,7 +96,7 @@ export default function App() {
 							leave="transition ease-in-out duration-300 transform"
 							leaveFrom="translate-x-0"
 							leaveTo="-translate-x-full">
-							<Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
+							<Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4 dark:bg-gray-800">
 								<Transition.Child
 									as={Fragment}
 									enter="ease-in-out duration-300"
@@ -135,7 +153,7 @@ export default function App() {
 			{/* Static sidebar for desktop */}
 			<div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
 				{/* Sidebar component, swap this element with another sidebar if you like */}
-				<div className="flex min-h-0 flex-1 flex-col bg-gray-800">
+				<div className="flex min-h-0 flex-1 flex-col">
 					<div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
 						<nav className="mt-5 flex-1 px-2">
 							{navigation.map((item) => (
@@ -143,14 +161,14 @@ export default function App() {
 									key={item.name}
 									to={item.href}
 									className={({ isActive }) =>
-										`${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'} ${
+										`${isActive ? 'bg-gray-900 text-white' : 'hover:bg-gray-700 hover:text-white'} ${
 											item.itemClass
 										} group flex items-center rounded-md px-2 py-1 text-sm font-medium`
 									}>
 									{({ isActive }) => (
 										<>
 											<item.icon
-												className={`${isActive ? 'text-gray-300' : 'group-hover:text-gray-300'} ${
+												className={`${isActive ? '' : 'group-hover:text-gray-300'} ${
 													item.iconClass
 												} mr-3 h-6 w-6 flex-shrink-0`}
 												aria-hidden="true"
@@ -170,7 +188,7 @@ export default function App() {
 													<NavLink
 														className={({ isActive }) =>
 															`${
-																isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+																isActive ? 'bg-gray-900 text-white' : 'hover:bg-gray-700 hover:text-white'
 															} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 														}
 														to={paths.project({ projectId: project.id })}>
@@ -192,7 +210,7 @@ export default function App() {
 													<NavLink
 														className={({ isActive }) =>
 															`${
-																isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+																isActive ? 'bg-gray-900 text-white' : 'hover:bg-gray-700 hover:text-white'
 															} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 														}
 														to={paths.area({ areaId: area.id })}>
@@ -206,9 +224,7 @@ export default function App() {
 																<NavLink
 																	className={({ isActive }) =>
 																		`${
-																			isActive
-																				? 'bg-gray-900 text-white'
-																				: 'text-gray-300 hover:bg-gray-700 hover:text-white'
+																			isActive ? 'bg-gray-900 text-white' : 'hover:bg-gray-700 hover:text-white'
 																		} group flex items-center rounded-md px-2 py-2 text-sm font-medium`
 																	}
 																	to={paths.project({ projectId: project.id })}>
@@ -232,12 +248,12 @@ export default function App() {
 								<div>
 									<Link
 										to={paths.newProject({})}
-										className="block py-2 text-gray-300 hover:bg-gray-700 hover:text-white group-hover:text-gray-300">
+										className="block py-2 hover:bg-gray-700 hover:text-white group-hover:text-gray-300">
 										+ New project
 									</Link>
 									<Link
 										to={paths.newArea({})}
-										className="block py-2 text-gray-300 hover:bg-gray-700 hover:text-white group-hover:text-gray-300">
+										className="block py-2 hover:bg-gray-700 hover:text-white group-hover:text-gray-300">
 										+ New area
 									</Link>
 								</div>
@@ -263,13 +279,13 @@ export default function App() {
 									<label htmlFor="search-field" className="sr-only">
 										Search
 									</label>
-									<div className="relative w-full text-gray-400 focus-within:text-gray-600">
+									<div className="relative w-full text-gray-400 focus-within:text-gray-600 dark:focus-within:text-gray-300">
 										<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
 											<MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />
 										</div>
 										<input
 											id="search-field"
-											className="block h-full w-full border-transparent bg-gray-100 py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-sm"
+											className="block h-full w-full border-transparent bg-transparent py-2 pl-8 pr-3 placeholder-gray-500 focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-0 dark:placeholder-gray-400 dark:focus:placeholder-gray-500 sm:text-sm"
 											placeholder="Search"
 											type="search"
 											name="search"
@@ -277,7 +293,41 @@ export default function App() {
 									</div>
 								</form>
 							</div>
-							<div className="ml-4 flex items-center md:ml-6">
+							<div className="ml-4 flex items-center gap-3 md:ml-6">
+								<button
+									type="button"
+									aria-label="Toggle Dark Mode"
+									className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg bg-yellow-400 ring-yellow-400 transition-all hover:ring-2 dark:bg-yellow-800"
+									onClick={toggleDarkMode}>
+									{isDarkMode ? (
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											className="h-5 w-5 text-gray-800 dark:text-gray-200">
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+										</svg>
+									) : (
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											className="h-5 w-5 text-gray-800 dark:text-yellow-100">
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+										</svg>
+									)}
+								</button>
+
 								<button
 									type="button"
 									className="rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
@@ -286,7 +336,7 @@ export default function App() {
 								</button>
 
 								{/* Profile dropdown */}
-								<Menu as="div" className="relative ml-3">
+								<Menu as="div" className="relative">
 									<div>
 										<Menu.Button className="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
 											<span className="sr-only">Open user menu</span>
