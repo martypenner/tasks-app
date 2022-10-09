@@ -4,7 +4,7 @@ import { Form, useCatch, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import * as paths from '~/paths';
 
-import { deleteTask, getTask, updateTaskStatus } from '~/models/task.server';
+import { getTask, updateTaskStatus } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -26,10 +26,7 @@ export async function action({ request, params }: ActionArgs) {
 	const intent = data.get('intent');
 	invariant(typeof intent === 'string', 'must provide an intent');
 
-	if (intent === 'deleteTask') {
-		await deleteTask({ userId, id: params.taskId });
-		return redirect(paths.inbox({}));
-	} else if (['markTaskAsComplete', 'markTaskAsIncomplete', 'markTaskAsCancelled'].includes(intent)) {
+	if (['markTaskAsComplete', 'markTaskAsIncomplete', 'markTaskAsCancelled'].includes(intent)) {
 		const status = data.get('status') ?? 'false';
 		invariant(typeof status === 'string', 'must provide status');
 		await updateTaskStatus({ userId, id: params.taskId, status });
@@ -71,12 +68,12 @@ export default function TaskDetailsPage() {
 				</Form>
 
 				{data.task.deleted == null && (
-					<Form method="post" className="ml-2">
+					<Form method="post" className="ml-2" action={paths.deleteTask({ taskId: data.task.id })}>
+						<input type="hidden" name="taskId" value={data.task.id} />
+
 						<button
 							type="submit"
-							className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-							name="intent"
-							value="deleteTask">
+							className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
 							Delete
 						</button>
 					</Form>

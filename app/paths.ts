@@ -3,6 +3,7 @@ import { path } from 'static-path';
 export const allTasks = path('/tasks');
 export const task = allTasks.path(':taskId');
 export const newTask = allTasks.path('new');
+export const deleteTask = allTasks.path('delete');
 
 export const inbox = allTasks.path('inbox');
 export const today = allTasks.path('today');
