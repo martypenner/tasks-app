@@ -374,15 +374,15 @@ export default function App() {
 						</div>
 					</div>
 
-					<main className="flex-1">
+					<div className="flex-1">
 						<div className="px-4 pb-6 sm:px-6 md:px-0">
-							<div className="flex h-full min-h-screen flex-col">
+							<div className="flex h-full flex-col">
 								<main className="h-full p-6">
 									<Outlet />
 								</main>
 							</div>
 						</div>
-					</main>
+					</div>
 				</div>
 			</div>
 		</div>

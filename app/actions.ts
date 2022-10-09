@@ -16,11 +16,11 @@ export async function newTaskAction({ request }: ActionArgs) {
 	const areaId = formData.get('areaId');
 	const redirectTo = (formData.get('redirectTo') as string) ?? allTasks({});
 
-	if (typeof title !== 'string' || title.length === 0) {
+	if (typeof title !== 'string') {
 		return json(
 			{
 				errors: {
-					title: 'Title is required',
+					title: 'Title must be text',
 					notes: null,
 					when: null,
 					whenDate: null,
@@ -44,7 +44,7 @@ export async function newTaskAction({ request }: ActionArgs) {
 		);
 	}
 
-	if (typeof when !== 'string' || title.length === 0) {
+	if (typeof when !== 'string') {
 		return json(
 			{
 				errors: {
