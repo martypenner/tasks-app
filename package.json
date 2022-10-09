@@ -7,8 +7,8 @@
 		"build": "run-s build:*",
 		"build:css": "npm run generate:css -- --minify",
 		"build:remix": "remix build",
-		"package": "npm run clean && npm run build && zx ./scripts/package.mjs",
-		"package:debug": "npm run clean && npm run build && zx ./scripts/package.mjs --debug",
+		"package": "npm run build && zx ./scripts/package.mjs",
+		"package:debug": "npm run build && zx ./scripts/package.mjs --debug",
 		"dev": "run-p dev:*",
 		"dev:css": "npm run generate:css -- --watch",
 		"dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
@@ -23,8 +23,7 @@
 		"pretest:e2e:run": "npm run build",
 		"test:e2e:run": "cross-env PORT=8811 start-server-and-test start:mocks http://localhost:8811 \"npx cypress run\"",
 		"typecheck": "tsc -b && tsc -b cypress",
-		"validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
-		"clean": "rm -rf dist"
+		"validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
 	},
 	"pkg": {
 		"scripts": "build/**/*.js",
