@@ -79,7 +79,7 @@ export default function NewTask({ defaultWhen = 'inbox', projectId, areaId }: Pr
 					name="title"
 					autoFocus
 					placeholder="New To-Do"
-					className="flex w-full rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+					className="flex w-full rounded-md border-2 border-blue-500 px-3 text-lg leading-loose dark:text-gray-600"
 					aria-invalid={actionData?.errors?.title ? true : undefined}
 					aria-errormessage={actionData?.errors?.title ? 'title-error' : undefined}
 				/>
@@ -99,7 +99,7 @@ export default function NewTask({ defaultWhen = 'inbox', projectId, areaId }: Pr
 					rows={Math.max(2, notes.split('\n').length ?? 2)}
 					value={notes}
 					onChange={(event) => setNotes(event.target.value)}
-					className="flex w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
+					className="flex w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6 dark:text-gray-600"
 					aria-invalid={actionData?.errors?.notes ? true : undefined}
 					aria-errormessage={actionData?.errors?.notes ? 'notes-error' : undefined}
 				/>
@@ -143,7 +143,7 @@ export default function NewTask({ defaultWhen = 'inbox', projectId, areaId }: Pr
 							</Select.Content>
 						</Select.Portal>
 					</Select.Root> */}
-					<select name="when" ref={whenRef} defaultValue={defaultWhen}>
+					<select name="when" ref={whenRef} defaultValue={defaultWhen} className="dark:text-gray-600">
 						<option value="inbox">Inbox</option>
 						<option value="today">Today</option>
 						<option value="thisEvening">This evening</option>
