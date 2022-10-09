@@ -2,6 +2,7 @@ import { InboxIcon } from '@heroicons/react/24/outline';
 import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import { Fragment } from 'react';
 import NewTask from '~/components/NewTask';
 import TaskView from '~/components/TaskView';
 import { getTaskListItemsByWhen } from '~/models/task.server';
@@ -21,7 +22,7 @@ export default function InboxPage() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<>
+		<Fragment>
 			<NewTask key={data.taskListItems.length} defaultWhen="specificDate" />
 
 			{data.taskListItems.length === 0 ? (
@@ -35,6 +36,6 @@ export default function InboxPage() {
 					))}
 				</ol>
 			)}
-		</>
+		</Fragment>
 	);
 }

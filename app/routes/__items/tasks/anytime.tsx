@@ -1,8 +1,10 @@
 import { InboxIcon } from '@heroicons/react/24/outline';
 import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { NavLink, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
+import { Fragment } from 'react';
 import NewTask from '~/components/NewTask';
+import TaskView from '~/components/TaskView';
 import { getTaskListItemsByWhen } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
 
@@ -20,7 +22,7 @@ export default function InboxPage() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<div className="h-full w-80 border-r">
+		<Fragment>
 			<NewTask key={data.taskListItems.length} defaultWhen="anytime" />
 
 			{data.taskListItems.length === 0 ? (
@@ -29,15 +31,11 @@ export default function InboxPage() {
 				<ol>
 					{data.taskListItems.map((task) => (
 						<li key={task.id}>
-							<NavLink
-								className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-								to={`/tasks/${task.id}`}>
-								📝 {task.title}
-							</NavLink>
+							<TaskView task={task} />
 						</li>
 					))}
 				</ol>
 			)}
-		</div>
+		</Fragment>
 	);
 }

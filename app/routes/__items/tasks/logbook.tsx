@@ -2,6 +2,7 @@ import { InboxIcon } from '@heroicons/react/24/outline';
 import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { NavLink, useLoaderData } from '@remix-run/react';
+import { Fragment } from 'react';
 import TaskView from '~/components/TaskView';
 import { getCompletedProjects } from '~/models/project.server';
 import { getCompletedTasks } from '~/models/task.server';
@@ -32,7 +33,7 @@ export default function InboxPage() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<>
+		<Fragment>
 			{data.items.length === 0 ? (
 				<InboxIcon className="p-4" />
 			) : (
@@ -53,6 +54,6 @@ export default function InboxPage() {
 					))}
 				</ol>
 			)}
-		</>
+		</Fragment>
 	);
 }

@@ -2,6 +2,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Form, NavLink, useLoaderData } from '@remix-run/react';
+import { Fragment } from 'react';
 import invariant from 'tiny-invariant';
 import TaskView from '~/components/TaskView';
 import { getDeletedProjects } from '~/models/project.server';
@@ -40,7 +41,7 @@ export default function InboxPage() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<>
+		<Fragment>
 			{data.items.length === 0 ? (
 				<TrashIcon className="p-4" />
 			) : (
@@ -69,6 +70,6 @@ export default function InboxPage() {
 					</ol>
 				</>
 			)}
-		</>
+		</Fragment>
 	);
 }
