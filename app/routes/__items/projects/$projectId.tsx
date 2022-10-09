@@ -1,7 +1,8 @@
-import type { Heading, Task } from '@prisma/client';
+import type { Heading as THeading, Task } from '@prisma/client';
 import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, useCatch, useFetcher, useLoaderData } from '@remix-run/react';
+import type { ReactNode } from 'react';
 import { Fragment, useState } from 'react';
 import invariant from 'tiny-invariant';
 import { AlertDialog } from '~/components/AlertDialog';
@@ -33,8 +34,8 @@ export async function loader({ request, params }: LoaderArgs) {
 	}
 
 	// Initialize the map with the default "heading" so it's first in the order
-	const groupedTasksByHeading = new Map<Heading | null, Task[]>([[null, []]]);
-	let groupedTasksByArchivedHeading = new Map<Heading | null, Task[]>([[null, []]]);
+	const groupedTasksByHeading = new Map<THeading | null, Task[]>([[null, []]]);
+	let groupedTasksByArchivedHeading = new Map<THeading | null, Task[]>([[null, []]]);
 	let numGroupedDoneItems = 0;
 	const archivedHeadings = project.Headings.filter((heading) => heading.archived);
 	// In-progress / deleted projects separate completed/cancelled tasks and archived
@@ -49,7 +50,7 @@ export async function loader({ request, params }: LoaderArgs) {
 		}
 
 		// Initialize the map with the default "heading" so it's first in the order
-		groupedTasksByArchivedHeading = new Map<Heading | null, Task[]>([[null, []]]);
+		groupedTasksByArchivedHeading = new Map<THeading | null, Task[]>([[null, []]]);
 		archivedHeadings.forEach((heading) => groupedTasksByArchivedHeading.set(heading, []));
 		numGroupedDoneItems = groupedTasksByArchivedHeading.size - 1; // account for the null heading
 
@@ -227,24 +228,14 @@ export default function ProjectDetailsPage() {
 				{data.groupedTasks.map(([heading, tasks]) => (
 					<li key={heading?.id ?? 'default'}>
 						{heading != null && (
-							<div className="mt-8 mb-4 flex items-center border-b-2 border-b-blue-500 pb-2">
-								<h4 className="text-xl">{heading.title}</h4>
-
-								<Form method="post" className="ml-8">
-									<input type="hidden" name="headingId" value={heading.id} />
-
-									<Button type="submit" name="intent" value="convertToProject">
-										Convert to project
+							<Heading heading={heading}>
+								{/* Allow archiving headings with no active tasks */}
+								{tasks.filter((task) => task.completedDate == null).length === 0 && (
+									<Button type="submit" className="ml-2" name="intent" value="archive">
+										Archive
 									</Button>
-
-									{/* Allow archiving headings with no active tasks */}
-									{tasks.filter((task) => task.completedDate == null).length === 0 && (
-										<Button type="submit" className="ml-2" name="intent" value="archive">
-											Archive
-										</Button>
-									)}
-								</Form>
-							</div>
+								)}
+							</Heading>
 						)}
 
 						<ol>
@@ -272,24 +263,14 @@ export default function ProjectDetailsPage() {
 							data.groupedDoneTasks.map(([heading, tasks]) => (
 								<li key={heading?.id ?? 'default'}>
 									{heading != null && (
-										<div className="mt-8 mb-4 flex items-center border-b-2 border-b-blue-500 pb-2">
-											<h4 className="text-xl">{heading.title}</h4>
-
-											<Form method="post" className="ml-8">
-												<input type="hidden" name="headingId" value={heading.id} />
-
-												<Button type="submit" name="intent" value="convertToProject">
-													Convert to project
+										<Heading heading={heading}>
+											{/* Allow restoring archived headings */}
+											{tasks.filter((task) => task.completedDate == null).length === 0 && (
+												<Button type="submit" className="ml-2" name="intent" value="restore">
+													Restore
 												</Button>
-
-												{/* Allow restored archived headings */}
-												{tasks.filter((task) => task.completedDate == null).length === 0 && (
-													<Button type="submit" className="ml-2" name="intent" value="restore">
-														Restore
-													</Button>
-												)}
-											</Form>
-										</div>
+											)}
+										</Heading>
 									)}
 
 									<ol>
@@ -304,6 +285,29 @@ export default function ProjectDetailsPage() {
 					</ol>
 				</Fragment>
 			)}
+		</div>
+	);
+}
+
+type HeadingProps = {
+	heading: Pick<THeading, 'id' | 'title'>;
+	children?: ReactNode;
+};
+
+function Heading({ heading, children }: HeadingProps) {
+	return (
+		<div className="mt-16 mb-4 flex items-center border-b-2 border-b-blue-500 pb-2">
+			<h4 className="text-xl">{heading.title}</h4>
+
+			<Form method="post" className="ml-8">
+				<input type="hidden" name="headingId" value={heading.id} />
+
+				<Button type="submit" name="intent" value="convertToProject">
+					Convert to project
+				</Button>
+
+				{children}
+			</Form>
 		</div>
 	);
 }
