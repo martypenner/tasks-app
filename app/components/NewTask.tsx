@@ -24,7 +24,8 @@ export default function NewTask({ defaultWhen = 'inbox', projectId, areaId }: Pr
 
 	const location = useLocation();
 
-	// We want to respond only once to the event.
+	// We want to respond only once to the event, i.e. ignore subsequent pressed
+	// when holding down space.
 	useKeyPressEvent(' ', () => {
 		setIsNewTaskVisible(true);
 	});
@@ -42,10 +43,6 @@ export default function NewTask({ defaultWhen = 'inbox', projectId, areaId }: Pr
 			whenRef.current?.focus();
 		}
 	}, [actionData, isNewTaskVisible]);
-
-	if (!isNewTaskVisible) {
-		return null;
-	}
 
 	return (
 		<Dialog open={isNewTaskVisible} onOpenChange={setIsNewTaskVisible}>
