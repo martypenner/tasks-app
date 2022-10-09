@@ -1,10 +1,10 @@
 import { InboxIcon } from '@heroicons/react/24/outline';
 import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { NavLink, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import NewTask from '~/components/NewTask';
+import TaskView from '~/components/TaskView';
 import { getTaskListItemsByWhen } from '~/models/task.server';
-import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction = () => ({
@@ -30,11 +30,7 @@ export default function InboxPage() {
 				<ol>
 					{data.taskListItems.map((task) => (
 						<li key={task.id}>
-							<NavLink
-								className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-								to={paths.task({ taskId: task.id })}>
-								📝 {task.title}
-							</NavLink>
+							<TaskView task={task} />
 						</li>
 					))}
 				</ol>

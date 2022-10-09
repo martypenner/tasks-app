@@ -2,6 +2,7 @@ import { InboxIcon } from '@heroicons/react/24/outline';
 import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { NavLink, useLoaderData } from '@remix-run/react';
+import TaskView from '~/components/TaskView';
 import { getCompletedProjects } from '~/models/project.server';
 import { getCompletedTasks } from '~/models/task.server';
 import * as paths from '~/paths';
@@ -38,15 +39,16 @@ export default function InboxPage() {
 				<ol>
 					{data.items.map((taskOrProject) => (
 						<li key={taskOrProject.id}>
-							<NavLink
-								className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-								to={
-									taskOrProject.isProject
-										? paths.project({ projectId: taskOrProject.id })
-										: paths.task({ taskId: taskOrProject.id })
-								}>
-								📝 {taskOrProject.title}
-							</NavLink>
+							{taskOrProject.isProject ? (
+								<NavLink
+									className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+									to={paths.project({ projectId: taskOrProject.id })}>
+									📝 {taskOrProject.title}
+								</NavLink>
+							) : (
+								// @ts-expect-error: ts is confused
+								<TaskView task={taskOrProject} />
+							)}
 						</li>
 					))}
 				</ol>

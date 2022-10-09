@@ -28,7 +28,7 @@ export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: Use
 			projectId: null,
 			areaId: null,
 		},
-		select: { id: true, title: true },
+		include: { Project: true, Heading: true },
 		orderBy: { globalOrder: 'desc' },
 	});
 }
@@ -40,7 +40,7 @@ export function getCompletedTasks({ userId }: { userId: User['id'] }) {
 			deleted: null,
 			status: { not: 'in-progress' },
 		},
-		include: { Project: true },
+		include: { Project: true, Heading: true },
 		orderBy: { globalOrder: 'desc' },
 	});
 }
@@ -53,7 +53,7 @@ export function getDeletedTasks({ userId }: { userId: User['id'] }) {
 			// Get tasks that don't have a project or the project isn't done.
 			OR: [{ Project: { is: null } }, { Project: { completedDate: null } }],
 		},
-		include: { Project: true },
+		include: { Project: true, Heading: true },
 		orderBy: { deleted: 'desc' },
 	});
 }

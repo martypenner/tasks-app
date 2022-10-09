@@ -3,6 +3,7 @@ import type { ActionArgs, LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Form, NavLink, useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
+import TaskView from '~/components/TaskView';
 import { getDeletedProjects } from '~/models/project.server';
 import { getDeletedTasks } from '~/models/task.server';
 import { permaDeleteAllDeletedItems } from '~/models/trash.server';
@@ -53,15 +54,16 @@ export default function InboxPage() {
 					<ol>
 						{data.items.map((taskOrProject) => (
 							<li key={taskOrProject.id}>
-								<NavLink
-									className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
-									to={
-										taskOrProject.isProject
-											? paths.project({ projectId: taskOrProject.id })
-											: paths.task({ taskId: taskOrProject.id })
-									}>
-									📝 {taskOrProject.title}
-								</NavLink>
+								{taskOrProject.isProject ? (
+									<NavLink
+										className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
+										to={paths.project({ projectId: taskOrProject.id })}>
+										📝 {taskOrProject.title}
+									</NavLink>
+								) : (
+									// @ts-expect-error: ts is confused
+									<TaskView task={taskOrProject} />
+								)}
 							</li>
 						))}
 					</ol>
