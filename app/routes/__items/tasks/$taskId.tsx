@@ -1,10 +1,10 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import type { LoaderArgs } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { Form, useCatch, useLoaderData } from '@remix-run/react';
+import { Form, useCatch, useLoaderData, useLocation } from '@remix-run/react';
 import invariant from 'tiny-invariant';
 import * as paths from '~/paths';
 
-import { getTask, updateTaskStatus } from '~/models/task.server';
+import { getTask } from '~/models/task.server';
 import { requireUserId } from '~/session.server';
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -18,34 +18,19 @@ export async function loader({ request, params }: LoaderArgs) {
 	return json({ task });
 }
 
-export async function action({ request, params }: ActionArgs) {
-	const userId = await requireUserId(request);
-	invariant(params.taskId, 'taskId not found');
-
-	const data = await request.formData();
-	const intent = data.get('intent');
-	invariant(typeof intent === 'string', 'must provide an intent');
-
-	if (['markTaskAsComplete', 'markTaskAsIncomplete', 'markTaskAsCancelled'].includes(intent)) {
-		const status = data.get('status') ?? 'false';
-		invariant(typeof status === 'string', 'must provide status');
-		await updateTaskStatus({ userId, id: params.taskId, status });
-		return json({});
-	}
-
-	return json({});
-}
-
 export default function TaskDetailsPage() {
 	const data = useLoaderData<typeof loader>();
+	const location = useLocation();
 
 	return (
 		<div>
 			<div className="flex items-center">
 				<h3 className="text-2xl font-bold">{data.task.title}</h3>
 
-				<Form method="post" className="ml-8">
+				<Form method="post" className="ml-8" action={paths.updateTaskStatus({})}>
+					<input type="hidden" name="taskId" value={data.task.id} />
 					<input type="hidden" name="status" value={data.task.status === 'completed' ? 'in-progress' : 'completed'} />
+					<input type="hidden" name="redirectTo" value={location.pathname} />
 
 					<button
 						type="submit"
@@ -55,8 +40,10 @@ export default function TaskDetailsPage() {
 						{data.task.status === 'completed' ? 'Mark as not done' : 'Complete'}
 					</button>
 				</Form>
-				<Form method="post" className="ml-2">
+				<Form method="post" className="ml-2" action={paths.updateTaskStatus({})}>
+					<input type="hidden" name="taskId" value={data.task.id} />
 					<input type="hidden" name="status" value={data.task.status === 'cancelled' ? 'in-progress' : 'cancelled'} />
+					<input type="hidden" name="redirectTo" value={location.pathname} />
 
 					<button
 						type="submit"
@@ -68,7 +55,7 @@ export default function TaskDetailsPage() {
 				</Form>
 
 				{data.task.deleted == null && (
-					<Form method="post" className="ml-2" action={paths.deleteTask({ taskId: data.task.id })}>
+					<Form method="post" className="ml-2" action={paths.deleteTask({})}>
 						<input type="hidden" name="taskId" value={data.task.id} />
 
 						<button

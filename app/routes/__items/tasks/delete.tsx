@@ -1,5 +1,5 @@
-import type { ActionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
+import type { ActionArgs } from '@remix-run/server-runtime';
+import { redirect } from '@remix-run/server-runtime';
 import invariant from 'tiny-invariant';
 import * as paths from '~/paths';
 
