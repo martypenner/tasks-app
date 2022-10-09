@@ -4,5 +4,4 @@ import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-
 import 'zx/globals';
 dotenv.config();
 
-console.log(process.env.SESSION_SECRET);
-await $`pkg package.json`;
+await $`pkg --compress GZip ${argv.debug ? '--debug' : ''} package.json`;

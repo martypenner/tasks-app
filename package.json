@@ -8,7 +8,7 @@
 		"build:css": "npm run generate:css -- --minify",
 		"build:remix": "remix build",
 		"package": "npm run clean && npm run build && zx ./scripts/package.mjs",
-		"package:debug": "npm run clean && npm run build && pkg --debug package.json",
+		"package:debug": "npm run clean && npm run build && zx ./scripts/package.mjs --debug",
 		"dev": "run-p dev:*",
 		"dev:css": "npm run generate:css -- --watch",
 		"dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
