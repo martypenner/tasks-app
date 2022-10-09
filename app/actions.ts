@@ -1,7 +1,7 @@
 import type { ActionArgs } from '@remix-run/server-runtime';
 import { json, redirect } from '@remix-run/server-runtime';
 import { createTask } from './models/task.server';
-import { allTasks } from './paths';
+import * as paths from './paths';
 import { requireUserId } from './session.server';
 
 export async function newTaskAction({ request }: ActionArgs) {
@@ -14,7 +14,7 @@ export async function newTaskAction({ request }: ActionArgs) {
 	const whenDate = formData.get('whenDate');
 	const projectId = formData.get('projectId');
 	const areaId = formData.get('areaId');
-	const redirectTo = (formData.get('redirectTo') as string) ?? allTasks({});
+	const redirectTo = (formData.get('redirectTo') as string) ?? paths.allTasks({});
 
 	if (typeof title !== 'string') {
 		return json(

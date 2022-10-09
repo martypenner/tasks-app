@@ -48,6 +48,7 @@ export default function TaskView({ task, ...rest }: Props) {
 				{task.deleted == null && (
 					<Form method="post" className="ml-2" action={paths.deleteTask({})}>
 						<input type="hidden" name="taskId" value={task.id} />
+						<input type="hidden" name="redirectTo" value={location.pathname} />
 
 						<button
 							type="submit"
