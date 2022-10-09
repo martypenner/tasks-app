@@ -117,6 +117,7 @@
 		"tailwindcss": "^3.1.8",
 		"ts-node": "^10.9.1",
 		"tsconfig-paths": "^4.1.0",
+		"tslib": "^2.4.0",
 		"typescript": "^4.7.4",
 		"vite": "^3.0.7",
 		"vite-tsconfig-paths": "^3.5.0",
