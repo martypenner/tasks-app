@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { Form } from '@remix-run/react';
 import { useState } from 'react';
-import { useKeyPressEvent } from 'react-use';
+import { useKeyPressEvent as useKeyPressNoRepeat } from 'react-use';
 import { Dialog } from '~/components/Dialog';
 import * as paths from '~/paths';
 
@@ -11,7 +11,7 @@ export default function Search(props: Props) {
 	const [isDialogVisible, setIsDialogVisible] = useState(false);
 	const [search, setSearch] = useState('');
 
-	useKeyPressEvent(
+	useKeyPressNoRepeat(
 		// todo: figure out how to filter out non-essential keypresses. There is a long list: https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values#special_values
 		(event) => event.keyCode > 32 && !(event.altKey || event.shiftKey || event.ctrlKey || event.metaKey),
 		(event) => {
@@ -25,7 +25,7 @@ export default function Search(props: Props) {
 	);
 
 	// Allow tabbing to close the dialog.
-	useKeyPressEvent('Tab', () => {
+	useKeyPressNoRepeat('Tab', () => {
 		if (!isDialogVisible) {
 			return;
 		}
