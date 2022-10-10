@@ -14,7 +14,7 @@ export default function Search(props: Props) {
 
 	useKeyPressEvent(
 		// todo: figure out how to filter out non-essential keypresses. There is a long list: https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values#special_values
-		(event) => event.keyCode > 32,
+		(event) => event.keyCode > 32 && !(event.altKey || event.shiftKey || event.ctrlKey || event.metaKey),
 		(event) => {
 			if (isDialogVisible) {
 				return;
