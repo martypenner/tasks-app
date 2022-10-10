@@ -13,6 +13,8 @@ export const someday = allTasks.path('someday');
 export const logbook = allTasks.path('logbook');
 export const trash = allTasks.path('trash');
 
+export const search = path('/search');
+
 export const allProjects = path('/projects');
 export const project = allProjects.path(':projectId');
 export const newProject = allProjects.path('new');

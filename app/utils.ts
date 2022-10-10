@@ -64,3 +64,11 @@ export function useUser(): User {
 export function validateEmail(email: unknown): email is string {
 	return typeof email === 'string' && email.length > 3 && email.includes('@');
 }
+
+export function isEditingContent(event: Event) {
+	let element = event.target;
+	// @ts-expect-error
+	let tagName = element?.tagName;
+	// @ts-expect-error
+	return element?.isContentEditable || tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA';
+}

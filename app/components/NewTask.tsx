@@ -1,10 +1,11 @@
 import type { Task } from '@prisma/client';
 import { Form, useActionData, useLocation } from '@remix-run/react';
 import { useEffect, useRef, useState } from 'react';
-import { useKeyPressEvent } from 'react-use';
+import { useKey } from 'react-use';
 import type { newTaskAction } from '~/actions';
 import { Dialog } from '~/components/Dialog';
 import * as paths from '~/paths';
+import { isEditingContent } from '~/utils';
 
 type Props = {
 	defaultWhen?: Task['when'];
@@ -24,11 +25,14 @@ export default function NewTask({ defaultWhen = 'inbox', projectId, areaId }: Pr
 
 	const location = useLocation();
 
-	// We want to respond only once to the event, i.e. ignore subsequent pressed
-	// when holding down space.
-	useKeyPressEvent(' ', () => {
-		setIsNewTaskVisible(true);
-	});
+	useKey(
+		(event) => !isEditingContent(event) && !isNewTaskVisible && event.key === ' ',
+		() => {
+			setIsNewTaskVisible(true);
+		},
+		undefined,
+		[isNewTaskVisible]
+	);
 
 	useEffect(() => {
 		if (!isNewTaskVisible) {
