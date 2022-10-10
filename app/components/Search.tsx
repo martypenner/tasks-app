@@ -24,6 +24,14 @@ export default function Search(props: Props) {
 		}
 	);
 
+	// Allow tabbing to close the dialog.
+	useKeyPressEvent('Tab', () => {
+		if (!isDialogVisible) {
+			return;
+		}
+		setIsDialogVisible(false);
+	});
+
 	return (
 		<Dialog open={isDialogVisible} onOpenChange={setIsDialogVisible}>
 			<Dialog.Content>
