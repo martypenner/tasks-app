@@ -14,7 +14,7 @@ export default function TaskView({ task, ...rest }: Props) {
 	const location = useLocation();
 
 	return (
-		<div className={`block p-4 text-xl ${rest.className}`}>
+		<div className={`block p-4 text-xl ${rest.className ?? ''}`}>
 			<div className="flex items-center">
 				<span>{task.title}</span>
 
