@@ -3,6 +3,7 @@ import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { Fragment } from 'react';
+import { List } from '~/components/List';
 import NewTask from '~/components/NewTask';
 import TaskView from '~/components/TaskView';
 import { getTaskListItemsByWhen } from '~/models/task.server';
@@ -28,13 +29,13 @@ export default function InboxPage() {
 			{data.taskListItems.length === 0 ? (
 				<InboxIcon className="p-4" />
 			) : (
-				<ol>
-					{data.taskListItems.map((task) => (
-						<li key={task.id}>
+				<List aria-label="List of tasks today" items={data.taskListItems}>
+					{(task) => (
+						<List.Item>
 							<TaskView task={task} />
-						</li>
-					))}
-				</ol>
+						</List.Item>
+					)}
+				</List>
 			)}
 		</Fragment>
 	);

@@ -3,6 +3,7 @@ import type { LoaderArgs, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { NavLink, useLoaderData } from '@remix-run/react';
 import { Fragment } from 'react';
+import { List } from '~/components/List';
 import TaskView from '~/components/TaskView';
 import { getCompletedProjects } from '~/models/project.server';
 import { getCompletedTasks } from '~/models/task.server';
@@ -37,9 +38,9 @@ export default function InboxPage() {
 			{data.items.length === 0 ? (
 				<InboxIcon className="p-4" />
 			) : (
-				<ol>
-					{data.items.map((taskOrProject) => (
-						<li key={taskOrProject.id}>
+				<List aria-label="List of tasks and projects in logbook" items={data.items}>
+					{(taskOrProject) => (
+						<List.Item>
 							{taskOrProject.isProject ? (
 								<NavLink
 									className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
@@ -50,9 +51,9 @@ export default function InboxPage() {
 								// @ts-expect-error: ts is confused
 								<TaskView task={taskOrProject} />
 							)}
-						</li>
-					))}
-				</ol>
+						</List.Item>
+					)}
+				</List>
 			)}
 		</Fragment>
 	);

@@ -4,6 +4,7 @@ import { json } from '@remix-run/node';
 import { Form, NavLink, useLoaderData } from '@remix-run/react';
 import { Fragment } from 'react';
 import invariant from 'tiny-invariant';
+import { List } from '~/components/List';
 import TaskView from '~/components/TaskView';
 import { getDeletedProjects } from '~/models/project.server';
 import { getDeletedTasks } from '~/models/task.server';
@@ -45,16 +46,16 @@ export default function InboxPage() {
 			{data.items.length === 0 ? (
 				<TrashIcon className="p-4" />
 			) : (
-				<>
+				<Fragment>
 					<Form method="post">
 						<button type="submit" className="block p-4 text-blue-500">
 							Empty trash
 						</button>
 					</Form>
 
-					<ol>
-						{data.items.map((taskOrProject) => (
-							<li key={taskOrProject.id}>
+					<List aria-label="List of tasks and projects in trash" items={data.items}>
+						{(taskOrProject) => (
+							<List.Item>
 								{taskOrProject.isProject ? (
 									<NavLink
 										className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}
@@ -65,10 +66,10 @@ export default function InboxPage() {
 									// @ts-expect-error: ts is confused
 									<TaskView task={taskOrProject} />
 								)}
-							</li>
-						))}
-					</ol>
-				</>
+							</List.Item>
+						)}
+					</List>
+				</Fragment>
 			)}
 		</Fragment>
 	);

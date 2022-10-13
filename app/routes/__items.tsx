@@ -15,6 +15,7 @@ import type { LoaderArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { Link, NavLink, Outlet, useLoaderData } from '@remix-run/react';
 import { Fragment, useState } from 'react';
+import { SSRProvider } from 'react-aria';
 import RadialProgress from '~/components/RadialProgress';
 import Search from '~/components/Search';
 import { getAreas } from '~/models/area.server';
@@ -74,7 +75,7 @@ export default function App() {
 	}
 
 	return (
-		<div>
+		<SSRProvider>
 			<Transition.Root show={sidebarOpen} as={Fragment}>
 				<Dialog as="div" className="relative z-40 md:hidden" onClose={setSidebarOpen}>
 					<Transition.Child
@@ -157,6 +158,7 @@ export default function App() {
 				<div className="flex min-h-0 flex-1 flex-col">
 					<div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
 						<nav className="mt-5 flex-1 px-2">
+							{/* todo: react aria useGridList */}
 							{navigation.map((item) => (
 								<NavLink
 									key={item.name}
@@ -366,6 +368,6 @@ export default function App() {
 					</div>
 				</div>
 			</div>
-		</div>
+		</SSRProvider>
 	);
 }
