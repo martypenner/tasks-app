@@ -129,7 +129,7 @@ export default function App() {
 													} ${item.itemClass} group flex items-center rounded-md px-2 py-1 text-sm font-medium`
 												}>
 												{({ isActive }) => (
-													<>
+													<Fragment>
 														<item.icon
 															className={`${isActive ? 'text-gray-500' : 'group-hover:text-gray-500'} ${
 																item.iconClass
@@ -138,7 +138,7 @@ export default function App() {
 														/>
 
 														{item.name}
-													</>
+													</Fragment>
 												)}
 											</NavLink>
 										))}
@@ -167,7 +167,7 @@ export default function App() {
 										} group flex items-center rounded-md px-2 py-1 text-sm font-medium`
 									}>
 									{({ isActive }) => (
-										<>
+										<Fragment>
 											<item.icon
 												className={`${isActive ? '' : 'group-hover:text-gray-300'} ${
 													item.iconClass
@@ -175,7 +175,7 @@ export default function App() {
 												aria-hidden="true"
 											/>
 											{item.name}
-										</>
+										</Fragment>
 									)}
 								</NavLink>
 							))}
@@ -274,7 +274,7 @@ export default function App() {
 							<span className="sr-only">Open sidebar</span>
 							<Bars3Icon className="h-6 w-6" aria-hidden="true" />
 						</button>
-						<div className="flex flex-1 items-center justify-end gap-3 px-4 md:px-0">
+						<div className="flex flex-1 items-center justify-end gap-3 bg-gray-100 px-4 dark:bg-gray-800 md:px-0">
 							<button
 								type="button"
 								aria-label="Toggle Dark Mode"
