@@ -18,7 +18,7 @@ export default function Search(props: Props) {
 		(event) =>
 			!isEditingContent(event) &&
 			!isDialogVisible &&
-			event.keyCode > 32 &&
+			event.keyCode > 48 &&
 			!(event.altKey || event.shiftKey || event.ctrlKey || event.metaKey),
 		() => {
 			setIsDialogVisible(true);
