@@ -40,7 +40,7 @@ export default function InboxPage() {
 			) : (
 				<List aria-label="List of tasks and projects in logbook" items={data.items}>
 					{(taskOrProject) => (
-						<List.Item>
+						<List.Item textValue={taskOrProject.title}>
 							{taskOrProject.isProject ? (
 								<NavLink
 									className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}

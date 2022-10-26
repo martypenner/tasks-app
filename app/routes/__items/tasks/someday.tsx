@@ -31,7 +31,7 @@ export default function InboxPage() {
 			) : (
 				<List aria-label="List of tasks to do someday" items={data.taskListItems}>
 					{(task) => (
-						<List.Item>
+						<List.Item textValue={task.title}>
 							<TaskView task={task} />
 						</List.Item>
 					)}
