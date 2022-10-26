@@ -19,8 +19,7 @@ import {
 import * as paths from '~/paths';
 import { requireUserId } from '~/session.server';
 
-// todo: figure out how to type this
-export const meta: MetaFunction = ({ data }) => ({
+export const meta: MetaFunction<typeof loader> = ({ data }) => ({
 	title: `${data.project.title}`,
 });
 
