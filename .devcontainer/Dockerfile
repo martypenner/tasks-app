@@ -20,10 +20,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
   xauth \
   xvfb
 
-# Set up ZSH as the unprivileged user (we just need to start it; it'll initialize our setup itself)
-USER node
-# initialize ZSH
-RUN /bin/zsh "$HOME/.zshrc"
 
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
@@ -31,6 +27,9 @@ RUN /bin/zsh "$HOME/.zshrc"
 
 # [Optional] Uncomment if you want to install more global node packages
 # RUN su node -c "npm install -g <your-package-list -here>"
+
+# Set up the remainder as the node user
+USER node
 
 # Install Fly
 RUN curl -L https://fly.io/install.sh | sh
