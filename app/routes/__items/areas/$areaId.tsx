@@ -59,7 +59,7 @@ export default function AreaDetailsPage() {
 			<NewTask key={data.area.tasks.length} defaultWhen="anytime" areaId={data.area.id} />
 
 			<ol>
-				{data.area.Project.map((project) => (
+				{data.area.project.map((project) => (
 					<li key={project.id}>
 						<NavLink
 							className={({ isActive }) => `block border-b p-4 text-xl ${isActive ? 'bg-white' : ''}`}

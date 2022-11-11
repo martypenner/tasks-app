@@ -220,7 +220,7 @@ export default function App() {
 													</NavLink>
 
 													<ol>
-														{area.Project.map((project) => (
+														{area.project.map((project) => (
 															<li key={project.id}>
 																<NavLink
 																	className={({ isActive }) =>

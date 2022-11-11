@@ -18,7 +18,7 @@ export const meta: MetaFunction = () => ({
 export async function loader({ request }: LoaderArgs) {
 	const taskListItems = (await getDeletedTasks())
 		// Filter out tasks in deleted projects. Was easier to do it here than in the query.
-		.filter((task) => task.Project?.deleted == null)
+		.filter((task) => task.project?.deleted == null)
 		.map((task) => ({ ...task, isProject: false }));
 	const projects = (await getDeletedProjects()).map((project) => ({ ...project, isProject: true }));
 	invariant(

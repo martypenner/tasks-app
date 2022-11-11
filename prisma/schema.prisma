@@ -37,13 +37,13 @@ model Task {
   updatedAt DateTime  @updatedAt
   deleted   DateTime?
 
-  Project   Project? @relation(fields: [projectId], references: [id])
+  project   Project? @relation(fields: [projectId], references: [id])
   projectId String?
 
-  Area   Area?   @relation(fields: [areaId], references: [id])
+  area   Area?   @relation(fields: [areaId], references: [id])
   areaId String?
 
-  Heading   Heading? @relation(fields: [headingId], references: [id])
+  heading   Heading? @relation(fields: [headingId], references: [id])
   headingId String?
 }
 
@@ -61,10 +61,10 @@ model Project {
   updatedAt DateTime  @updatedAt
   deleted   DateTime?
 
-  Area   Area?   @relation(fields: [areaId], references: [id])
+  area   Area?   @relation(fields: [areaId], references: [id])
   areaId String?
 
-  Headings Heading[]
+  headings Heading[]
 }
 
 model Area {
@@ -77,7 +77,7 @@ model Area {
   updatedAt DateTime  @updatedAt
   deleted   DateTime?
 
-  Project Project[]
+  project Project[]
 }
 
 model Heading {
@@ -89,8 +89,8 @@ model Heading {
   updatedAt DateTime  @updatedAt
   archived  DateTime?
 
-  Task Task[]
+  task Task[]
 
-  Project   Project? @relation(fields: [projectId], references: [id])
+  project   Project? @relation(fields: [projectId], references: [id])
   projectId String?
 }

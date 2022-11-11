@@ -34,15 +34,15 @@ export async function loader({ request, params }: LoaderArgs) {
 	const groupedTasksByHeading = new Map<THeading | null, Task[]>([[null, []]]);
 	let groupedTasksByArchivedHeading = new Map<THeading | null, Task[]>([[null, []]]);
 	let numGroupedDoneItems = 0;
-	const archivedHeadings = project.Headings.filter((heading) => heading.archived);
+	const archivedHeadings = project.headings.filter((heading) => heading.archived);
 	// In-progress / deleted projects separate completed/cancelled tasks and archived
 	// headings from the in-progress ones.
 	// Completed / cancelled projects show everything in one view, i.e. no hidden items.
 	if (!project.completedDate || project.deleted) {
 		for (const task of project.tasks) {
 			// Find the heading instead of setting it based on task.Heading so we have referential stability in the map
-			const foundHeading = project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null;
-			const heading = task.Heading?.archived && !project.completedDate ? null : foundHeading;
+			const foundHeading = project.headings.find((heading) => heading.id === task.heading?.id) ?? null;
+			const heading = task.heading?.archived && !project.completedDate ? null : foundHeading;
 			groupedTasksByHeading.set(heading, (groupedTasksByHeading.get(heading) ?? []).concat(task));
 		}
 
@@ -54,9 +54,9 @@ export async function loader({ request, params }: LoaderArgs) {
 		for (const task of project.tasks
 			.filter((task) => task.status !== 'in-progress')
 			.filter((task) => (project.deleted != null ? true : task.deleted == null))) {
-			const heading = task.Heading?.archived
+			const heading = task.heading?.archived
 				? // Find the heading instead of setting it based on task.Heading so we have referential stability in the map
-				  project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null
+				  project.headings.find((heading) => heading.id === task.heading?.id) ?? null
 				: null;
 			groupedTasksByArchivedHeading.set(heading, (groupedTasksByArchivedHeading.get(heading) ?? []).concat(task));
 			numGroupedDoneItems++;
@@ -66,7 +66,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
 		for (const task of project.tasks.filter((task) => task.deleted == null)) {
 			// Find the heading instead of setting it based on task.Heading so we have referential stability in the map
-			const heading = project.Headings.find((heading) => heading.id === task.Heading?.id) ?? null;
+			const heading = project.headings.find((heading) => heading.id === task.heading?.id) ?? null;
 			groupedTasksByHeading.set(heading, (groupedTasksByHeading.get(heading) ?? []).concat(task));
 		}
 	}

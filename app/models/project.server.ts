@@ -10,11 +10,11 @@ export function getProject({ id }: Pick<Project, 'id'>) {
 		include: {
 			tasks: {
 				include: {
-					Heading: true,
+					heading: true,
 				},
 				orderBy: { globalOrder: 'desc' },
 			},
-			Headings: {
+			headings: {
 				orderBy: { globalOrder: 'desc' },
 			},
 		},

@@ -8,7 +8,7 @@ export function getArea({ id }: Pick<Area, 'id'>) {
 	return prisma.area.findFirst({
 		where: { id },
 		include: {
-			Project: {
+			project: {
 				where: { deleted: null, completedDate: null },
 			},
 			tasks: {
@@ -23,7 +23,7 @@ export function getAreas() {
 	return prisma.area.findMany({
 		where: { deleted: null },
 		include: {
-			Project: {
+			project: {
 				where: { deleted: null, completedDate: null },
 				include: {
 					tasks: { orderBy: { globalOrder: 'desc' } },
@@ -64,7 +64,7 @@ export async function deleteArea({ id }: { id: Area['id'] }) {
 		where: {
 			OR: [
 				{
-					Project: {
+					project: {
 						deleted: { not: null },
 					},
 				},

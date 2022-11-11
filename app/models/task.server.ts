@@ -21,7 +21,7 @@ export function getTaskListItemsByWhen({ when = 'inbox' }: { when?: Task['when']
 			projectId: null,
 			areaId: null,
 		},
-		include: { Project: true, Heading: true },
+		include: { project: true, heading: true },
 		orderBy: { globalOrder: 'desc' },
 	});
 }
@@ -32,7 +32,7 @@ export function getCompletedTasks() {
 			deleted: null,
 			status: { not: 'in-progress' },
 		},
-		include: { Project: true, Heading: true },
+		include: { project: true, heading: true },
 		orderBy: { globalOrder: 'desc' },
 	});
 }
@@ -42,9 +42,9 @@ export function getDeletedTasks() {
 		where: {
 			deleted: { not: null },
 			// Get tasks that don't have a project or the project isn't done.
-			OR: [{ Project: { is: null } }, { Project: { completedDate: null } }],
+			OR: [{ project: { is: null } }, { project: { completedDate: null } }],
 		},
-		include: { Project: true, Heading: true },
+		include: { project: true, heading: true },
 		orderBy: { deleted: 'desc' },
 	});
 }
@@ -72,7 +72,7 @@ export async function createTask({
 			...(projectId == null
 				? {}
 				: {
-						Project: {
+						project: {
 							connect: {
 								id: projectId,
 							},

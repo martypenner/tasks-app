@@ -16,7 +16,7 @@ export const meta: MetaFunction = () => ({
 export async function loader({ request }: LoaderArgs) {
 	const taskListItems = (await getCompletedTasks())
 		// Filter out tasks in completed projects. Was easier to do it here than in the query.
-		.filter((task) => task.Project == null || task.Project?.completedDate == null)
+		.filter((task) => task.project == null || task.project?.completedDate == null)
 		.map((task) => ({ ...task, isProject: false }));
 	const projects = (await getCompletedProjects()).map((project) => ({ ...project, isProject: true }));
 
