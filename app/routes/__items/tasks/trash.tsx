@@ -10,19 +10,17 @@ import { getDeletedProjects } from '~/models/project.server';
 import { getDeletedTasks } from '~/models/task.server';
 import { permaDeleteAllDeletedItems } from '~/models/trash.server';
 import * as paths from '~/paths';
-import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction = () => ({
 	title: 'Trash',
 });
 
 export async function loader({ request }: LoaderArgs) {
-	const userId = await requireUserId(request);
-	const taskListItems = (await getDeletedTasks({ userId }))
+	const taskListItems = (await getDeletedTasks())
 		// Filter out tasks in deleted projects. Was easier to do it here than in the query.
 		.filter((task) => task.Project?.deleted == null)
 		.map((task) => ({ ...task, isProject: false }));
-	const projects = (await getDeletedProjects({ userId })).map((project) => ({ ...project, isProject: true }));
+	const projects = (await getDeletedProjects()).map((project) => ({ ...project, isProject: true }));
 	invariant(
 		[...taskListItems, ...projects].every((item) => item.deleted != null),
 		'items must be deleted'
@@ -33,8 +31,7 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 export async function action({ request }: ActionArgs) {
-	const userId = await requireUserId(request);
-	await permaDeleteAllDeletedItems({ userId });
+	await permaDeleteAllDeletedItems();
 	return json({});
 }
 

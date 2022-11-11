@@ -23,17 +23,15 @@ import type { Project } from '~/models/project.server';
 import { getProjectsWithoutAreas } from '~/models/project.server';
 import { getTaskListItemsByWhen } from '~/models/task.server';
 import * as paths from '~/paths';
-import { requireUserId } from '~/session.server';
 
 function sortByCreatedTime(a: Pick<Project, 'createdAt'>, b: Pick<Project, 'createdAt'>) {
 	return b.createdAt!.getTime() - a.createdAt!.getTime();
 }
 
 export async function loader({ request }: LoaderArgs) {
-	const userId = await requireUserId(request);
-	const taskListItems = await getTaskListItemsByWhen({ userId, when: 'inbox' });
-	const projects = (await getProjectsWithoutAreas({ userId })).sort(sortByCreatedTime);
-	const areas = (await getAreas({ userId })).sort(sortByCreatedTime);
+	const taskListItems = await getTaskListItemsByWhen({ when: 'inbox' });
+	const projects = (await getProjectsWithoutAreas()).sort(sortByCreatedTime);
+	const areas = (await getAreas()).sort(sortByCreatedTime);
 	return json({ taskListItems, projects, areas });
 }
 

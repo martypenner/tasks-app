@@ -4,15 +4,12 @@ import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
 import { createArea } from '~/models/area.server';
 import * as paths from '~/paths';
-import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction = () => ({
 	title: 'Create new area',
 });
 
 export async function action({ request }: ActionArgs) {
-	const userId = await requireUserId(request);
-
 	const formData = await request.formData();
 	const title = formData.get('title');
 
@@ -32,7 +29,6 @@ export async function action({ request }: ActionArgs) {
 
 	const area = await createArea({
 		title,
-		userId,
 	});
 
 	return redirect(paths.area({ areaId: area.id }));

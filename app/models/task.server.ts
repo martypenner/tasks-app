@@ -1,27 +1,20 @@
-import type { Task, User } from '@prisma/client';
+import type { Task } from '@prisma/client';
 
 import { prisma } from '~/db.server';
 
 export type { Task } from '@prisma/client';
 
-export function getTask({
-	id,
-	userId,
-}: Pick<Task, 'id'> & {
-	userId: User['id'];
-}) {
+export function getTask({ id }: Pick<Task, 'id'>) {
 	return prisma.task.findFirst({
 		where: {
 			id,
-			userId,
 		},
 	});
 }
 
-export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: User['id']; when?: Task['when'] }) {
+export function getTaskListItemsByWhen({ when = 'inbox' }: { when?: Task['when'] }) {
 	return prisma.task.findMany({
 		where: {
-			userId,
 			deleted: null,
 			when,
 			status: 'in-progress',
@@ -33,10 +26,9 @@ export function getTaskListItemsByWhen({ userId, when = 'inbox' }: { userId: Use
 	});
 }
 
-export function getCompletedTasks({ userId }: { userId: User['id'] }) {
+export function getCompletedTasks() {
 	return prisma.task.findMany({
 		where: {
-			userId,
 			deleted: null,
 			status: { not: 'in-progress' },
 		},
@@ -45,10 +37,9 @@ export function getCompletedTasks({ userId }: { userId: User['id'] }) {
 	});
 }
 
-export function getDeletedTasks({ userId }: { userId: User['id'] }) {
+export function getDeletedTasks() {
 	return prisma.task.findMany({
 		where: {
-			userId,
 			deleted: { not: null },
 			// Get tasks that don't have a project or the project isn't done.
 			OR: [{ Project: { is: null } }, { Project: { completedDate: null } }],
@@ -65,12 +56,8 @@ export async function createTask({
 	whenDate,
 	projectId,
 	areaId,
-	userId,
-}: Pick<Task, 'notes' | 'title' | 'when' | 'whenDate' | 'projectId' | 'areaId'> & {
-	userId: User['id'];
-}) {
+}: Pick<Task, 'notes' | 'title' | 'when' | 'whenDate' | 'projectId' | 'areaId'>) {
 	const order = (await prisma.task.findFirst({
-		where: { userId },
 		select: { globalOrder: true },
 		orderBy: { globalOrder: 'desc' },
 	})) ?? { globalOrder: BigInt(-1) };
@@ -101,34 +88,20 @@ export async function createTask({
 							},
 						},
 				  }),
-
-			user: {
-				connect: {
-					id: userId,
-				},
-			},
 		},
 	});
 }
 
-export function deleteTask({ id, userId }: { id: Task['id']; userId: User['id'] }) {
+export function deleteTask({ id }: { id: Task['id'] }) {
 	return prisma.task.updateMany({
-		where: { id, userId },
+		where: { id },
 		data: { deleted: new Date() },
 	});
 }
 
-export function updateTaskStatus({
-	id,
-	userId,
-	status,
-}: {
-	id: Task['id'];
-	userId: User['id'];
-	status: Task['status'];
-}) {
+export function updateTaskStatus({ id, status }: { id: Task['id']; status: Task['status'] }) {
 	return prisma.task.updateMany({
-		where: { id, userId },
+		where: { id },
 		data: {
 			status,
 			completedDate: status === 'in-progress' ? null : new Date(),

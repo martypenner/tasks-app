@@ -4,12 +4,9 @@ import invariant from 'tiny-invariant';
 import { updateTaskStatus } from '~/models/task.server';
 import * as paths from '~/paths';
 
-import { requireUserId } from '~/session.server';
-
 const ALLOWED_INTENTS = ['markTaskAsComplete', 'markTaskAsIncomplete', 'markTaskAsCancelled'];
 
 export async function action({ request }: ActionArgs) {
-	const userId = await requireUserId(request);
 	const data = await request.formData();
 	const taskId = data.get('taskId');
 	invariant(typeof taskId === 'string' && taskId.length > 0, 'taskId not found');
@@ -24,6 +21,6 @@ export async function action({ request }: ActionArgs) {
 	const redirectTo = data.get('redirectTo') ?? paths.inbox({});
 	invariant(typeof redirectTo === 'string', 'redirectTo must a string');
 
-	await updateTaskStatus({ userId, id: taskId, status });
+	await updateTaskStatus({ id: taskId, status });
 	return redirect(redirectTo);
 }

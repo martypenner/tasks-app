@@ -8,19 +8,17 @@ import TaskView from '~/components/TaskView';
 import { getCompletedProjects } from '~/models/project.server';
 import { getCompletedTasks } from '~/models/task.server';
 import * as paths from '~/paths';
-import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction = () => ({
 	title: 'Logbook',
 });
 
 export async function loader({ request }: LoaderArgs) {
-	const userId = await requireUserId(request);
-	const taskListItems = (await getCompletedTasks({ userId }))
+	const taskListItems = (await getCompletedTasks())
 		// Filter out tasks in completed projects. Was easier to do it here than in the query.
 		.filter((task) => task.Project == null || task.Project?.completedDate == null)
 		.map((task) => ({ ...task, isProject: false }));
-	const projects = (await getCompletedProjects({ userId })).map((project) => ({ ...project, isProject: true }));
+	const projects = (await getCompletedProjects()).map((project) => ({ ...project, isProject: true }));
 
 	// For future
 	// const items = [...taskListItems, ...projects].sort((a, b) => b.completed!.getTime() - a.completed!.getTime());

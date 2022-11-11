@@ -7,17 +7,15 @@ import NewTask from '~/components/NewTask';
 import TaskView from '~/components/TaskView';
 import { deleteArea, getArea } from '~/models/area.server';
 import * as paths from '~/paths';
-import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => ({
 	title: `${data.area.title}`,
 });
 
 export async function loader({ request, params }: LoaderArgs) {
-	const userId = await requireUserId(request);
 	invariant(params.areaId, 'areaId not found');
 
-	const area = await getArea({ userId, id: params.areaId });
+	const area = await getArea({ id: params.areaId });
 	if (!area) {
 		throw redirect(paths.inbox({}));
 	}
@@ -31,10 +29,9 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export async function action({ request, params }: ActionArgs) {
-	const userId = await requireUserId(request);
 	invariant(params.areaId, 'areaId not found');
 
-	await deleteArea({ userId, id: params.areaId });
+	await deleteArea({ id: params.areaId });
 
 	return redirect(paths.inbox({}));
 }

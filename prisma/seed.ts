@@ -11,6 +11,7 @@ async function seed() {
 		// no worries if it doesn't exist yet
 	});
 
+	// deepcode ignore HardcodedNonCryptoSecret: for dev only, deepcode ignore HardcodedSecret: for dev only
 	const hashedPassword = await bcrypt.hash('racheliscool', 10);
 
 	let globalOrder = 0;
@@ -27,7 +28,6 @@ async function seed() {
 	});
 	const area = await prisma.area.create({
 		data: {
-			userId: user.id,
 			title: 'My important area',
 			createdAt: new Date('2020-01-01'),
 			globalOrder: globalOrder++,
@@ -35,7 +35,6 @@ async function seed() {
 	});
 	const project = await prisma.project.create({
 		data: {
-			userId: user.id,
 			title: 'My cool project',
 			areaId: area.id,
 			globalOrder: globalOrder++,
@@ -43,14 +42,12 @@ async function seed() {
 	});
 	const independentProject = await prisma.project.create({
 		data: {
-			userId: user.id,
 			title: 'My independent project',
 			globalOrder: globalOrder++,
 		},
 	});
 	const completedProject = await prisma.project.create({
 		data: {
-			userId: user.id,
 			title: 'My completed project',
 			completedDate: new Date(),
 			globalOrder: globalOrder++,
@@ -58,7 +55,6 @@ async function seed() {
 	});
 	const deletedProject = await prisma.project.create({
 		data: {
-			userId: user.id,
 			title: 'My deleted project',
 			deleted: new Date(),
 			globalOrder: globalOrder++,
@@ -66,7 +62,6 @@ async function seed() {
 	});
 	const heading = await prisma.heading.create({
 		data: {
-			userId: user.id,
 			title: 'My useful heading',
 			projectId: project.id,
 			globalOrder: globalOrder++,
@@ -74,7 +69,6 @@ async function seed() {
 	});
 	const heading2 = await prisma.heading.create({
 		data: {
-			userId: user.id,
 			title: 'My other useful heading',
 			projectId: project.id,
 			globalOrder: globalOrder++,
@@ -82,7 +76,6 @@ async function seed() {
 	});
 	const heading3 = await prisma.heading.create({
 		data: {
-			userId: user.id,
 			title: 'My archived heading',
 			projectId: project.id,
 			archived: new Date(),
@@ -91,7 +84,6 @@ async function seed() {
 	});
 	await prisma.heading.create({
 		data: {
-			userId: user.id,
 			title: 'My empty archived heading',
 			projectId: project.id,
 			archived: new Date(),
@@ -105,21 +97,18 @@ async function seed() {
 			notes: 'Hello, world!',
 			status: 'completed',
 			completedDate: new Date(),
-			userId: user.id,
 			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
 		data: {
 			title: 'My second task',
-			userId: user.id,
 			globalOrder: globalOrder++,
 		},
 	});
 	await prisma.task.create({
 		data: {
 			title: 'My third task',
-			userId: user.id,
 			when: 'today',
 			globalOrder: globalOrder++,
 		},
@@ -127,7 +116,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My fourth task',
-			userId: user.id,
 			when: 'specificDate',
 			whenDate: new Date(`${new Date().getFullYear() + 1}-01-01`),
 			globalOrder: globalOrder++,
@@ -136,7 +124,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My fifth task',
-			userId: user.id,
 			when: 'anytime',
 			globalOrder: globalOrder++,
 		},
@@ -144,7 +131,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My sixth task',
-			userId: user.id,
 			when: 'someday',
 			globalOrder: globalOrder++,
 		},
@@ -152,7 +138,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My seventh task',
-			userId: user.id,
 			status: 'completed',
 			completedDate: new Date(),
 			createdAt: new Date('2020-01-01'),
@@ -162,7 +147,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My eighth task',
-			userId: user.id,
 			deleted: new Date('2020-01-01'),
 			globalOrder: globalOrder++,
 		},
@@ -170,7 +154,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My project task',
-			userId: user.id,
 			projectId: project.id,
 			globalOrder: globalOrder++,
 		},
@@ -178,7 +161,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My second project task',
-			userId: user.id,
 			projectId: project.id,
 			headingId: heading.id,
 			globalOrder: globalOrder++,
@@ -187,7 +169,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My third project task',
-			userId: user.id,
 			projectId: project.id,
 			headingId: heading2.id,
 			globalOrder: globalOrder++,
@@ -196,7 +177,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My fourth and completed project task',
-			userId: user.id,
 			projectId: project.id,
 			headingId: heading2.id,
 			status: 'completed',
@@ -207,7 +187,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My fifth and completed project task',
-			userId: user.id,
 			projectId: project.id,
 			status: 'completed',
 			completedDate: new Date(),
@@ -217,7 +196,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My sixth and completed project task',
-			userId: user.id,
 			projectId: project.id,
 			headingId: heading3.id,
 			status: 'completed',
@@ -228,7 +206,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My task in a deleted project',
-			userId: user.id,
 			projectId: deletedProject.id,
 			status: 'completed',
 			completedDate: new Date(),
@@ -239,7 +216,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My task in a completed project',
-			userId: user.id,
 			projectId: completedProject.id,
 			status: 'completed',
 			completedDate: new Date(),
@@ -249,7 +225,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My area task',
-			userId: user.id,
 			areaId: area.id,
 			createdAt: new Date('2020-01-01'),
 			globalOrder: globalOrder++,
@@ -258,7 +233,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My completed area task',
-			userId: user.id,
 			areaId: area.id,
 			status: 'completed',
 			completedDate: new Date(),
@@ -268,7 +242,6 @@ async function seed() {
 	await prisma.task.create({
 		data: {
 			title: 'My first independent project task',
-			userId: user.id,
 			projectId: independentProject.id,
 			status: 'completed',
 			completedDate: new Date(),

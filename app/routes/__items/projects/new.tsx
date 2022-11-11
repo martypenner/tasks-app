@@ -4,15 +4,12 @@ import { Form, useActionData } from '@remix-run/react';
 import * as React from 'react';
 import { createProject } from '~/models/project.server';
 import * as paths from '~/paths';
-import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction = () => ({
 	title: 'Create new project',
 });
 
 export async function action({ request }: ActionArgs) {
-	const userId = await requireUserId(request);
-
 	const formData = await request.formData();
 	const title = formData.get('title');
 	const notes = formData.get('notes');
@@ -94,7 +91,6 @@ export async function action({ request }: ActionArgs) {
 		notes,
 		when,
 		whenDate: when === 'specific' ? new Date(whenDate as string) : null,
-		userId,
 	});
 
 	return redirect(paths.project({ projectId: project.id }));

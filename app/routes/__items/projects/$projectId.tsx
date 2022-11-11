@@ -17,17 +17,15 @@ import {
 	toggleProjectComplete,
 } from '~/models/project.server';
 import * as paths from '~/paths';
-import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => ({
 	title: `${data.project.title}`,
 });
 
 export async function loader({ request, params }: LoaderArgs) {
-	const userId = await requireUserId(request);
 	invariant(params.projectId, 'projectId not found');
 
-	const project = await getProject({ userId, id: params.projectId });
+	const project = await getProject({ id: params.projectId });
 	if (!project) {
 		throw redirect(paths.inbox({}));
 	}
@@ -88,7 +86,6 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export async function action({ request, params }: ActionArgs) {
-	const userId = await requireUserId(request);
 	const { projectId } = params;
 	invariant(projectId, 'projectId not found');
 
@@ -97,14 +94,13 @@ export async function action({ request, params }: ActionArgs) {
 	invariant(typeof intent === 'string', 'must provide an intent');
 
 	if (intent === 'deleteProject') {
-		await deleteProject({ userId, id: projectId });
+		await deleteProject({ id: projectId });
 	} else if (['markProjectAsComplete', 'markProjectAsIncomplete'].includes(intent)) {
 		const completedDate = data.get('completedDate') ?? '';
 		const tasksIntent = data.get('tasksIntent') ?? '';
 		invariant(typeof completedDate === 'string', 'must provide completedDate');
 
 		await toggleProjectComplete({
-			userId,
 			id: projectId,
 			completedDate: completedDate.length === 0 ? new Date() : null,
 			taskStatus: tasksIntent === 'markAsComplete' ? 'completed' : 'cancelled',
@@ -114,13 +110,13 @@ export async function action({ request, params }: ActionArgs) {
 		const headingId = data.get('headingId');
 		invariant(typeof headingId === 'string', 'headingId not found');
 
-		const project = await convertHeadingToProject({ userId, id: headingId });
+		const project = await convertHeadingToProject({ id: headingId });
 		return redirect(paths.project({ projectId: project.id }));
 	} else if (intent === 'archive') {
 		const headingId = data.get('headingId');
 		invariant(typeof headingId === 'string', 'headingId not found');
 
-		await archiveHeading({ userId, id: headingId });
+		await archiveHeading({ id: headingId });
 		return redirect(paths.project({ projectId }));
 	}
 

@@ -1,17 +1,12 @@
-import type { Heading, Project, Task, User } from '@prisma/client';
+import type { Heading, Project, Task } from '@prisma/client';
 
 import { prisma } from '~/db.server';
 
 export type { Project } from '@prisma/client';
 
-export function getProject({
-	id,
-	userId,
-}: Pick<Project, 'id'> & {
-	userId: User['id'];
-}) {
+export function getProject({ id }: Pick<Project, 'id'>) {
 	return prisma.project.findFirst({
-		where: { id, userId },
+		where: { id },
 		include: {
 			tasks: {
 				include: {
@@ -26,9 +21,9 @@ export function getProject({
 	});
 }
 
-export function getProjectsWithoutAreas({ userId }: { userId: User['id'] }) {
+export function getProjectsWithoutAreas() {
 	return prisma.project.findMany({
-		where: { userId, areaId: null, deleted: null, completedDate: null },
+		where: { areaId: null, deleted: null, completedDate: null },
 		include: {
 			tasks: {
 				where: { deleted: null },
@@ -39,10 +34,9 @@ export function getProjectsWithoutAreas({ userId }: { userId: User['id'] }) {
 	});
 }
 
-export function getCompletedProjects({ userId }: { userId: User['id'] }) {
+export function getCompletedProjects() {
 	return prisma.project.findMany({
 		where: {
-			userId,
 			deleted: null,
 			completedDate: { not: null },
 		},
@@ -50,10 +44,9 @@ export function getCompletedProjects({ userId }: { userId: User['id'] }) {
 	});
 }
 
-export function getDeletedProjects({ userId }: { userId: User['id'] }) {
+export function getDeletedProjects() {
 	return prisma.project.findMany({
 		where: {
-			userId,
 			deleted: { not: null },
 		},
 		select: { id: true, title: true, deleted: true },
@@ -66,12 +59,9 @@ export async function createProject({
 	title,
 	when,
 	whenDate,
-	userId,
-}: Pick<Project, 'notes' | 'title' | 'when' | 'whenDate'> & {
-	userId: User['id'];
-}) {
+}: Pick<Project, 'notes' | 'title' | 'when' | 'whenDate'> & {}) {
 	const order = (await prisma.project.findFirst({
-		where: { userId, deleted: null },
+		where: { deleted: null },
 		select: { globalOrder: true },
 		orderBy: { globalOrder: 'desc' },
 	})) ?? { globalOrder: BigInt(-1) };
@@ -83,84 +73,77 @@ export async function createProject({
 			whenDate,
 			globalOrder: Number(order.globalOrder) + 1,
 			// todo: add area
-			user: {
-				connect: {
-					id: userId,
-				},
-			},
 		},
 	});
 }
 
-export async function deleteProject({ id, userId }: { id: Project['id']; userId: User['id'] }) {
+export async function deleteProject({ id }: { id: Project['id'] }) {
 	await prisma.task.updateMany({
-		where: { projectId: id, userId },
+		where: { projectId: id },
 		data: { deleted: new Date() },
 	});
 	return prisma.project.updateMany({
-		where: { id, userId },
+		where: { id },
 		data: { deleted: new Date() },
 	});
 }
 
 export async function toggleProjectComplete({
 	id,
-	userId,
+
 	completedDate,
 	taskStatus = 'completed',
 }: {
 	id: Project['id'];
-	userId: User['id'];
 	completedDate: Project['completedDate'];
 	taskStatus?: Task['status'];
 }) {
 	// Mark child tasks as done if we're marking the project as done.
 	if (completedDate != null) {
 		await prisma.task.updateMany({
-			where: { projectId: id, userId, status: 'in-progress' },
+			where: { projectId: id, status: 'in-progress' },
 			data: { status: taskStatus, ...(taskStatus === 'completed' ? { completedDate } : {}) },
 		});
 		// Mark unarchived headings as arhived.
 		await prisma.heading.updateMany({
-			where: { projectId: id, userId, archived: null },
+			where: { projectId: id, archived: null },
 			data: { archived: new Date() },
 		});
 	}
 	return prisma.project.updateMany({
-		where: { id, userId },
+		where: { id },
 		data: { completedDate },
 	});
 }
 
-export async function convertHeadingToProject({ id, userId }: { id: Heading['id']; userId: User['id'] }) {
+export async function convertHeadingToProject({ id }: { id: Heading['id'] }) {
 	const heading = await prisma.heading.findFirstOrThrow({
-		where: { id, userId },
+		where: { id },
 	});
 	const project = await createProject({
 		title: heading.title,
 		notes: '',
 		when: 'inbox',
 		whenDate: null,
-		userId,
 	});
 	// Re-associate all of the heading tasks to the new project
 	await prisma.task.updateMany({
-		where: { headingId: heading.id, userId },
+		where: { headingId: heading.id },
 		data: {
 			headingId: null,
 			projectId: project.id,
 		},
 	});
 	await prisma.heading.deleteMany({
-		where: { id: heading.id, userId },
+		where: { id: heading.id },
 	});
 
 	return project;
 }
 
-export async function archiveHeading({ id, userId }: { id: Heading['id']; userId: User['id'] }) {
+export async function archiveHeading({ id }: { id: Heading['id'] }) {
 	return prisma.heading.updateMany({
-		where: { id, userId },
+		where: { id },
 		data: { archived: new Date() },
 	});
 }

@@ -24,6 +24,7 @@ export default function handleRequest(
 	return new Promise((resolve, reject) => {
 		let didError = false;
 
+		// deepcode ignore OR: remix's problem, not ours
 		const { pipe, abort } = renderToPipeableStream(<RemixServer context={remixContext} url={request.url} />, {
 			[callbackName]() {
 				let body = new PassThrough();
@@ -46,6 +47,7 @@ export default function handleRequest(
 				console.error(error);
 			},
 		});
+		// deepcode ignore CodeInjection: coming from remix server
 		setTimeout(abort, ABORT_DELAY);
 	});
 }

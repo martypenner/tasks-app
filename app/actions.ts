@@ -2,11 +2,8 @@ import type { ActionArgs } from '@remix-run/server-runtime';
 import { json, redirect } from '@remix-run/server-runtime';
 import { createTask } from './models/task.server';
 import * as paths from './paths';
-import { requireUserId } from './session.server';
 
 export async function newTaskAction({ request }: ActionArgs) {
-	const userId = await requireUserId(request);
-
 	const formData = await request.formData();
 	const title = formData.get('title');
 	const notes = formData.get('notes');
@@ -91,7 +88,6 @@ export async function newTaskAction({ request }: ActionArgs) {
 		notes,
 		when,
 		whenDate: when === 'specific' ? new Date(whenDate as string) : null,
-		userId,
 		projectId: typeof projectId === 'string' ? projectId : null,
 		areaId: typeof areaId === 'string' ? areaId : null,
 	});

@@ -7,15 +7,13 @@ import { List } from '~/components/List';
 import NewTask from '~/components/NewTask';
 import TaskView from '~/components/TaskView';
 import { getTaskListItemsByWhen } from '~/models/task.server';
-import { requireUserId } from '~/session.server';
 
 export const meta: MetaFunction = () => ({
 	title: 'Today',
 });
 
 export async function loader({ request }: LoaderArgs) {
-	const userId = await requireUserId(request);
-	const taskListItems = await getTaskListItemsByWhen({ userId, when: 'today' });
+	const taskListItems = await getTaskListItemsByWhen({ when: 'today' });
 	return json({ taskListItems });
 }
 
