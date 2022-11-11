@@ -18,8 +18,16 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
   libasound2 \
   libxtst6 \
   xauth \
-  xvfb
-
+  xvfb \
+  # Tauri deps
+  libwebkit2gtk-4.0-dev \
+  build-essential \
+  curl \
+  wget \
+  libssl-dev \
+  libgtk-3-dev \
+  libayatana-appindicator3-dev \
+  librsvg2-dev
 
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
