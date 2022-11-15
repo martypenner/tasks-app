@@ -5,7 +5,6 @@ FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0-${VARIANT}
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && \
   apt-get -y install --no-install-recommends \
-  zsh \
   sqlite3 \
   # Cypress deps
   libgtk2.0-0 \
